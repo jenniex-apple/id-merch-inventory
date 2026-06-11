@@ -193,21 +193,12 @@
 <div id="setup-screen">
   <div class="setup-box">
     <h2>🐙 Connect via GitHub</h2>
-    <p class="sub">Store your inventory in a GitHub Gist — a free, private snippet that both you and your coworker can read and write. No repo needed, just a GitHub account.</p>
+    <p class="sub">One step — just paste your GitHub token. The inventory database is already set up and ready.</p>
     <div class="setup-steps">
       <div class="step">
         <div class="step-num">1</div>
         <div>
-          Go to <strong><a href="https://gist.github.com" target="_blank" style="color:var(--accent)">gist.github.com</a></strong> → click <strong>"+ New gist"</strong> → set filename to <code style="background:#f5f5f7;padding:1px 6px;border-radius:4px;font-size:12px;">inventory.json</code> → paste <code style="background:#f5f5f7;padding:1px 6px;border-radius:4px;font-size:12px;">{}</code> → choose <strong>Secret</strong> → click <strong>Create secret gist</strong>. Copy the <strong>Gist ID</strong> from the URL (the long string after your username).
-          <div class="setup-input-row">
-            <input type="text" id="setup-gist" placeholder="e.g. 4b2a9f3c8d1e7a6b5c0d…"/>
-          </div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div>
-          Go to <strong><a href="https://github.com/settings/tokens/new" target="_blank" style="color:var(--accent)">github.com/settings/tokens/new</a></strong> → give it a name → check <strong>gist</strong> scope only → click <strong>Generate token</strong> → copy it. Share this token privately with your coworker so they can connect too.
+          Paste the <strong>GitHub Token</strong> that was shared with you:
           <div class="setup-input-row">
             <input type="password" id="setup-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"/>
           </div>
@@ -218,7 +209,7 @@
       <button class="btn btn-primary" onclick="connectGist()">🐙 Connect &amp; Go Live</button>
       <button class="btn btn-secondary" onclick="skipSetup()">Use Locally (just me)</button>
     </div>
-    <p style="font-size:11px;color:var(--sub);margin-top:14px;">Your token is stored only in your browser's localStorage — never sent anywhere except GitHub's API. Use a <strong>gist</strong>-scoped token for minimum permissions.</p>
+    <p style="font-size:11px;color:var(--sub);margin-top:14px;">Your token is stored only in your browser — never shared or visible to others.</p>
   </div>
 </div>
 
@@ -489,9 +480,9 @@ function openSetup(){
 }
 
 async function connectGist(){
-  const id  = document.getElementById('setup-gist').value.trim();
+  const id  = '1b46369e7295a80fc873aab59406ce8f'; // pre-configured Gist ID
   const tok = document.getElementById('setup-token').value.trim();
-  if(!id || !tok){ toast('⚠️ Please fill in both fields.'); return; }
+  if(!tok){ toast('⚠️ Please paste your GitHub token.'); return; }
   gistId = id; ghToken = tok;
   localStorage.setItem(GIST_ID_KEY, gistId);
   localStorage.setItem(GH_TOK_KEY,  ghToken);
