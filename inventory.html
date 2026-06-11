@@ -5,258 +5,115 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>I&D Merch Inventory</title>
 <style>
-  :root {
-    --bg: #f5f5f7;
-    --card: #ffffff;
-    --accent: #0071e3;
-    --accent-h: #0077ed;
-    --danger: #ff3b30;
-    --warning: #ff9500;
-    --success: #34c759;
-    --purple: #af52de;
-    --text: #1d1d1f;
-    --sub: #6e6e73;
-    --border: #d2d2d7;
-    --radius: 14px;
-    --shadow: 0 4px 24px rgba(0,0,0,0.07);
-  }
+  :root{--bg:#f5f5f7;--card:#fff;--accent:#0071e3;--accent-h:#0077ed;--danger:#ff3b30;--warning:#ff9500;--success:#34c759;--purple:#af52de;--text:#1d1d1f;--sub:#6e6e73;--border:#d2d2d7;--radius:14px;--shadow:0 4px 24px rgba(0,0,0,.07);}
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-
-  /* Header */
   header{background:rgba(255,255,255,.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:62px;}
   .header-left{display:flex;align-items:center;gap:12px;}
   header h1{font-size:18px;font-weight:700;letter-spacing:-.4px;}
   .header-tag{background:#f0e6ff;color:var(--purple);font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;}
   .header-right{display:flex;align-items:center;gap:14px;}
   .last-upd{font-size:12px;color:var(--sub);}
-
-  /* Layout */
   main{max-width:1160px;margin:0 auto;padding:28px 24px;display:flex;flex-direction:column;gap:24px;}
-
-  /* Stats */
   .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;}
   .stat{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;display:flex;flex-direction:column;gap:4px;}
   .stat .lbl{font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;}
   .stat .val{font-size:30px;font-weight:700;letter-spacing:-1px;}
-  .stat.s-ok   .val{color:var(--success);}
-  .stat.s-low  .val{color:var(--warning);}
-  .stat.s-out  .val{color:var(--danger);}
-  .stat.s-cost .val{font-size:22px;}
+  .stat.s-ok .val{color:var(--success);} .stat.s-low .val{color:var(--warning);} .stat.s-out .val{color:var(--danger);} .stat.s-cost .val{font-size:22px;}
   .stat.clickable{cursor:pointer;transition:transform .15s,box-shadow .15s;}
-  .stat.clickable:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,0.12);}
+  .stat.clickable:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,.12);}
   .stat.clickable .hint{font-size:11px;color:var(--sub);margin-top:3px;opacity:0;transition:opacity .15s;}
   .stat.clickable:hover .hint{opacity:1;}
   .stat.active{outline:2px solid;outline-offset:-2px;}
-  .stat.s-ok.active {outline-color:var(--success);background:#f2fdf5;}
-  .stat.s-low.active{outline-color:var(--warning);background:#fffbf0;}
-  .stat.s-out.active{outline-color:var(--danger); background:#fff5f5;}
+  .stat.s-ok.active{outline-color:var(--success);background:#f2fdf5;} .stat.s-low.active{outline-color:var(--warning);background:#fffbf0;} .stat.s-out.active{outline-color:var(--danger);background:#fff5f5;}
   .stat.active .hint{opacity:1;font-weight:600;}
-
-  /* Card */
   .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
   .card-hd{padding:18px 22px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
   .card-hd h2{font-size:16px;font-weight:600;}
   .card-bd{padding:16px 22px 22px;}
-
-  /* Toolbar */
   .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
   .search-wrap{position:relative;flex:1;min-width:200px;}
   .search-wrap input{width:100%;padding-left:34px;}
   .si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--sub);font-size:14px;pointer-events:none;}
   select,input{padding:9px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;background:var(--bg);color:var(--text);outline:none;transition:border .2s,box-shadow .2s;}
   select:focus,input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,113,227,.13);}
-
-  /* Table */
   .tbl-wrap{overflow-x:auto;margin-top:14px;}
   table{width:100%;border-collapse:collapse;font-size:13.5px;}
   thead th{text-align:left;padding:9px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);white-space:nowrap;}
-  tbody tr{transition:background .12s;}
-  tbody tr:hover{background:#f7f7fa;}
+  tbody tr{transition:background .12s;} tbody tr:hover{background:#f7f7fa;}
   tbody td{padding:11px 12px;border-bottom:1px solid #f0f0f3;vertical-align:middle;}
   tbody tr:last-child td{border-bottom:none;}
-  .item-name{font-weight:500;line-height:1.3;}
-  .item-note{font-size:11px;color:var(--sub);margin-top:2px;font-style:italic;}
-
-  /* Badges */
+  .item-name{font-weight:500;line-height:1.3;} .item-note{font-size:11px;color:var(--sub);margin-top:2px;font-style:italic;}
   .badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap;}
-  .b-ok {background:#d1f2db;color:#1a7a34;}
-  .b-low{background:#fff3cd;color:#7a5500;}
-  .b-out{background:#ffd7d5;color:#8a1a14;}
-  .b-chorus{background:#ede6ff;color:#6424a8;margin-left:4px;}
-
-  /* Stock bar */
+  .b-ok{background:#d1f2db;color:#1a7a34;} .b-low{background:#fff3cd;color:#7a5500;} .b-out{background:#ffd7d5;color:#8a1a14;} .b-chorus{background:#ede6ff;color:#6424a8;margin-left:4px;}
   .bar-wrap{display:flex;align-items:center;gap:8px;}
   .bar-bg{flex:1;height:5px;background:#e5e5ea;border-radius:3px;overflow:hidden;min-width:50px;}
   .bar-fill{height:100%;border-radius:3px;transition:width .4s;}
   .bar-pct{font-size:11px;color:var(--sub);min-width:30px;text-align:right;}
-
-  /* Location pills */
   .locs{display:flex;gap:4px;flex-wrap:wrap;}
   .loc-pill{font-size:11px;background:#f0f0f5;color:var(--sub);padding:2px 7px;border-radius:6px;white-space:nowrap;}
   .loc-pill span{color:var(--text);font-weight:600;}
-
-  /* Qty display */
   .qty-info{display:flex;flex-direction:column;gap:1px;}
-  .qty-bal{font-size:15px;font-weight:700;}
-  .qty-meta{font-size:11px;color:var(--sub);}
-
-  /* Buttons */
+  .qty-bal{font-size:15px;font-weight:700;} .qty-meta{font-size:11px;color:var(--sub);}
   .btn{padding:9px 18px;border-radius:10px;border:none;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;font-family:inherit;white-space:nowrap;}
-  .btn-primary{background:var(--accent);color:#fff;}
-  .btn-primary:hover{background:var(--accent-h);transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,113,227,.3);}
-  .btn-secondary{background:var(--bg);color:var(--text);border:1px solid var(--border);}
-  .btn-secondary:hover{background:var(--border);}
+  .btn-primary{background:var(--accent);color:#fff;} .btn-primary:hover{background:var(--accent-h);transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,113,227,.3);}
+  .btn-secondary{background:var(--bg);color:var(--text);border:1px solid var(--border);} .btn-secondary:hover{background:var(--border);}
   .btn-sm{padding:5px 12px;font-size:12px;border-radius:8px;}
-  .btn-danger{background:#fff0f0;color:var(--danger);border:1px solid #ffd5d3;}
-  .btn-danger:hover{background:#ffd5d3;}
+  .btn-danger{background:#fff0f0;color:var(--danger);border:1px solid #ffd5d3;} .btn-danger:hover{background:#ffd5d3;}
   .btn-group{display:flex;gap:8px;flex-wrap:wrap;}
-
-  /* Form */
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-  .fg{display:flex;flex-direction:column;gap:5px;}
-  .fg.full{grid-column:1/-1;}
+  .fg{display:flex;flex-direction:column;gap:5px;} .fg.full{grid-column:1/-1;}
   label{font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;}
   textarea{padding:9px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;font-family:inherit;background:var(--bg);resize:vertical;min-height:64px;color:var(--text);outline:none;}
   textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,113,227,.13);}
-
-  /* Log */
   .log-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0f3;font-size:13px;}
   .log-item:last-child{border-bottom:none;}
   .log-dot{width:7px;height:7px;border-radius:50%;margin-top:4px;flex-shrink:0;}
-  .ld-deduct{background:var(--danger);}
-  .ld-add{background:var(--success);}
-  .ld-remove{background:var(--warning);}
+  .ld-deduct{background:var(--danger);} .ld-add{background:var(--success);} .ld-remove{background:var(--warning);}
   .log-time{font-size:11px;color:var(--sub);margin-top:2px;}
-
-  /* Modal */
   .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;}
   .modal-bg.open{opacity:1;pointer-events:all;}
   .modal{background:var(--card);border-radius:18px;padding:26px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);transform:scale(.95);transition:transform .25s cubic-bezier(.34,1.56,.64,1);}
   .modal-bg.open .modal{transform:scale(1);}
   .modal h3{font-size:17px;font-weight:600;margin-bottom:18px;}
   .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
-
-  /* Toast */
   #toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(70px);background:#1d1d1f;color:#fff;padding:12px 22px;border-radius:20px;font-size:13px;font-weight:500;box-shadow:0 8px 30px rgba(0,0,0,.25);transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .3s;opacity:0;z-index:999;white-space:nowrap;}
   #toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
-
-  /* Sync status dot */
-  .sync-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle;flex-shrink:0;}
-  .sync-ok   {background:var(--success);}
-  .sync-busy {background:var(--warning);animation:pulse 1s infinite;}
-  .sync-err  {background:var(--danger);}
-  .sync-local{background:var(--sub);}
-  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
-
-  /* Setup overlay */
-  #setup-screen{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;align-items:center;justify-content:center;padding:24px;}
-  #setup-screen.hidden{display:none;}
-  .setup-box{background:var(--card);border-radius:22px;box-shadow:0 20px 60px rgba(0,0,0,.15);padding:36px;width:100%;max-width:500px;}
-  .setup-box h2{font-size:22px;font-weight:700;margin-bottom:6px;}
-  .setup-box .sub{font-size:14px;color:var(--sub);line-height:1.55;margin-bottom:22px;}
-  .setup-steps{display:flex;flex-direction:column;gap:16px;margin-bottom:24px;}
-  .step{display:flex;gap:12px;align-items:flex-start;font-size:13px;line-height:1.6;color:var(--text);}
-  .step-num{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
-  .setup-input-row{display:flex;gap:8px;margin-top:4px;}
-  .setup-input-row input{flex:1;font-size:13px;}
-  .divider{display:flex;align-items:center;gap:10px;margin:20px 0;color:var(--sub);font-size:12px;}
-  .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
-  .setup-actions{display:flex;gap:10px;flex-wrap:wrap;}
-
-  /* Share bar */
-  .share-bar{background:#f0f6ff;border:1px solid #c5dcff;border-radius:var(--radius);padding:13px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
-  .share-bar.hidden{display:none;}
-  .share-url{flex:1;font-size:12px;color:var(--accent);word-break:break-all;font-family:ui-monospace,monospace;min-width:0;}
-  .live-badge{background:#e3f5e8;color:#1a7a34;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;}
-
-  /* Alert banner */
   .alert-bar{background:#fff8e6;border:1px solid #ffe5a0;border-radius:var(--radius);padding:14px 18px;display:flex;align-items:flex-start;gap:10px;font-size:13px;}
   .alert-bar.hidden{display:none;}
   .alert-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
   .alert-bar ul{margin:6px 0 0 16px;display:flex;flex-direction:column;gap:3px;}
-
   .empty{text-align:center;padding:36px;color:var(--sub);font-size:13px;}
-
-  @media(max-width:650px){
-    .form-grid{grid-template-columns:1fr;}
-    .stats{grid-template-columns:1fr 1fr;}
-    main{padding:16px 14px;}
-    header{padding:0 16px;}
-    .bar-wrap,.locs{display:none;}
-  }
+  @media(max-width:650px){.form-grid{grid-template-columns:1fr;}.stats{grid-template-columns:1fr 1fr;}main{padding:16px 14px;}header{padding:0 16px;}.bar-wrap,.locs{display:none;}}
 </style>
 </head>
 <body>
 
-<!-- Setup / Connect Screen -->
-<div id="setup-screen">
-  <div class="setup-box">
-    <h2>🐙 Connect via GitHub</h2>
-    <p class="sub">One step — just paste your GitHub token. The inventory database is already set up and ready.</p>
-    <div class="setup-steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div>
-          Paste the <strong>GitHub Token</strong> that was shared with you:
-          <div class="setup-input-row">
-            <input type="password" id="setup-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"/>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="setup-actions">
-      <button class="btn btn-primary" onclick="connectGist()">🐙 Connect &amp; Go Live</button>
-      <button class="btn btn-secondary" onclick="skipSetup()">Use Locally (just me)</button>
-    </div>
-    <p style="font-size:11px;color:var(--sub);margin-top:14px;">Your token is stored only in your browser — never shared or visible to others.</p>
-  </div>
-</div>
-
 <header>
   <div class="header-left">
-    <h1>📦 I&amp;D Merch Inventory</h1>
+    <h1>&#x1F4E6; I&amp;D Merch Inventory</h1>
     <span class="header-tag">Inclusion &amp; Diversity</span>
   </div>
   <div class="header-right">
-    <span id="sync-status" style="font-size:12px;color:var(--sub);display:flex;align-items:center;gap:4px;"></span>
-    <span class="last-upd" id="last-upd">—</span>
-    <button class="btn btn-secondary btn-sm" onclick="exportCSV()">⬇ Export CSV</button>
-    <button class="btn btn-secondary btn-sm" onclick="openSetup()">⚙ Share</button>
+    <span class="last-upd" id="last-upd">&#x2014;</span>
+    <button class="btn btn-secondary btn-sm" onclick="exportCSV()">&#x2B07; Export CSV</button>
     <button class="btn btn-primary btn-sm" onclick="openModal()">+ Add Item</button>
   </div>
 </header>
 
 <main>
-
-  <!-- Share bar -->
-  <div class="share-bar hidden" id="share-bar">
-    <span class="live-badge">🟢 Live</span>
-    <span class="share-url" id="share-url-txt">—</span>
-    <button class="btn btn-secondary btn-sm" onclick="copyShareLink()">Copy Link</button>
-    <button class="btn btn-danger btn-sm" onclick="disconnectGist()">Disconnect</button>
+  <div class="alert-bar hidden" id="alert-bar">
+    <span class="alert-icon">&#x26A0;&#xFE0F;</span>
+    <div><strong>Low Stock Alert</strong><ul id="alert-list"></ul></div>
   </div>
 
-  <!-- Low stock alert -->
-  <div class="alert-bar" id="alert-bar">
-    <span class="alert-icon">⚠️</span>
-    <div>
-      <strong>Low Stock Alert</strong>
-      <ul id="alert-list"></ul>
-    </div>
-  </div>
-
-  <!-- Stats -->
   <div class="stats" id="stats-row"></div>
 
-  <!-- Inventory Table -->
   <div class="card">
     <div class="card-hd">
       <h2>All Items</h2>
       <div class="btn-group">
-        <select id="filter-cat" onchange="renderTable()" style="font-size:13px;padding:7px 10px;">
-          <option value="">All Categories</option>
-        </select>
+        <select id="filter-cat" onchange="renderTable()" style="font-size:13px;padding:7px 10px;"><option value="">All Categories</option></select>
         <select id="filter-status" onchange="renderTable()" style="font-size:13px;padding:7px 10px;">
           <option value="">All Statuses</option>
           <option value="ok">In Stock</option>
@@ -268,119 +125,54 @@
     <div class="card-bd">
       <div class="toolbar">
         <div class="search-wrap">
-          <span class="si">🔍</span>
-          <input type="text" id="search" placeholder="Search items…" oninput="renderTable()"/>
+          <span class="si">&#x1F50D;</span>
+          <input type="text" id="search" placeholder="Search items&#x2026;" oninput="renderTable()"/>
         </div>
         <label style="display:flex;align-items:center;gap:6px;font-size:13px;text-transform:none;letter-spacing:0;color:var(--text);cursor:pointer;">
-          <input type="checkbox" id="chorus-only" onchange="renderTable()" style="width:auto;padding:0;background:none;border:none;"/> 
-          On Chorus page only
+          <input type="checkbox" id="chorus-only" onchange="renderTable()" style="width:auto;padding:0;background:none;border:none;"/> On Chorus page only
         </label>
       </div>
       <div class="tbl-wrap">
         <table>
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Category</th>
-              <th>Balance</th>
-              <th>Status</th>
-              <th>Stock Level</th>
-              <th>Locations</th>
-              <th>Unit Cost</th>
-              <th></th>
-            </tr>
-          </thead>
+          <thead><tr><th>Item</th><th>Category</th><th>Balance</th><th>Status</th><th>Stock Level</th><th>Locations</th><th>Unit Cost</th><th></th></tr></thead>
           <tbody id="inv-body"></tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- Request Form -->
   <div class="card">
-    <div class="card-hd"><h2>🙋 Request Items</h2></div>
+    <div class="card-hd"><h2>&#x1F64B; Request Items</h2></div>
     <div class="card-bd">
       <div class="form-grid">
-        <div class="fg">
-          <label>Your Name</label>
-          <input type="text" id="req-name" placeholder="e.g. Alex Johnson"/>
-        </div>
-        <div class="fg">
-          <label>Item</label>
-          <select id="req-item" onchange="updateMaxQty()"></select>
-        </div>
-        <div class="fg">
-          <label>Quantity Needed</label>
-          <input type="number" id="req-qty" min="1" value="1"/>
-        </div>
-        <div class="fg">
-          <label>Project / Reason</label>
-          <input type="text" id="req-reason" placeholder="e.g. New hire onboarding Q3"/>
-        </div>
-        <div class="fg full">
-          <button class="btn btn-primary" style="width:fit-content;" onclick="submitRequest()">Submit Request → Auto-Deduct</button>
-        </div>
+        <div class="fg"><label>Your Name</label><input type="text" id="req-name" placeholder="e.g. Alex Johnson"/></div>
+        <div class="fg"><label>Item</label><select id="req-item" onchange="updateMaxQty()"></select></div>
+        <div class="fg"><label>Quantity Needed</label><input type="number" id="req-qty" min="1" value="1"/></div>
+        <div class="fg"><label>Project / Reason</label><input type="text" id="req-reason" placeholder="e.g. New hire onboarding Q3"/></div>
+        <div class="fg full"><button class="btn btn-primary" style="width:fit-content;" onclick="submitRequest()">Submit Request &#x2192; Auto-Deduct</button></div>
       </div>
     </div>
   </div>
 
-  <!-- Activity Log -->
   <div class="card">
-    <div class="card-hd">
-      <h2>📋 Activity Log</h2>
-      <span id="log-count" style="font-size:12px;color:var(--sub);"></span>
-    </div>
-    <div class="card-bd">
-      <div id="log-list"><p class="empty">No activity yet.</p></div>
-    </div>
+    <div class="card-hd"><h2>&#x1F4CB; Activity Log</h2><span id="log-count" style="font-size:12px;color:var(--sub);"></span></div>
+    <div class="card-bd"><div id="log-list"><p class="empty">No activity yet.</p></div></div>
   </div>
-
 </main>
 
-<!-- Add Item Modal -->
 <div class="modal-bg" id="modal-bg" onclick="bgClose(event)">
   <div class="modal">
     <h3>Add New Item</h3>
     <div class="form-grid">
-      <div class="fg full">
-        <label>Item Name</label>
-        <input type="text" id="n-name" placeholder="e.g. Pride Tote Bag"/>
-      </div>
-      <div class="fg">
-        <label>Category</label>
-        <select id="n-cat">
-          <option>Apparel</option><option>Accessories</option><option>Bags</option>
-          <option>Drinkware</option><option>Kits</option><option>Stationery</option><option>Other</option>
-        </select>
-      </div>
-      <div class="fg">
-        <label>Quantity</label>
-        <input type="number" id="n-qty" min="0" value="10"/>
-      </div>
-      <div class="fg">
-        <label>Low Stock Threshold</label>
-        <input type="number" id="n-thresh" min="0" value="5"/>
-      </div>
-      <div class="fg">
-        <label>Unit Cost ($)</label>
-        <input type="number" id="n-cost" min="0" step="0.01" placeholder="optional"/>
-      </div>
-      <div class="fg">
-        <label>4th Floor Location</label>
-        <input type="text" id="n-loc4" placeholder="e.g. 12"/>
-      </div>
-      <div class="fg">
-        <label>3rd Floor Location</label>
-        <input type="text" id="n-loc3" placeholder="e.g. 0"/>
-      </div>
-      <div class="fg">
-        <label>Mead Location</label>
-        <input type="text" id="n-mead" placeholder="e.g. 44"/>
-      </div>
-      <div class="fg full">
-        <label>Notes</label>
-        <textarea id="n-notes" placeholder="Optional notes…"></textarea>
-      </div>
+      <div class="fg full"><label>Item Name</label><input type="text" id="n-name" placeholder="e.g. Pride Tote Bag"/></div>
+      <div class="fg"><label>Category</label><select id="n-cat"><option>Apparel</option><option>Accessories</option><option>Bags</option><option>Drinkware</option><option>Kits</option><option>Stationery</option><option>Other</option></select></div>
+      <div class="fg"><label>Quantity</label><input type="number" id="n-qty" min="0" value="10"/></div>
+      <div class="fg"><label>Low Stock Threshold</label><input type="number" id="n-thresh" min="0" value="5"/></div>
+      <div class="fg"><label>Unit Cost ($)</label><input type="number" id="n-cost" min="0" step="0.01" placeholder="optional"/></div>
+      <div class="fg"><label>4th Floor Location</label><input type="text" id="n-loc4" placeholder="e.g. 12"/></div>
+      <div class="fg"><label>3rd Floor Location</label><input type="text" id="n-loc3" placeholder="e.g. 0"/></div>
+      <div class="fg"><label>Mead Location</label><input type="text" id="n-mead" placeholder="e.g. 44"/></div>
+      <div class="fg full"><label>Notes</label><textarea id="n-notes" placeholder="Optional notes&#x2026;"></textarea></div>
       <div class="fg" style="flex-direction:row;align-items:center;gap:8px;">
         <input type="checkbox" id="n-chorus" style="width:auto;padding:0;background:none;border:none;"/>
         <label style="text-transform:none;letter-spacing:0;color:var(--text);font-size:13px;cursor:pointer;">On Chorus page</label>
@@ -396,485 +188,121 @@
 <div id="toast"></div>
 
 <script>
-// ── Config keys ───────────────────────────────────────────────────────────────
-const SK          = 'id_merch_inv_v1';
-const LK          = 'id_merch_log_v1';
-const GIST_ID_KEY = 'id_merch_gist_id';
-const GH_TOK_KEY  = 'id_merch_gh_token';
-const POLL_MS     = 20000; // re-fetch every 20s
+const SK = 'id_merch_inv_v1';
+const LK = 'id_merch_log_v1';
 
-// ── State ─────────────────────────────────────────────────────────────────────
-let inv      = [];
-let log      = [];
-let nxId     = 1;
-let gistId   = localStorage.getItem(GIST_ID_KEY) || '';
-let ghToken  = localStorage.getItem(GH_TOK_KEY)  || '';
-let isLive   = !!(gistId && ghToken);
-let pollTimer = null;
-
-// ── GitHub Gist API ───────────────────────────────────────────────────────────
-const GH_API = id => `https://api.github.com/gists/${id}`;
-
-async function fetchGist(){
-  setSyncStatus('busy','Syncing…');
-  try {
-    const r = await fetch(GH_API(gistId), {
-      headers:{ Authorization:`token ${ghToken}`, Accept:'application/vnd.github+json' }
-    });
-    if(!r.ok) throw new Error(r.status);
-    const gist = await r.json();
-    const raw  = gist.files['inventory.json']?.content;
-    if(raw){
-      const data = JSON.parse(raw);
-      if(Array.isArray(data.inv)) inv = data.inv;
-      if(Array.isArray(data.log)) log = data.log;
-      nxId = Math.max(1,...inv.map(i=>i.id))+1;
-    }
-    setSyncStatus('ok','GitHub ✓');
-    renderAll();
-  } catch(e){
-    setSyncStatus('err','Sync error');
-    console.error('GitHub Gist fetch error',e);
-  }
-}
-
-async function pushGist(){
-  if(!isLive){ saveLocal(); return; }
-  setSyncStatus('busy','Saving…');
-  try {
-    await fetch(GH_API(gistId), {
-      method:'PATCH',
-      headers:{ Authorization:`token ${ghToken}`, Accept:'application/vnd.github+json', 'Content-Type':'application/json' },
-      body: JSON.stringify({ files:{ 'inventory.json':{ content: JSON.stringify({inv, log}) } } })
-    });
-    setSyncStatus('ok','GitHub ✓');
-    saveLocal();
-  } catch(e){
-    setSyncStatus('err','Save failed');
-    saveLocal();
-    console.error('GitHub Gist push error',e);
-  }
-}
-
-function saveLocal(){
-  localStorage.setItem(SK, JSON.stringify(inv));
-  localStorage.setItem(LK, JSON.stringify(log));
-}
-
-function setSyncStatus(state, msg){
-  const el  = document.getElementById('sync-status');
-  const cls = {ok:'sync-ok',busy:'sync-busy',err:'sync-err',local:'sync-local'};
-  el.innerHTML = `<span class="sync-dot ${cls[state]||'sync-local'}"></span>${msg}`;
-}
-
-function startPolling(){
-  if(pollTimer) clearInterval(pollTimer);
-  pollTimer = setInterval(fetchGist, POLL_MS);
-}
-
-// ── Setup ─────────────────────────────────────────────────────────────────────
-function openSetup(){
-  document.getElementById('setup-screen').classList.remove('hidden');
-  if(gistId)  document.getElementById('setup-gist').value  = gistId;
-  if(ghToken) document.getElementById('setup-token').value = ghToken;
-}
-
-async function connectGist(){
-  const id  = '1b46369e7295a80fc873aab59406ce8f'; // pre-configured Gist ID
-  const tok = document.getElementById('setup-token').value.trim();
-  if(!tok){ toast('⚠️ Please paste your GitHub token.'); return; }
-  gistId = id; ghToken = tok;
-  localStorage.setItem(GIST_ID_KEY, gistId);
-  localStorage.setItem(GH_TOK_KEY,  ghToken);
-  isLive = true;
-  await pushGist();
-  document.getElementById('setup-screen').classList.add('hidden');
-  showShareBar();
-  startPolling();
-  toast('🐙 Connected to GitHub! Share the Gist ID + token with your coworker.');
-}
-
-function skipSetup(){
-  document.getElementById('setup-screen').classList.add('hidden');
-  isLive = false;
-  inv  = localStorage.getItem(SK) ? JSON.parse(localStorage.getItem(SK)) : JSON.parse(JSON.stringify(SEED));
-  log  = localStorage.getItem(LK) ? JSON.parse(localStorage.getItem(LK)) : [];
-  nxId = Math.max(1,...inv.map(i=>i.id))+1;
-  setSyncStatus('local','Local only');
-  document.getElementById('share-bar').classList.add('hidden');
-  renderAll();
-}
-
-function disconnectGist(){
-  if(!confirm('Disconnect from GitHub? Local data is kept.')) return;
-  gistId=''; ghToken=''; isLive=false;
-  localStorage.removeItem(GIST_ID_KEY);
-  localStorage.removeItem(GH_TOK_KEY);
-  clearInterval(pollTimer);
-  setSyncStatus('local','Local only');
-  document.getElementById('share-bar').classList.add('hidden');
-  toast('Disconnected. Running locally.');
-}
-
-function showShareBar(){
-  document.getElementById('share-bar').classList.remove('hidden');
-  document.getElementById('share-url-txt').textContent =
-    `Gist ID: ${gistId}  ·  gist.github.com/${gistId}`;
-}
-
-function copyShareLink(){
-  const txt = `Gist ID: ${gistId}\nURL: https://gist.github.com/${gistId}\n\nTo connect: open inventory app → ⚙ Share → paste Gist ID + your GitHub token (gist scope).`;
-  navigator.clipboard.writeText(txt).then(()=>toast('📋 Gist info copied! Send privately to your coworker.'));
-}
-
-// ── Local storage fallbacks ───────────────────────────────────────────────────
-function load()    { return localStorage.getItem(SK) ? JSON.parse(localStorage.getItem(SK)) : JSON.parse(JSON.stringify(SEED)); }
-function loadLog() { return localStorage.getItem(LK) ? JSON.parse(localStorage.getItem(LK)) : []; }
-
-// ── Save (GitHub or local) ────────────────────────────────────────────────────
-async function save(d)   { inv=d; saveLocal(); await pushGist(); }
-async function saveLog(l){ log=l; saveLocal(); }
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function statusOf(i){
-  const q = Math.max(0,i.qty);
-  if(q===0)              return {label:'Out of Stock',cls:'b-out',key:'out'};
-  if(q<=i.threshold)     return {label:'Low Stock',   cls:'b-low',key:'low'};
-  return                        {label:'In Stock',    cls:'b-ok', key:'ok'};
-}
-function fmtCost(c){ return c!=null ? '$'+c.toFixed(2) : '—'; }
-function locStr(item){
-  const parts=[];
-  if(item.loc4th && item.loc4th!=='0' && item.loc4th!=='') parts.push({lbl:'4F',val:item.loc4th});
-  if(item.loc3rd && item.loc3rd!=='0' && item.loc3rd!=='') parts.push({lbl:'3F',val:item.loc3rd});
-  if(item.mead   && item.mead!=='0'   && item.mead!=='')   parts.push({lbl:'Mead',val:item.mead});
-  return parts;
-}
-
-// ── Seed data ─────────────────────────────────────────────────────────────────
 const SEED = [{"id":1,"name":"Everybody In \uF8FF Notebook kits","category":"Stationery","qty":182,"totalQty":182,"requested":0,"threshold":18,"unitCost":null,"notes":"Majority in a stack next to shelf, 14 of them are on the rack by desk","loc4th":"?","loc3rd":"?","mead":"182","onChorus":false},{"id":2,"name":"We Belong. Together. AirTag keychain","category":"Accessories","qty":238,"totalQty":238,"requested":0,"threshold":24,"unitCost":null,"notes":"","loc4th":"","loc3rd":"","mead":"238","onChorus":false},{"id":3,"name":"We Belong. Together. W Large","category":"Apparel","qty":46,"totalQty":46,"requested":0,"threshold":5,"unitCost":null,"notes":"","loc4th":"","loc3rd":"","mead":"46","onChorus":false},{"id":4,"name":"We Belong. Together. W XXL","category":"Apparel","qty":12,"totalQty":12,"requested":0,"threshold":2,"unitCost":null,"notes":"","loc4th":"","loc3rd":"","mead":"12","onChorus":false},{"id":5,"name":"We Belong. Together. W Medium","category":"Apparel","qty":80,"totalQty":80,"requested":0,"threshold":8,"unitCost":null,"notes":"","loc4th":"","loc3rd":"","mead":"80","onChorus":false},{"id":6,"name":"We Belong. Together. W XL","category":"Apparel","qty":28,"totalQty":28,"requested":0,"threshold":3,"unitCost":null,"notes":"","loc4th":"","loc3rd":"","mead":"28","onChorus":false},{"id":7,"name":"We Belong. Together. W Small","category":"Apparel","qty":72,"totalQty":72,"requested":0,"threshold":7,"unitCost":null,"notes":"","loc4th":"","loc3rd":"","mead":"72","onChorus":false},{"id":8,"name":"We Belong. Together. U XSmall","category":"Apparel","qty":44,"totalQty":44,"requested":0,"threshold":4,"unitCost":null,"notes":"","loc4th":"","loc3rd":"","mead":"44","onChorus":false},{"id":9,"name":"We Belong. Together. U Medium","category":"Apparel","qty":211,"totalQty":211,"requested":0,"threshold":21,"unitCost":null,"notes":"","loc4th":"","loc3rd":"","mead":"211","onChorus":false},{"id":10,"name":"We Belong. Together. U Small","category":"Apparel","qty":77,"totalQty":77,"requested":0,"threshold":8,"unitCost":null,"notes":"","loc4th":"","loc3rd":"","mead":"77","onChorus":false},{"id":11,"name":"We Belong. Together. U XL","category":"Apparel","qty":43,"totalQty":43,"requested":0,"threshold":4,"unitCost":null,"notes":"","loc4th":"","loc3rd":"","mead":"43","onChorus":false},{"id":12,"name":"We Belong. Together. U XXL","category":"Other","qty":15,"totalQty":15,"requested":0,"threshold":2,"unitCost":null,"notes":"","loc4th":"","loc3rd":"","mead":"15","onChorus":false},{"id":13,"name":"We Belong. Together. Large Tote","category":"Bags","qty":47,"totalQty":47,"requested":0,"threshold":5,"unitCost":null,"notes":"","loc4th":"0","loc3rd":"?","mead":"47","onChorus":false},{"id":14,"name":"Inclusion & Diversity 12oz Ceramic Tumbler","category":"Drinkware","qty":36,"totalQty":126,"requested":90,"threshold":13,"unitCost":null,"notes":"","loc4th":"?","loc3rd":"0","mead":"126","onChorus":true},{"id":15,"name":"We Belong. Together. 12oz Stainless Steel Tumbler","category":"Drinkware","qty":16,"totalQty":52,"requested":36,"threshold":5,"unitCost":13.75,"notes":"","loc4th":"?","loc3rd":"?","mead":"52","onChorus":false},{"id":16,"name":"We Belong. Together. 16.9oz Stainless Steel Bottle \uF8FF Lodge","category":"Drinkware","qty":24,"totalQty":24,"requested":0,"threshold":2,"unitCost":19.1,"notes":"","loc4th":"?","loc3rd":"?","mead":"24","onChorus":false},{"id":17,"name":"Camper Double walled Mug \uF8FF Matte Black","category":"Drinkware","qty":6,"totalQty":6,"requested":0,"threshold":2,"unitCost":13.75,"notes":"","loc4th":"0","loc3rd":"0","mead":"6","onChorus":false},{"id":18,"name":"Twist lock Keyholder","category":"Accessories","qty":25,"totalQty":60,"requested":35,"threshold":6,"unitCost":4.6,"notes":"","loc4th":"60","loc3rd":"0","mead":"0","onChorus":true},{"id":19,"name":"Auto open Umbrella \uF8FF Navy","category":"Accessories","qty":0,"totalQty":22,"requested":22,"threshold":2,"unitCost":11.5,"notes":"","loc4th":"22","loc3rd":"0","mead":"0","onChorus":false},{"id":20,"name":"Leather Notebook (Large) \uF8FF Black","category":"Stationery","qty":9,"totalQty":23,"requested":14,"threshold":2,"unitCost":null,"notes":"","loc4th":"11","loc3rd":"0","mead":"12","onChorus":false},{"id":21,"name":"4x6 Jotter pad \uF8FF Midnight Blue","category":"Stationery","qty":25,"totalQty":33,"requested":8,"threshold":3,"unitCost":3.85,"notes":"Total of 104 Notebook in various colors","loc4th":"33","loc3rd":"0","mead":"0","onChorus":true},{"id":22,"name":"4x6 Jotter pad \uF8FF Red","category":"Stationery","qty":24,"totalQty":31,"requested":7,"threshold":3,"unitCost":3.85,"notes":"","loc4th":"31","loc3rd":"0","mead":"0","onChorus":true},{"id":23,"name":"4x6 Jotter pad \uF8FF Black","category":"Stationery","qty":28,"totalQty":32,"requested":4,"threshold":3,"unitCost":3.85,"notes":"","loc4th":"32","loc3rd":"0","mead":"0","onChorus":true},{"id":24,"name":"4x6 Jotter pad \uF8FF Mist","category":"Stationery","qty":27,"totalQty":34,"requested":7,"threshold":3,"unitCost":3.85,"notes":"","loc4th":"34","loc3rd":"0","mead":"0","onChorus":true},{"id":25,"name":"Tote \uF8FF Natural Stone","category":"Bags","qty":18,"totalQty":39,"requested":21,"threshold":4,"unitCost":null,"notes":"","loc4th":"0","loc3rd":"0","mead":"39","onChorus":true},{"id":26,"name":"Reclaimist Everywhere Tote \uF8FF Natural","category":"Bags","qty":30,"totalQty":36,"requested":6,"threshold":4,"unitCost":13.35,"notes":"","loc4th":"36","loc3rd":"0","mead":"0","onChorus":true},{"id":27,"name":"Large Tote \uF8FF Black","category":"Bags","qty":55,"totalQty":55,"requested":0,"threshold":6,"unitCost":null,"notes":"Large tote with no zipper","loc4th":"1","loc3rd":"0","mead":"54","onChorus":true},{"id":28,"name":"We Belong. Together. Zipper Tote","category":"Bags","qty":200,"totalQty":200,"requested":0,"threshold":20,"unitCost":null,"notes":"Tote ONLY (box next to shirts)","loc4th":"0","loc3rd":"0","mead":"200","onChorus":false},{"id":29,"name":"Renew rPET Zippered Tote \uF8FF Black","category":"Bags","qty":144,"totalQty":144,"requested":0,"threshold":14,"unitCost":13.55,"notes":"CHECK THIS ONE OUT FOR ACCURACY","loc4th":"144","loc3rd":"0","mead":"","onChorus":false},{"id":30,"name":"Stainless Steel Powder coated bottle \uF8FF White","category":"Drinkware","qty":0,"totalQty":6,"requested":6,"threshold":2,"unitCost":11.25,"notes":"","loc4th":"6","loc3rd":"0","mead":"0","onChorus":false},{"id":31,"name":"Stainless Steel Powder coated bottle \uF8FF Black","category":"Drinkware","qty":0,"totalQty":8,"requested":9,"threshold":2,"unitCost":11.25,"notes":"","loc4th":"8","loc3rd":"0","mead":"0","onChorus":false},{"id":32,"name":"Laundered Chino Twill Cap \uF8FF Navy","category":"Apparel","qty":5,"totalQty":11,"requested":6,"threshold":2,"unitCost":9.75,"notes":"MAYBE WE HAVE 1 BASEBALL IMAGE HAT AND NOT SPECIFY COLOR","loc4th":"11","loc3rd":"0","mead":"0","onChorus":true},{"id":33,"name":"Laundered Chino Twill Cap \uF8FF Black","category":"Apparel","qty":12,"totalQty":16,"requested":4,"threshold":2,"unitCost":9.75,"notes":"","loc4th":"16","loc3rd":"0","mead":"0","onChorus":false},{"id":34,"name":"Laundered Chino Twill Cap \uF8FF Graphite","category":"Apparel","qty":7,"totalQty":17,"requested":10,"threshold":2,"unitCost":9.75,"notes":"","loc4th":"17","loc3rd":"0","mead":"0","onChorus":false},{"id":35,"name":"Laundered Chino Twill Cap \uF8FF Stone","category":"Apparel","qty":11,"totalQty":17,"requested":6,"threshold":2,"unitCost":9.75,"notes":"","loc4th":"17","loc3rd":"0","mead":"0","onChorus":false},{"id":36,"name":"Baseball cap \uF8FF Red","category":"Apparel","qty":3,"totalQty":7,"requested":4,"threshold":2,"unitCost":null,"notes":"","loc4th":"7","loc3rd":"0","mead":"0","onChorus":false},{"id":37,"name":"Chino Twill Cap in Graphite","category":"Apparel","qty":2,"totalQty":2,"requested":0,"threshold":2,"unitCost":null,"notes":"","loc4th":"2","loc3rd":"0","mead":"?","onChorus":false},{"id":38,"name":"Small lip hat \uF8FF Stone","category":"Apparel","qty":3,"totalQty":3,"requested":0,"threshold":2,"unitCost":null,"notes":"Only a few left","loc4th":"0","loc3rd":"0","mead":"3","onChorus":false},{"id":39,"name":"8\" beanie \uF8FF Stone","category":"Apparel","qty":10,"totalQty":12,"requested":2,"threshold":2,"unitCost":8.45,"notes":"MAYBE WE HAVE 1 BEANIE IMAGE HAT AND NOT SPECIFY COLOR","loc4th":"12","loc3rd":"0","mead":"0","onChorus":true},{"id":40,"name":"8\" beanie \uF8FF Black","category":"Apparel","qty":10,"totalQty":13,"requested":3,"threshold":2,"unitCost":8.45,"notes":"","loc4th":"13","loc3rd":"0","mead":"0","onChorus":false},{"id":41,"name":"8\" beanie \uF8FF Navy","category":"Apparel","qty":10,"totalQty":12,"requested":2,"threshold":2,"unitCost":8.45,"notes":"","loc4th":"12","loc3rd":"0","mead":"0","onChorus":false},{"id":42,"name":"8\" beanie \uF8FF Charcoal","category":"Apparel","qty":12,"totalQty":14,"requested":2,"threshold":2,"unitCost":8.45,"notes":"","loc4th":"14","loc3rd":"0","mead":"0","onChorus":false},{"id":43,"name":"Willow ballpoint pen \uF8FF Gunmetal","category":"Stationery","qty":113,"totalQty":145,"requested":32,"threshold":14,"unitCost":2.6,"notes":"ONE PEN IMAGE AND NOT SPECIFY COLOR","loc4th":"145","loc3rd":"0","mead":"0","onChorus":true},{"id":44,"name":"Willow ballpoint pen \uF8FF Black","category":"Stationery","qty":49,"totalQty":107,"requested":58,"threshold":11,"unitCost":2.6,"notes":"","loc4th":"107","loc3rd":"0","mead":"0","onChorus":false},{"id":45,"name":"Perfect bound eco notebook \uF8FF Blue","category":"Stationery","qty":23,"totalQty":30,"requested":7,"threshold":3,"unitCost":5.55,"notes":"Total of 91","loc4th":"30","loc3rd":"0","mead":"0","onChorus":true},{"id":46,"name":"Perfect bound eco notebook \uF8FF Black","category":"Stationery","qty":21,"totalQty":27,"requested":6,"threshold":3,"unitCost":5.55,"notes":"","loc4th":"27","loc3rd":"0","mead":"0","onChorus":true},{"id":47,"name":"Perfect bound eco notebook \uF8FF Green","category":"Stationery","qty":24,"totalQty":30,"requested":6,"threshold":3,"unitCost":5.55,"notes":"","loc4th":"30","loc3rd":"0","mead":"0","onChorus":true},{"id":48,"name":"Perfect bound eco notebook \uF8FF Red","category":"Stationery","qty":23,"totalQty":30,"requested":7,"threshold":3,"unitCost":5.55,"notes":"","loc4th":"30","loc3rd":"0","mead":"0","onChorus":true},{"id":49,"name":"14 oz. Ledge Stoneware Mug \uF8FF Storm Gray","category":"Drinkware","qty":46,"totalQty":46,"requested":0,"threshold":5,"unitCost":6.0,"notes":"WE COULD JUST SAY CERAMIC MUG IN VARIOUS COLORS","loc4th":"46","loc3rd":"0","mead":"0","onChorus":true},{"id":50,"name":"14 oz. Ledge Stoneware Mug \uF8FF Black","category":"Drinkware","qty":35,"totalQty":45,"requested":10,"threshold":4,"unitCost":6.0,"notes":"","loc4th":"45","loc3rd":"0","mead":"0","onChorus":true},{"id":51,"name":"Neoskin soft cover journal \uF8FF Blue","category":"Stationery","qty":14,"totalQty":26,"requested":12,"threshold":3,"unitCost":7.65,"notes":"Total of 69 Notebook in various colors","loc4th":"26","loc3rd":"0","mead":"0","onChorus":true},{"id":52,"name":"Neoskin soft cover journal \uF8FF Green","category":"Stationery","qty":25,"totalQty":25,"requested":0,"threshold":2,"unitCost":7.65,"notes":"","loc4th":"25","loc3rd":"","mead":"","onChorus":false},{"id":53,"name":"Neoskin soft cover journal \uF8FF Orange","category":"Stationery","qty":14,"totalQty":27,"requested":13,"threshold":3,"unitCost":7.65,"notes":"","loc4th":"27","loc3rd":"0","mead":"0","onChorus":true},{"id":54,"name":"Neoskin soft cover journal \uF8FF Red","category":"Stationery","qty":22,"totalQty":26,"requested":4,"threshold":3,"unitCost":7.65,"notes":"","loc4th":"26","loc3rd":"0","mead":"0","onChorus":true},{"id":55,"name":"Avery Cotton Zippered Pouch \uF8FF Black","category":"Bags","qty":87,"totalQty":144,"requested":57,"threshold":14,"unitCost":5.5,"notes":"","loc4th":"144","loc3rd":"0","mead":"0","onChorus":true},{"id":56,"name":"Thor Copper Vacuum Insulated Bottle \uF8FF Black","category":"Drinkware","qty":48,"totalQty":48,"requested":0,"threshold":5,"unitCost":12.4,"notes":"","loc4th":"48","loc3rd":"0","mead":"0","onChorus":true},{"id":57,"name":"Thor Copper Vacuum Insulated Bottle \uF8FF White","category":"Drinkware","qty":46,"totalQty":47,"requested":1,"threshold":5,"unitCost":12.4,"notes":"","loc4th":"47","loc3rd":"0","mead":"0","onChorus":true},{"id":58,"name":"25oz h2go Insulated Bottle \uF8FF Voyager (Red)","category":"Drinkware","qty":16,"totalQty":16,"requested":0,"threshold":2,"unitCost":null,"notes":"","loc4th":"7","loc3rd":"3","mead":"6","onChorus":true},{"id":59,"name":"25oz h2go Insulated Bottle \uF8FF Voyager (Black)","category":"Drinkware","qty":70,"totalQty":70,"requested":0,"threshold":7,"unitCost":null,"notes":"","loc4th":"1","loc3rd":"0","mead":"69","onChorus":true},{"id":60,"name":"25oz h2go Insulated Bottle \uF8FF Voyager (Blue)","category":"Drinkware","qty":42,"totalQty":42,"requested":0,"threshold":4,"unitCost":null,"notes":"","loc4th":"6","loc3rd":"0","mead":"36","onChorus":true},{"id":61,"name":"16.9oz Stainless Steel Bottle \uF8FF ECHO","category":"Drinkware","qty":8,"totalQty":8,"requested":0,"threshold":2,"unitCost":null,"notes":"Small neck wide base water bottles","loc4th":"0","loc3rd":"0","mead":"8","onChorus":false},{"id":62,"name":"16.9oz Insulated Bottle \uF8FF Lodge (with sipping cup)","category":"Drinkware","qty":4,"totalQty":9,"requested":5,"threshold":2,"unitCost":null,"notes":"Various color logo with lid that can be a cup","loc4th":"9","loc3rd":"0","mead":"?","onChorus":false},{"id":63,"name":"Mug \uF8FF","category":"Drinkware","qty":0,"totalQty":17,"requested":17,"threshold":2,"unitCost":null,"notes":"Space gray, 1 white","loc4th":"17","loc3rd":"0","mead":"0","onChorus":false},{"id":64,"name":"Blanket \uF8FF","category":"Other","qty":55,"totalQty":56,"requested":1,"threshold":6,"unitCost":null,"notes":"","loc4th":"8","loc3rd":"0","mead":"48","onChorus":true},{"id":65,"name":"I&D Sling bag","category":"Bags","qty":3,"totalQty":3,"requested":0,"threshold":2,"unitCost":null,"notes":"","loc4th":"3","loc3rd":"0","mead":"?","onChorus":false},{"id":66,"name":"DNA Leader Award","category":"Other","qty":16,"totalQty":45,"requested":29,"threshold":4,"unitCost":null,"notes":"","loc4th":"13","loc3rd":"2","mead":"30","onChorus":false},{"id":67,"name":"Aluminum Pen \uF8FF Green","category":"Stationery","qty":12,"totalQty":12,"requested":0,"threshold":2,"unitCost":null,"notes":"","loc4th":"12","loc3rd":"0","mead":"","onChorus":false},{"id":68,"name":"Plastic Pen \uF8FF Green","category":"Stationery","qty":0,"totalQty":40,"requested":40,"threshold":4,"unitCost":null,"notes":"","loc4th":"40","loc3rd":"0","mead":"","onChorus":false},{"id":69,"name":"Cable organizer","category":"Other","qty":0,"totalQty":0,"requested":0,"threshold":2,"unitCost":null,"notes":"","loc4th":"","loc3rd":"0","mead":"?","onChorus":false},{"id":70,"name":"Everybody In Stickers","category":"Accessories","qty":360,"totalQty":360,"requested":0,"threshold":36,"unitCost":null,"notes":"","loc4th":"0","loc3rd":"360","mead":"","onChorus":false},{"id":71,"name":"I&D, Everybody In, Muscle Arms, thumbs up sticker sheet","category":"Accessories","qty":328,"totalQty":328,"requested":0,"threshold":33,"unitCost":null,"notes":"These are for New hire kits","loc4th":"0","loc3rd":"328","mead":"4 boxes","onChorus":false},{"id":72,"name":"Women with laptop Stickers","category":"Accessories","qty":70,"totalQty":70,"requested":0,"threshold":7,"unitCost":null,"notes":"","loc4th":"0","loc3rd":"70","mead":"","onChorus":false},{"id":73,"name":"Muscle arm Stickers","category":"Accessories","qty":200,"totalQty":200,"requested":0,"threshold":20,"unitCost":null,"notes":"","loc4th":"0","loc3rd":"200","mead":"","onChorus":false},{"id":74,"name":"Thumbs up Stickers","category":"Accessories","qty":284,"totalQty":284,"requested":0,"threshold":28,"unitCost":null,"notes":"","loc4th":"0","loc3rd":"284","mead":"","onChorus":false},{"id":75,"name":"Inclusion & Diversity Stickers","category":"Accessories","qty":64,"totalQty":64,"requested":0,"threshold":6,"unitCost":null,"notes":"","loc4th":"0","loc3rd":"64","mead":"","onChorus":false},{"id":76,"name":"We Belong. Together. (Larger rectangular) Stickers","category":"Accessories","qty":673,"totalQty":673,"requested":0,"threshold":67,"unitCost":null,"notes":"","loc4th":"0","loc3rd":"673","mead":"","onChorus":false},{"id":77,"name":"Mentor Stickers","category":"Accessories","qty":332,"totalQty":332,"requested":0,"threshold":33,"unitCost":null,"notes":"","loc4th":"0","loc3rd":"332","mead":"","onChorus":false},{"id":78,"name":"Mentorship Stickers","category":"Accessories","qty":368,"totalQty":368,"requested":0,"threshold":37,"unitCost":null,"notes":"","loc4th":"0","loc3rd":"368","mead":"","onChorus":false},{"id":79,"name":"Activity cards set","category":"Other","qty":21,"totalQty":21,"requested":0,"threshold":2,"unitCost":null,"notes":"","loc4th":"0","loc3rd":"21","mead":"0","onChorus":false},{"id":80,"name":"Welcome Purple pink pin","category":"Accessories","qty":6047,"totalQty":6059,"requested":12,"threshold":606,"unitCost":null,"notes":"These are for new hires","loc4th":"?","loc3rd":"71","mead":"5988","onChorus":false},{"id":81,"name":"Standalone Purple pink pin","category":"Accessories","qty":585,"totalQty":650,"requested":65,"threshold":65,"unitCost":null,"notes":"WE REALLY HAVE THAT MANY?","loc4th":"650","loc3rd":"","mead":"","onChorus":true},{"id":82,"name":"Standalone Black pin","category":"Accessories","qty":0,"totalQty":0,"requested":0,"threshold":2,"unitCost":null,"notes":"","loc4th":"","loc3rd":"","mead":"","onChorus":false},{"id":83,"name":"Conference kits 2021","category":"Kits","qty":60,"totalQty":60,"requested":0,"threshold":6,"unitCost":null,"notes":"","loc4th":"0","loc3rd":"0","mead":"60","onChorus":false},{"id":84,"name":"I&D Sling bag kit version 1","category":"Bags","qty":11,"totalQty":11,"requested":0,"threshold":2,"unitCost":null,"notes":"Flat longer box","loc4th":"0","loc3rd":"0","mead":"11","onChorus":false},{"id":85,"name":"I&D Sling bag kit version 2","category":"Bags","qty":37,"totalQty":37,"requested":0,"threshold":4,"unitCost":null,"notes":"Smaller box","loc4th":"0","loc3rd":"0","mead":"37","onChorus":false}];
 
-// ── State ─────────────────────────────────────────────────────────────────────
-let inv  = [];
-let log  = [];
-let nxId = 1;
-let binId  = localStorage.getItem(BIN_ID_KEY)  || '';
-let binKey = localStorage.getItem(BIN_KEY_KEY) || '';
-let isLive = !!(binId && binKey);
-let pollTimer = null;
+function load()   { const r=localStorage.getItem(SK); return r?JSON.parse(r):JSON.parse(JSON.stringify(SEED)); }
+function loadLog(){ const r=localStorage.getItem(LK); return r?JSON.parse(r):[]; }
+function save(d)  { inv=d; localStorage.setItem(SK,JSON.stringify(d)); }
+function saveLog(l){ log=l; localStorage.setItem(LK,JSON.stringify(l)); }
 
-// ── JSONBin API ───────────────────────────────────────────────────────────────
-const JBURL = id => `https://api.jsonbin.io/v3/b/${id}`;
+let inv  = load();
+let log  = loadLog();
+let nxId = Math.max(0,...inv.map(i=>i.id))+1;
 
-async function fetchBin(){
-  setSyncStatus('busy','Syncing…');
-  try {
-    const r = await fetch(JBURL(binId), {headers:{'X-Master-Key':binKey,'X-Bin-Meta':'false'}});
-    if(!r.ok) throw new Error(r.status);
-    const data = await r.json();
-    if(data.inv)  inv  = data.inv;
-    if(data.log)  log  = data.log;
-    nxId = Math.max(1,...inv.map(i=>i.id))+1;
-    setSyncStatus('ok','Live ✓');
-    renderAll();
-  } catch(e) {
-    setSyncStatus('err','Sync error');
-    console.error('JSONBin fetch error',e);
-  }
-}
+function statusOf(i){const q=Math.max(0,i.qty);if(q===0)return{label:'Out of Stock',cls:'b-out',key:'out'};if(q<=i.threshold)return{label:'Low Stock',cls:'b-low',key:'low'};return{label:'In Stock',cls:'b-ok',key:'ok'};}
+function fmtCost(c){return c!=null?'$'+c.toFixed(2):'—';}
+function locStr(item){const p=[];if(item.loc4th&&item.loc4th!=='0'&&item.loc4th!=='')p.push({lbl:'4F',val:item.loc4th});if(item.loc3rd&&item.loc3rd!=='0'&&item.loc3rd!=='')p.push({lbl:'3F',val:item.loc3rd});if(item.mead&&item.mead!=='0'&&item.mead!=='')p.push({lbl:'Mead',val:item.mead});return p;}
 
-async function pushBin(){
-  if(!isLive) { saveLocal(); return; }
-  setSyncStatus('busy','Saving…');
-  try {
-    await fetch(JBURL(binId), {
-      method:'PUT',
-      headers:{'Content-Type':'application/json','X-Master-Key':binKey},
-      body: JSON.stringify({inv, log})
-    });
-    setSyncStatus('ok','Live ✓');
-  } catch(e) {
-    setSyncStatus('err','Save failed');
-    saveLocal(); // fallback
-  }
-}
-
-function saveLocal(){
-  localStorage.setItem(SK, JSON.stringify(inv));
-  localStorage.setItem(LK, JSON.stringify(log));
-}
-
-function setSyncStatus(state, msg){
-  const el = document.getElementById('sync-status');
-  const dots = {ok:'sync-ok',busy:'sync-busy',err:'sync-err',local:'sync-local'};
-  el.innerHTML = `<span class="sync-dot ${dots[state]||'sync-local'}"></span>${msg}`;
-}
-
-function startPolling(){
-  if(pollTimer) clearInterval(pollTimer);
-  pollTimer = setInterval(fetchBin, POLL_MS);
-}
-
-// ── Setup ─────────────────────────────────────────────────────────────────────
-function openSetup(){
-  document.getElementById('setup-screen').classList.remove('hidden');
-  if(binId)  document.getElementById('setup-bin').value = binId;
-  if(binKey) document.getElementById('setup-key').value = binKey;
-}
-
-async function connectBin(){
-  const id  = document.getElementById('setup-bin').value.trim();
-  const key = document.getElementById('setup-key').value.trim();
-  if(!id || !key){ toast('⚠️ Please fill in both fields.'); return; }
-  binId  = id;  binKey = key;
-  localStorage.setItem(BIN_ID_KEY,  binId);
-  localStorage.setItem(BIN_KEY_KEY, binKey);
-  isLive = true;
-  // Push current local data up first, then fetch
-  await pushBin();
-  document.getElementById('setup-screen').classList.add('hidden');
-  showShareBar();
-  startPolling();
-  toast('🟢 Connected! Share the link with your team.');
-}
-
-function skipSetup(){
-  document.getElementById('setup-screen').classList.add('hidden');
-  isLive = false;
-  inv  = localStorage.getItem(SK)  ? JSON.parse(localStorage.getItem(SK))  : JSON.parse(JSON.stringify(SEED));
-  log  = localStorage.getItem(LK)  ? JSON.parse(localStorage.getItem(LK))  : [];
-  nxId = Math.max(1,...inv.map(i=>i.id))+1;
-  setSyncStatus('local','Local only');
-  document.getElementById('share-bar').classList.add('hidden');
-  renderAll();
-}
-
-function disconnectBin(){
-  if(!confirm('Disconnect from live sharing? Data stays in JSONBin.')) return;
-  binId=''; binKey=''; isLive=false;
-  localStorage.removeItem(BIN_ID_KEY); localStorage.removeItem(BIN_KEY_KEY);
-  clearInterval(pollTimer);
-  setSyncStatus('local','Local only');
-  document.getElementById('share-bar').classList.add('hidden');
-  toast('Disconnected. Now running locally.');
-}
-
-function showShareBar(){
-  const bar = document.getElementById('share-bar');
-  bar.classList.remove('hidden');
-  // Build a shareable URL with the bin id baked in (key NOT included for security)
-  const url = `${location.href.split('?')[0]}?bin=${binId}`;
-  document.getElementById('share-url-txt').textContent = url;
-}
-
-function copyShareLink(){
-  const url = document.getElementById('share-url-txt').textContent;
-  navigator.clipboard.writeText(url).then(()=>toast('📋 Link copied! Your coworker will need to enter the API key once.'));
-}
-
-// ── Local storage fallbacks ───────────────────────────────────────────────────
-function load()   { return localStorage.getItem(SK)  ? JSON.parse(localStorage.getItem(SK))  : JSON.parse(JSON.stringify(SEED)); }
-function loadLog(){ return localStorage.getItem(LK)  ? JSON.parse(localStorage.getItem(LK))  : []; }
-
-// ── Save (live or local) ──────────────────────────────────────────────────────
-async function save(d){ inv=d; saveLocal(); await pushBin(); }
-async function saveLog(l){ log=l; saveLocal(); }
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function statusOf(i){
-  const q = Math.max(0,i.qty);
-  if(q===0)              return {label:'Out of Stock',cls:'b-out',key:'out'};
-  if(q<=i.threshold)     return {label:'Low Stock',   cls:'b-low',key:'low'};
-  return                        {label:'In Stock',    cls:'b-ok', key:'ok'};
-}
-function fmtCost(c){ return c!=null ? '$'+c.toFixed(2) : '—'; }
-function locStr(item){
-  const parts=[];
-  if(item.loc4th && item.loc4th!=='0' && item.loc4th!=='') parts.push({lbl:'4F',val:item.loc4th});
-  if(item.loc3rd && item.loc3rd!=='0' && item.loc3rd!=='') parts.push({lbl:'3F',val:item.loc3rd});
-  if(item.mead   && item.mead!=='0'   && item.mead!=='')   parts.push({lbl:'Mead',val:item.mead});
-  return parts;
-}
-
-// ── Stats ─────────────────────────────────────────────────────────────────────
 function renderStats(){
-  const ok  = inv.filter(i=>statusOf(i).key==='ok').length;
-  const low = inv.filter(i=>statusOf(i).key==='low').length;
-  const out = inv.filter(i=>statusOf(i).key==='out').length;
-  const tot = inv.reduce((a,i)=>a+Math.max(0,i.qty),0);
-  const cost= inv.reduce((a,i)=>a+(i.unitCost&&i.qty>0?i.unitCost*Math.max(0,i.qty):0),0);
-  const cur = document.getElementById('filter-status').value;
+  const ok=inv.filter(i=>statusOf(i).key==='ok').length;
+  const low=inv.filter(i=>statusOf(i).key==='low').length;
+  const out=inv.filter(i=>statusOf(i).key==='out').length;
+  const tot=inv.reduce((a,i)=>a+Math.max(0,i.qty),0);
+  const cost=inv.reduce((a,i)=>a+(i.unitCost&&i.qty>0?i.unitCost*Math.max(0,i.qty):0),0);
+  const cur=document.getElementById('filter-status').value;
   document.getElementById('stats-row').innerHTML=`
-    <div class="stat s-ok clickable${cur==='ok'?' active':''}" onclick="filterByStatus('ok')">
-      <div class="lbl">In Stock Items</div><div class="val">${ok}</div>
-      <div class="hint">${cur==='ok'?'Click to clear filter':'Click to filter ↓'}</div>
-    </div>
-    <div class="stat s-low clickable${cur==='low'?' active':''}" onclick="filterByStatus('low')">
-      <div class="lbl">Low Stock</div><div class="val">${low}</div>
-      <div class="hint">${cur==='low'?'Click to clear filter':'Click to filter ↓'}</div>
-    </div>
-    <div class="stat s-out clickable${cur==='out'?' active':''}" onclick="filterByStatus('out')">
-      <div class="lbl">Out of Stock</div><div class="val">${out}</div>
-      <div class="hint">${cur==='out'?'Click to clear filter':'Click to filter ↓'}</div>
-    </div>
+    <div class="stat s-ok clickable${cur==='ok'?' active':''}" onclick="filterByStatus('ok')"><div class="lbl">In Stock</div><div class="val">${ok}</div><div class="hint">${cur==='ok'?'Click to clear':'Click to filter ↓'}</div></div>
+    <div class="stat s-low clickable${cur==='low'?' active':''}" onclick="filterByStatus('low')"><div class="lbl">Low Stock</div><div class="val">${low}</div><div class="hint">${cur==='low'?'Click to clear':'Click to filter ↓'}</div></div>
+    <div class="stat s-out clickable${cur==='out'?' active':''}" onclick="filterByStatus('out')"><div class="lbl">Out of Stock</div><div class="val">${out}</div><div class="hint">${cur==='out'?'Click to clear':'Click to filter ↓'}</div></div>
     <div class="stat"><div class="lbl">Total Items</div><div class="val">${inv.length}</div></div>
     <div class="stat s-cost"><div class="lbl">Total Units</div><div class="val">${tot.toLocaleString()}</div></div>
-    <div class="stat s-cost"><div class="lbl">Est. Inventory Value</div><div class="val">$${cost.toLocaleString('en',{minimumFractionDigits:0,maximumFractionDigits:0})}</div></div>
-  `;
+    <div class="stat s-cost"><div class="lbl">Est. Value</div><div class="val">$${cost.toLocaleString('en',{maximumFractionDigits:0})}</div></div>`;
 }
 
-function filterByStatus(key){
-  const sel=document.getElementById('filter-status');
-  // Toggle off if already active
-  sel.value = sel.value===key ? '' : key;
-  renderTable();
-  renderStats();
-  if(sel.value) document.getElementById('inv-body').closest('.card').scrollIntoView({behavior:'smooth',block:'start'});
-}
+function filterByStatus(key){const sel=document.getElementById('filter-status');sel.value=sel.value===key?'':key;renderTable();renderStats();if(sel.value)document.getElementById('inv-body').closest('.card').scrollIntoView({behavior:'smooth',block:'start'});}
 
-// ── Alert Bar ─────────────────────────────────────────────────────────────────
 function renderAlerts(){
-  const alerts = inv.filter(i=>statusOf(i).key==='low'||statusOf(i).key==='out');
+  const alerts=inv.filter(i=>statusOf(i).key==='low'||statusOf(i).key==='out');
   const bar=document.getElementById('alert-bar');
   if(!alerts.length){bar.classList.add('hidden');return;}
   bar.classList.remove('hidden');
-  document.getElementById('alert-list').innerHTML=alerts
-    .slice(0,8)
-    .map(i=>`<li><strong>${i.name}</strong> — ${statusOf(i).label} (${Math.max(0,i.qty)} left, threshold: ${i.threshold})</li>`)
-    .join('');
+  document.getElementById('alert-list').innerHTML=alerts.slice(0,8).map(i=>`<li><strong>${i.name}</strong> — ${statusOf(i).label} (${Math.max(0,i.qty)} left)</li>`).join('');
 }
 
-// ── Table ─────────────────────────────────────────────────────────────────────
 function renderTable(){
-  const q      = document.getElementById('search').value.toLowerCase();
-  const cat    = document.getElementById('filter-cat').value;
-  const status = document.getElementById('filter-status').value;
-  const chorus = document.getElementById('chorus-only').checked;
-
-  // Rebuild category dropdown
+  const q=document.getElementById('search').value.toLowerCase();
+  const cat=document.getElementById('filter-cat').value;
+  const status=document.getElementById('filter-status').value;
+  const chorus=document.getElementById('chorus-only').checked;
   const cats=[...new Set(inv.map(i=>i.category))].sort();
   const prevCat=document.getElementById('filter-cat').value;
-  document.getElementById('filter-cat').innerHTML='<option value="">All Categories</option>'+
-    cats.map(c=>`<option value="${c}"${c===prevCat?' selected':''}>${c}</option>`).join('');
-
-  const filtered=inv.filter(i=>{
-    const st=statusOf(i);
-    return (!q      || i.name.toLowerCase().includes(q)||i.category.toLowerCase().includes(q)||i.notes.toLowerCase().includes(q)) &&
-           (!cat    || i.category===cat) &&
-           (!status || st.key===status) &&
-           (!chorus || i.onChorus);
-  });
-
+  document.getElementById('filter-cat').innerHTML='<option value="">All Categories</option>'+cats.map(c=>`<option value="${c}"${c===prevCat?' selected':''}>${c}</option>`).join('');
+  const filtered=inv.filter(i=>{const st=statusOf(i);return(!q||i.name.toLowerCase().includes(q)||i.category.toLowerCase().includes(q)||i.notes.toLowerCase().includes(q))&&(!cat||i.category===cat)&&(!status||st.key===status)&&(!chorus||i.onChorus);});
   const maxQ=Math.max(1,...inv.map(i=>Math.max(0,i.qty)));
   const tbody=document.getElementById('inv-body');
-  if(!filtered.length){tbody.innerHTML='<tr><td colspan="8"><p class="empty">No items match your filters.</p></td></tr>';return;}
-
+  if(!filtered.length){tbody.innerHTML='<tr><td colspan="8"><p class="empty">No items match.</p></td></tr>';return;}
   tbody.innerHTML=filtered.map(item=>{
-    const st   =statusOf(item);
-    const q    =Math.max(0,item.qty);
-    const pct  =Math.round(q/maxQ*100);
+    const st=statusOf(item);const q=Math.max(0,item.qty);const pct=Math.round(q/maxQ*100);
     const color=st.key==='ok'?'#34c759':st.key==='low'?'#ff9500':'#ff3b30';
-    const locs =locStr(item);
-    const locHTML=locs.length?`<div class="locs">${locs.map(l=>`<span class="loc-pill">${l.lbl} <span>${l.val}</span></span>`).join('')}</div>`:'<span style="color:var(--sub);font-size:12px">—</span>';
+    const locs=locStr(item);
+    const locHTML=locs.length?`<div class="locs">${locs.map(l=>`<span class="loc-pill">${l.lbl} <span>${l.val}</span></span>`).join('')}</div>`:'<span style="font-size:12px;color:var(--sub)">—</span>';
     return `<tr>
-      <td>
-        <div class="item-name">${item.name}${item.onChorus?'<span class="badge b-chorus" style="margin-left:6px;font-size:10px;">Chorus</span>':''}</div>
-        ${item.notes?`<div class="item-note">${item.notes}</div>`:''}
-      </td>
-      <td><span style="font-size:12px;color:var(--sub);">${item.category}</span></td>
-      <td>
-        <div class="qty-info">
-          <span class="qty-bal">${q}</span>
-          <span class="qty-meta">of ${item.totalQty} total · ${item.requested} req.</span>
-        </div>
-      </td>
+      <td><div class="item-name">${item.name}${item.onChorus?'<span class="badge b-chorus" style="font-size:10px;">Chorus</span>':''}</div>${item.notes?`<div class="item-note">${item.notes}</div>`:''}</td>
+      <td><span style="font-size:12px;color:var(--sub)">${item.category}</span></td>
+      <td><div class="qty-info"><span class="qty-bal">${q}</span><span class="qty-meta">of ${item.totalQty} · ${item.requested} req.</span></div></td>
       <td><span class="badge ${st.cls}">${st.label}</span></td>
-      <td>
-        <div class="bar-wrap">
-          <div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
-          <span class="bar-pct">${pct}%</span>
-        </div>
-      </td>
+      <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div><span class="bar-pct">${pct}%</span></div></td>
       <td>${locHTML}</td>
-      <td style="font-size:13px;white-space:nowrap;">${fmtCost(item.unitCost)}</td>
+      <td style="font-size:13px;white-space:nowrap">${fmtCost(item.unitCost)}</td>
       <td><button class="btn btn-danger btn-sm" onclick="delItem(${item.id})">Remove</button></td>
     </tr>`;
   }).join('');
 }
 
-// ── Request dropdown ──────────────────────────────────────────────────────────
 function renderReqDropdown(){
-  const available=inv.filter(i=>i.qty>0).sort((a,b)=>a.name.localeCompare(b.name));
-  document.getElementById('req-item').innerHTML=available.length
-    ? available.map(i=>`<option value="${i.id}">${i.name} (${i.qty} avail.)</option>`).join('')
-    : '<option value="">No items in stock</option>';
+  const avail=inv.filter(i=>i.qty>0).sort((a,b)=>a.name.localeCompare(b.name));
+  document.getElementById('req-item').innerHTML=avail.length?avail.map(i=>`<option value="${i.id}">${i.name} (${i.qty} avail.)</option>`).join(''):'<option value="">No items in stock</option>';
   updateMaxQty();
 }
-function updateMaxQty(){
-  const id=parseInt(document.getElementById('req-item').value);
-  const item=inv.find(i=>i.id===id);
-  if(item) document.getElementById('req-qty').max=item.qty;
-}
+function updateMaxQty(){const id=parseInt(document.getElementById('req-item').value);const item=inv.find(i=>i.id===id);if(item)document.getElementById('req-qty').max=item.qty;}
 
-// ── Log ───────────────────────────────────────────────────────────────────────
 function renderLog(){
   const el=document.getElementById('log-list');
   document.getElementById('log-count').textContent=log.length?`${log.length} entries`:'';
   if(!log.length){el.innerHTML='<p class="empty">No activity yet.</p>';return;}
-  el.innerHTML=[...log].reverse().slice(0,50).map(e=>`
-    <div class="log-item">
-      <div class="log-dot ld-${e.type}"></div>
-      <div>
-        <div>${e.msg}</div>
-        <div class="log-time">${e.time}</div>
-      </div>
-    </div>`).join('');
+  el.innerHTML=[...log].reverse().slice(0,50).map(e=>`<div class="log-item"><div class="log-dot ld-${e.type}"></div><div><div>${e.msg}</div><div class="log-time">${e.time}</div></div></div>`).join('');
 }
 
-// ── All render ────────────────────────────────────────────────────────────────
-function renderAll(){
-  renderStats();
-  renderAlerts();
-  renderTable();
-  renderReqDropdown();
-  renderLog();
-  document.getElementById('last-upd').textContent='Updated '+new Date().toLocaleTimeString();
-}
+function renderAll(){renderStats();renderAlerts();renderTable();renderReqDropdown();renderLog();document.getElementById('last-upd').textContent='Updated '+new Date().toLocaleTimeString();}
 
-// ── Actions ───────────────────────────────────────────────────────────────────
 function submitRequest(){
-  const name  =document.getElementById('req-name').value.trim();
+  const name=document.getElementById('req-name').value.trim();
   const itemId=parseInt(document.getElementById('req-item').value);
-  const qty   =parseInt(document.getElementById('req-qty').value);
+  const qty=parseInt(document.getElementById('req-qty').value);
   const reason=document.getElementById('req-reason').value.trim();
-  if(!name)       {toast('⚠️ Please enter your name.');        return;}
-  if(!itemId)     {toast('⚠️ Please select an item.');         return;}
-  if(!qty||qty<1) {toast('⚠️ Quantity must be at least 1.');   return;}
+  if(!name){toast('⚠️ Please enter your name.');return;}
+  if(!itemId){toast('⚠️ Please select an item.');return;}
+  if(!qty||qty<1){toast('⚠️ Quantity must be at least 1.');return;}
   const item=inv.find(i=>i.id===itemId);
-  if(!item)       {toast('⚠️ Item not found.');                return;}
-  if(qty>item.qty){toast(`⚠️ Only ${item.qty} available.`);   return;}
-  item.qty      -= qty;
-  item.requested+= qty;
+  if(!item){toast('⚠️ Item not found.');return;}
+  if(qty>item.qty){toast(`⚠️ Only ${item.qty} available.`);return;}
+  item.qty-=qty;item.requested+=qty;
   save(inv);
   log.push({type:'deduct',msg:`${name} requested ${qty}× <strong>${item.name}</strong>${reason?' — '+reason:''}`,time:new Date().toLocaleString()});
   saveLog(log);
-  document.getElementById('req-name').value='';
-  document.getElementById('req-qty').value='1';
-  document.getElementById('req-reason').value='';
-  toast(`✅ ${qty}× ${item.name} deducted. Balance: ${item.qty}`);
-  renderAll();
+  document.getElementById('req-name').value='';document.getElementById('req-qty').value='1';document.getElementById('req-reason').value='';
+  toast(`✅ ${qty}× ${item.name} deducted. Balance: ${item.qty}`);renderAll();
 }
 
 function delItem(id){
-  const item=inv.find(i=>i.id===id);
-  if(!item) return;
-  if(!confirm(`Remove "${item.name}" from inventory?`)) return;
-  inv=inv.filter(i=>i.id!==id);
-  save(inv);
-  log.push({type:'remove',msg:`Removed item: <strong>${item.name}</strong>`,time:new Date().toLocaleString()});
-  saveLog(log);
-  toast(`🗑 "${item.name}" removed.`);
-  renderAll();
+  const item=inv.find(i=>i.id===id);if(!item)return;
+  if(!confirm(`Remove "${item.name}"?`))return;
+  inv=inv.filter(i=>i.id!==id);save(inv);
+  log.push({type:'remove',msg:`Removed: <strong>${item.name}</strong>`,time:new Date().toLocaleString()});saveLog(log);
+  toast(`🗑 "${item.name}" removed.`);renderAll();
 }
 
 function openModal(){document.getElementById('modal-bg').classList.add('open');document.getElementById('n-name').focus();}
@@ -882,55 +310,35 @@ function closeModal(){document.getElementById('modal-bg').classList.remove('open
 function bgClose(e){if(e.target===document.getElementById('modal-bg'))closeModal();}
 
 function addItem(){
-  const name  =document.getElementById('n-name').value.trim();
-  const cat   =document.getElementById('n-cat').value;
-  const qty   =parseInt(document.getElementById('n-qty').value)||0;
+  const name=document.getElementById('n-name').value.trim();
+  const cat=document.getElementById('n-cat').value;
+  const qty=parseInt(document.getElementById('n-qty').value)||0;
   const thresh=parseInt(document.getElementById('n-thresh').value)||5;
-  const cost  =parseFloat(document.getElementById('n-cost').value)||null;
-  const loc4  =document.getElementById('n-loc4').value.trim();
-  const loc3  =document.getElementById('n-loc3').value.trim();
-  const mead  =document.getElementById('n-mead').value.trim();
-  const notes =document.getElementById('n-notes').value.trim();
+  const cost=parseFloat(document.getElementById('n-cost').value)||null;
+  const loc4=document.getElementById('n-loc4').value.trim();
+  const loc3=document.getElementById('n-loc3').value.trim();
+  const mead=document.getElementById('n-mead').value.trim();
+  const notes=document.getElementById('n-notes').value.trim();
   const chorus=document.getElementById('n-chorus').checked;
   if(!name){toast('⚠️ Item name required.');return;}
   const item={id:nxId++,name,category:cat,qty,totalQty:qty,requested:0,threshold:thresh,unitCost:cost,notes,loc4th:loc4,loc3rd:loc3,mead,onChorus:chorus};
-  inv.push(item);
-  save(inv);
-  log.push({type:'add',msg:`Added ${qty}× <strong>${name}</strong> to inventory.`,time:new Date().toLocaleString()});
-  saveLog(log);
-  closeModal();
-  toast(`✅ "${name}" added!`);
-  renderAll();
+  inv.push(item);save(inv);
+  log.push({type:'add',msg:`Added ${qty}× <strong>${name}</strong>`,time:new Date().toLocaleString()});saveLog(log);
+  closeModal();toast(`✅ "${name}" added!`);renderAll();
 }
 
 function exportCSV(){
-  const rows=[['Item','Category','Current Balance','Total Qty','Qty Requested','Status','Unit Cost','4th Floor','3rd Floor','Mead','On Chorus','Notes']];
+  const rows=[['Item','Category','Balance','Total Qty','Qty Requested','Status','Unit Cost','4th Floor','3rd Floor','Mead','On Chorus','Notes']];
   inv.forEach(i=>rows.push([i.name,i.category,Math.max(0,i.qty),i.totalQty,i.requested,statusOf(i).label,i.unitCost??'',i.loc4th,i.loc3rd,i.mead,i.onChorus?'Yes':'No',i.notes]));
   const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([csv],{type:'text/csv'})),download:'ID-Merch-Inventory.csv'});
-  a.click(); toast('📥 Exported as CSV!');
+  a.click();toast('📥 Exported!');
 }
 
-// ── Toast ─────────────────────────────────────────────────────────────────────
 let tt;
-function toast(msg){
-  const el=document.getElementById('toast');
-  el.innerHTML=msg; el.classList.add('show');
-  clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('show'),3400);
-}
+function toast(msg){const el=document.getElementById('toast');el.innerHTML=msg;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),3400);}
 
-// ── Init ──────────────────────────────────────────────────────────────────────
-// Credentials are pre-configured — skip setup, go straight to live mode
-document.getElementById('setup-screen').classList.add('hidden');
-if(isLive){
-  fetchGist().then(()=>{ showShareBar(); startPolling(); });
-} else {
-  inv  = load();
-  log  = loadLog();
-  nxId = Math.max(1,...inv.map(i=>i.id))+1;
-  setSyncStatus('local','Local only');
-  renderAll();
-}
+renderAll();
 </script>
 </body>
 </html>
