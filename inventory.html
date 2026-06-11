@@ -929,7 +929,17 @@ function toast(msg){
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-renderAll();
+// Credentials are pre-configured — skip setup, go straight to live mode
+document.getElementById('setup-screen').classList.add('hidden');
+if(isLive){
+  fetchGist().then(()=>{ showShareBar(); startPolling(); });
+} else {
+  inv  = load();
+  log  = loadLog();
+  nxId = Math.max(1,...inv.map(i=>i.id))+1;
+  setSyncStatus('local','Local only');
+  renderAll();
+}
 </script>
 </body>
 </html>
