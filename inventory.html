@@ -158,6 +158,7 @@
     <div class="card-bd">
       <div class="form-grid">
         <div class="fg"><label>Your Name</label><input type="text" id="req-name" placeholder="e.g. Alex Johnson"/></div>
+        <div class="fg"><label>Apple Email</label><input type="email" id="req-email" placeholder="e.g. alexjohnson@apple.com"/></div>
         <div class="fg"><label>Item</label><select id="req-item" onchange="updateMaxQty()"></select></div>
         <div class="fg"><label>Quantity Needed</label><input type="number" id="req-qty" min="1" value="1"/></div>
         <div class="fg"><label>Project / Reason</label><input type="text" id="req-reason" placeholder="e.g. New hire onboarding Q3"/></div>
@@ -421,10 +422,13 @@ function renderAll(){renderStats();renderAlerts();renderTable();renderReqDropdow
 
 function submitRequest(){
   const name=document.getElementById('req-name').value.trim();
+  const email=document.getElementById('req-email').value.trim();
   const itemId=parseInt(document.getElementById('req-item').value);
   const qty=parseInt(document.getElementById('req-qty').value);
   const reason=document.getElementById('req-reason').value.trim();
   if(!name){toast('⚠️ Please enter your name.');return;}
+  if(!email){toast('⚠️ Please enter your Apple email.');return;}
+  if(!email.endsWith('@apple.com')){toast('⚠️ Please use your @apple.com email address.');return;}
   if(!itemId){toast('⚠️ Please select an item.');return;}
   if(!qty||qty<1){toast('⚠️ Quantity must be at least 1.');return;}
   const item=inv.find(i=>i.id===itemId);
@@ -432,9 +436,9 @@ function submitRequest(){
   if(qty>item.qty){toast(`⚠️ Only ${item.qty} available.`);return;}
   item.qty-=qty;item.requested+=qty;
   save(inv);
-  log.push({type:'deduct',itemId,qty,msg:`${name} requested ${qty}× <strong>${item.name}</strong>${reason?' — '+reason:''}`,time:new Date().toLocaleString()});
+  log.push({type:'deduct',itemId,qty,msg:`${name} (${email}) requested ${qty}× <strong>${item.name}</strong>${reason?' — '+reason:''}`,time:new Date().toLocaleString()});
   saveLog(log);
-  document.getElementById('req-name').value='';document.getElementById('req-qty').value='1';document.getElementById('req-reason').value='';
+  document.getElementById('req-name').value='';document.getElementById('req-email').value='';document.getElementById('req-qty').value='1';document.getElementById('req-reason').value='';
   toast(`✅ ${qty}× ${item.name} deducted. Balance: ${item.qty}`);renderAll();
 }
 
