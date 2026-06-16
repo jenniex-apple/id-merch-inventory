@@ -160,7 +160,7 @@
     <div class="card-bd">
       <div class="form-grid">
         <div class="fg"><label>Your Name</label><input type="text" id="req-name" placeholder="e.g. Alex Johnson"/></div>
-        <div class="fg"><label>Item</label><select id="req-item" multiple size="8" style="height:auto;" onchange="updateMaxQty()"></select><span style="font-size:11px;color:var(--sub);margin-top:4px;">Hold <kbd style="background:#f0f0f5;padding:1px 5px;border-radius:4px;font-size:11px;">Cmd</kbd> (Mac) or <kbd style="background:#f0f0f5;padding:1px 5px;border-radius:4px;font-size:11px;">Ctrl</kbd> (Windows) and click to select multiple items individually</span></div>
+        <div class="fg"><label>Item</label><select id="req-item" onchange="updateMaxQty()"></select></div>
         <div class="fg"><label>Quantity Needed</label><input type="number" id="req-qty" min="1" value="1"/></div>
         <div class="fg"><label>Project / Reason</label><input type="text" id="req-reason" placeholder="e.g. New hire onboarding Q3"/></div>
         <div class="fg full"><button class="btn btn-primary" style="width:fit-content;" onclick="submitRequest()">Submit Request &#x2192; Auto-Deduct</button></div>
@@ -169,7 +169,12 @@
   </div>
 
   <div class="card">
-    <div class="card-hd"><h2>&#x1F4CB; Activity Log</h2><span id="log-count" style="font-size:12px;color:var(--sub);"></span></div>
+    <div class="card-hd"><h2>&#x1F4CB; Activity Log</h2>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span id="log-count" style="font-size:12px;color:var(--sub);"></span>
+        <button class="btn btn-danger btn-sm" onclick="clearLog()">Clear All</button>
+      </div>
+    </div>
     <div class="card-bd"><div id="log-list"><p class="empty">No activity yet.</p></div></div>
   </div>
 </main>
@@ -373,49 +378,57 @@ function cancelQtyEdit(id){
 
 function renderReqDropdown(){
   const avail=inv.filter(i=>i.qty>0).sort((a,b)=>a.name.localeCompare(b.name));
-  document.getElementById('req-item').innerHTML=avail.length
-    ? avail.map(i=>`<option value="${i.id}">${i.name} (${i.qty} avail.)</option>`).join('')
-    : '<option value="">No items in stock</option>';
+  document.getElementById('req-item').innerHTML=avail.length?avail.map(i=>`<option value="${i.id}">${i.name} (${i.qty} avail.)</option>`).join(''):'<option value="">No items in stock</option>';
+  updateMaxQty();
 }
-function updateMaxQty(){}
+function updateMaxQty(){const id=parseInt(document.getElementById('req-item').value);const item=inv.find(i=>i.id===id);if(item)document.getElementById('req-qty').max=item.qty;}
 
 function renderLog(){
   const el=document.getElementById('log-list');
   document.getElementById('log-count').textContent=log.length?`${log.length} entries`:'';
   if(!log.length){el.innerHTML='<p class="empty">No activity yet.</p>';return;}
-  el.innerHTML=[...log].reverse().slice(0,50).map(e=>`<div class="log-item"><div class="log-dot ld-${e.type}"></div><div><div>${e.msg}</div><div class="log-time">${e.time}</div></div></div>`).join('');
+  el.innerHTML=[...log].map((e,i)=>({...e,_i:i})).reverse().slice(0,50).map(e=>`
+    <div class="log-item">
+      <div class="log-dot ld-${e.type}"></div>
+      <div style="flex:1"><div>${e.msg}</div><div class="log-time">${e.time}</div></div>
+      <button class="btn btn-danger btn-sm" style="padding:3px 9px;font-size:11px;" onclick="deleteLogEntry(${e._i})">Delete</button>
+    </div>`).join('');
+}
+
+function deleteLogEntry(i){
+  log.splice(i,1);
+  saveLog(log);
+  renderLog();
+  document.getElementById('log-count').textContent=log.length?`${log.length} entries`:'';
+}
+
+function clearLog(){
+  if(!log.length)return;
+  if(!confirm('Clear entire activity log?'))return;
+  log=[];saveLog(log);renderLog();
+  document.getElementById('log-count').textContent='';
+  toast('🗑 Activity log cleared.');
 }
 
 function renderAll(){renderStats();renderAlerts();renderTable();renderReqDropdown();renderLog();document.getElementById('last-upd').textContent='Updated '+new Date().toLocaleTimeString();}
 
 function submitRequest(){
   const name=document.getElementById('req-name').value.trim();
-  const sel=document.getElementById('req-item');
-  const selectedIds=[...sel.selectedOptions].map(o=>parseInt(o.value));
+  const itemId=parseInt(document.getElementById('req-item').value);
   const qty=parseInt(document.getElementById('req-qty').value);
   const reason=document.getElementById('req-reason').value.trim();
   if(!name){toast('⚠️ Please enter your name.');return;}
-  if(!selectedIds.length){toast('⚠️ Please select at least one item.');return;}
+  if(!itemId){toast('⚠️ Please select an item.');return;}
   if(!qty||qty<1){toast('⚠️ Quantity must be at least 1.');return;}
-  // Validate all selected items have enough stock
-  for(const id of selectedIds){
-    const item=inv.find(i=>i.id===id);
-    if(!item){toast('⚠️ Item not found.');return;}
-    if(qty>item.qty){toast(`⚠️ Only ${item.qty} of "${item.name}" available.`);return;}
-  }
-  // Deduct all
-  selectedIds.forEach(id=>{
-    const item=inv.find(i=>i.id===id);
-    item.qty-=qty; item.requested+=qty;
-    log.push({type:'deduct',msg:`${name} requested ${qty}× <strong>${item.name}</strong>${reason?' — '+reason:''}`,time:new Date().toLocaleString()});
-  });
-  save(inv); saveLog(log);
-  sel.selectedIndex=-1;
-  document.getElementById('req-name').value='';
-  document.getElementById('req-qty').value='1';
-  document.getElementById('req-reason').value='';
-  toast(`✅ ${selectedIds.length} item${selectedIds.length>1?'s':''} requested (${qty} each). Inventory updated!`);
-  renderAll();
+  const item=inv.find(i=>i.id===itemId);
+  if(!item){toast('⚠️ Item not found.');return;}
+  if(qty>item.qty){toast(`⚠️ Only ${item.qty} available.`);return;}
+  item.qty-=qty;item.requested+=qty;
+  save(inv);
+  log.push({type:'deduct',msg:`${name} requested ${qty}× <strong>${item.name}</strong>${reason?' — '+reason:''}`,time:new Date().toLocaleString()});
+  saveLog(log);
+  document.getElementById('req-name').value='';document.getElementById('req-qty').value='1';document.getElementById('req-reason').value='';
+  toast(`✅ ${qty}× ${item.name} deducted. Balance: ${item.qty}`);renderAll();
 }
 
 function delItem(id){
