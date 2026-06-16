@@ -90,7 +90,23 @@
   .qty-edit{display:none;width:70px;font-size:14px;padding:4px 8px;border-radius:8px;text-align:center;}
   .qty-bal{font-size:15px;font-weight:700;cursor:pointer;border-bottom:2px dashed var(--border);transition:border-color .15s;}
   .qty-bal:hover{border-color:var(--accent);}
-  /* Category groups */
+  /* Item picker modal */
+  .picker-modal{max-width:680px;}
+  .picker-search-bar{position:relative;margin-bottom:12px;}
+  .picker-search-bar input{width:100%;padding-left:34px;}
+  .picker-search-bar .si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--sub);font-size:14px;pointer-events:none;}
+  .picker-cat-hd{font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 4px;border-top:1px solid var(--border);margin-top:8px;}
+  .picker-cat-hd:first-of-type{border-top:none;margin-top:0;}
+  .picker-row{display:flex;align-items:center;justify-content:space-between;padding:9px 10px;border-radius:10px;cursor:pointer;transition:background .12s;gap:12px;}
+  .picker-row:hover{background:var(--bg);}
+  .picker-row.disabled{opacity:.4;cursor:not-allowed;}
+  .picker-row-name{font-size:13px;font-weight:500;flex:1;}
+  .picker-row-avail{font-size:12px;color:var(--sub);white-space:nowrap;}
+  /* Selected line items */
+  .req-line{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);border-radius:10px;font-size:13px;}
+  .req-line-name{flex:1;font-weight:500;}
+  .req-line-qty{width:70px;}
+  .req-line-avail{font-size:11px;color:var(--sub);white-space:nowrap;}
   .cat-group{margin-top:10px;}
   .cat-toggle{width:100%;background:var(--bg);border:none;border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--text);transition:background .15s;}
   .cat-toggle:hover{background:#ebebef;}
@@ -164,10 +180,17 @@
       <div class="form-grid">
         <div class="fg"><label>Your Name</label><input type="text" id="req-name" placeholder="e.g. Alex Johnson" style="width:100%;"/></div>
         <div class="fg"><label>Apple Email</label><input type="email" id="req-email" placeholder="e.g. alexjohnson@apple.com" style="width:100%;"/></div>
-        <div class="fg"><label>Item</label><select id="req-item" onchange="updateMaxQty()"></select></div>
-        <div class="fg"><label>Quantity Needed</label><input type="number" id="req-qty" min="1" value="1" style="width:100%;"/></div>
         <div class="fg full"><label>Project / Reason</label><input type="text" id="req-reason" placeholder="e.g. New hire onboarding Q3" style="width:100%;"/></div>
-        <div class="fg full"><button class="btn btn-primary" style="width:fit-content;" onclick="submitRequest()">Submit Request &#x2192; Auto-Deduct</button></div>
+      </div>
+
+      <div style="margin-top:18px;">
+        <label style="font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;">Items</label>
+        <div id="req-lines" style="display:flex;flex-direction:column;gap:10px;margin-top:8px;"></div>
+        <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="addReqLine()">+ Add Item</button>
+      </div>
+
+      <div style="margin-top:18px;">
+        <button class="btn btn-primary" style="width:fit-content;" onclick="submitRequest()">Submit Request &#x2192; Auto-Deduct</button>
       </div>
     </div>
   </div>
@@ -210,6 +233,21 @@
 </div>
 
 <div id="toast"></div>
+
+<!-- Item Picker Modal -->
+<div class="modal-bg" id="picker-modal-bg" onclick="pickerBgClose(event)">
+  <div class="modal picker-modal">
+    <h3>Select an Item</h3>
+    <div class="picker-search-bar">
+      <span class="si">&#x1F50D;</span>
+      <input type="text" id="picker-search" placeholder="Search items…" oninput="renderPickerList()"/>
+    </div>
+    <div id="picker-list" style="max-height:420px;overflow-y:auto;"></div>
+    <div class="modal-actions" style="margin-top:14px;">
+      <button class="btn btn-secondary" onclick="closePicker()">Cancel</button>
+    </div>
+  </div>
+</div>
 
 <script>
 const SK = 'id_merch_inv_v1';
@@ -386,12 +424,76 @@ function cancelQtyEdit(id){
   inp.previousElementSibling.style.display='';
 }
 
-function renderReqDropdown(){
-  const avail=inv.filter(i=>i.qty>0).sort((a,b)=>a.name.localeCompare(b.name));
-  document.getElementById('req-item').innerHTML=avail.length?avail.map(i=>`<option value="${i.id}">${i.name} (${i.qty} avail.)</option>`).join(''):'<option value="">No items in stock</option>';
-  updateMaxQty();
+// ── Item picker & line items ──────────────────────────────────────────────────
+let reqLines = []; // [{itemId, qty}]
+
+function renderReqDropdown(){ /* no-op — using picker instead */ }
+function updateMaxQty(){ /* no-op */ }
+
+function addReqLine(){
+  document.getElementById('picker-search').value='';
+  renderPickerList();
+  document.getElementById('picker-modal-bg').classList.add('open');
 }
-function updateMaxQty(){const id=parseInt(document.getElementById('req-item').value);const item=inv.find(i=>i.id===id);if(item)document.getElementById('req-qty').max=item.qty;}
+
+function closePicker(){
+  document.getElementById('picker-modal-bg').classList.remove('open');
+}
+function pickerBgClose(e){
+  if(e.target===document.getElementById('picker-modal-bg')) closePicker();
+}
+
+function renderPickerList(){
+  const q=document.getElementById('picker-search').value.toLowerCase();
+  const alreadySelected=new Set(reqLines.map(l=>l.itemId));
+  const avail=inv.filter(i=>!q||(i.name.toLowerCase().includes(q)||i.category.toLowerCase().includes(q)));
+  const groups={};
+  avail.forEach(i=>{if(!groups[i.category])groups[i.category]=[];groups[i.category].push(i);});
+
+  document.getElementById('picker-list').innerHTML=Object.keys(groups).sort().map(cat=>`
+    <div class="picker-cat-hd">${cat}</div>
+    ${groups[cat].map(item=>{
+      const isOut=item.qty<=0;
+      const already=alreadySelected.has(item.id);
+      const cls=isOut||already?'picker-row disabled':'picker-row';
+      const label=already?'Already added':isOut?'Out of stock':`${item.qty} available`;
+      return `<div class="${cls}" onclick="${isOut||already?'':` pickerSelect(${item.id})`}">
+        <span class="picker-row-name">${item.name}</span>
+        <span class="picker-row-avail">${label}</span>
+      </div>`;
+    }).join('')}`).join('');
+}
+
+function pickerSelect(itemId){
+  reqLines.push({itemId, qty:1});
+  closePicker();
+  renderReqLines();
+}
+
+function removeReqLine(idx){
+  reqLines.splice(idx,1);
+  renderReqLines();
+}
+
+function renderReqLines(){
+  const container=document.getElementById('req-lines');
+  if(!reqLines.length){
+    container.innerHTML='<p style="font-size:13px;color:var(--sub);">No items added yet. Click "+ Add Item" to start.</p>';
+    return;
+  }
+  container.innerHTML=reqLines.map((line,idx)=>{
+    const item=inv.find(i=>i.id===line.itemId);
+    if(!item) return '';
+    return `<div class="req-line">
+      <span class="req-line-name">${item.name}</span>
+      <span class="req-line-avail">${item.qty} avail.</span>
+      <label style="font-size:12px;color:var(--sub);white-space:nowrap;">Qty</label>
+      <input class="req-line-qty" type="number" min="1" max="${item.qty}" value="${line.qty}"
+        oninput="reqLines[${idx}].qty=Math.min(parseInt(this.value)||1,${item.qty})"/>
+      <button class="btn btn-danger btn-sm" onclick="removeReqLine(${idx})">Remove</button>
+    </div>`;
+  }).join('');
+}
 
 function renderLog(){
   const el=document.getElementById('log-list');
@@ -429,28 +531,39 @@ function clearLog(){
   toast('🗑 Activity log cleared.');
 }
 
-function renderAll(){renderStats();renderAlerts();renderTable();renderReqDropdown();renderLog();document.getElementById('last-upd').textContent='Updated '+new Date().toLocaleTimeString();}
+function renderAll(){renderStats();renderAlerts();renderTable();renderReqDropdown();renderReqLines();renderLog();document.getElementById('last-upd').textContent='Updated '+new Date().toLocaleTimeString();}
 
 function submitRequest(){
   const name=document.getElementById('req-name').value.trim();
   const email=document.getElementById('req-email').value.trim();
-  const itemId=parseInt(document.getElementById('req-item').value);
-  const qty=parseInt(document.getElementById('req-qty').value);
   const reason=document.getElementById('req-reason').value.trim();
   if(!name){toast('⚠️ Please enter your name.');return;}
   if(!email){toast('⚠️ Please enter your Apple email.');return;}
   if(!email.endsWith('@apple.com')){toast('⚠️ Please use your @apple.com email address.');return;}
-  if(!itemId){toast('⚠️ Please select an item.');return;}
-  if(!qty||qty<1){toast('⚠️ Quantity must be at least 1.');return;}
-  const item=inv.find(i=>i.id===itemId);
-  if(!item){toast('⚠️ Item not found.');return;}
-  if(qty>item.qty){toast(`⚠️ Only ${item.qty} available.`);return;}
-  item.qty-=qty;item.requested+=qty;
-  save(inv);
-  log.push({type:'deduct',itemId,qty,msg:`${name} (${email}) requested ${qty}× <strong>${item.name}</strong>${reason?' — '+reason:''}`,time:new Date().toLocaleString()});
-  saveLog(log);
-  document.getElementById('req-name').value='';document.getElementById('req-email').value='';document.getElementById('req-qty').value='1';document.getElementById('req-reason').value='';
-  toast(`✅ ${qty}× ${item.name} deducted. Balance: ${item.qty}`);renderAll();
+  if(!reqLines.length){toast('⚠️ Please add at least one item.');return;}
+  // Validate all lines
+  for(const line of reqLines){
+    const item=inv.find(i=>i.id===line.itemId);
+    const qty=parseInt(line.qty)||1;
+    if(!item){toast('⚠️ An item was not found.');return;}
+    if(qty<1){toast(`⚠️ Quantity for "${item.name}" must be at least 1.`);return;}
+    if(qty>item.qty){toast(`⚠️ Only ${item.qty} of "${item.name}" available.`);return;}
+  }
+  // Deduct all
+  reqLines.forEach(line=>{
+    const item=inv.find(i=>i.id===line.itemId);
+    const qty=parseInt(line.qty)||1;
+    item.qty-=qty; item.requested+=qty;
+    log.push({type:'deduct',itemId:line.itemId,qty,msg:`${name} (${email}) requested ${qty}× <strong>${item.name}</strong>${reason?' — '+reason:''}`,time:new Date().toLocaleString()});
+  });
+  save(inv); saveLog(log);
+  reqLines=[];
+  document.getElementById('req-name').value='';
+  document.getElementById('req-email').value='';
+  document.getElementById('req-reason').value='';
+  renderReqLines();
+  toast(`✅ Request submitted! ${reqLines.length||'All'} item(s) deducted.`);
+  renderAll();
 }
 
 function delItem(id){
