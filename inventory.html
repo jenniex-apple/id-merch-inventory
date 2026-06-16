@@ -79,10 +79,12 @@
   .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
   #toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(70px);background:#1d1d1f;color:#fff;padding:12px 22px;border-radius:20px;font-size:13px;font-weight:500;box-shadow:0 8px 30px rgba(0,0,0,.25);transition:transform .35s cubic-bezier(.34,1.56,.64,1),opacity .3s;opacity:0;z-index:999;white-space:nowrap;}
   #toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
-  .alert-bar{background:#fff8e6;border:1px solid #ffe5a0;border-radius:var(--radius);padding:14px 18px;display:flex;align-items:flex-start;gap:10px;font-size:13px;}
+  .alert-bar{background:#fff8e6;border:1px solid #ffe5a0;border-radius:var(--radius);font-size:13px;}
   .alert-bar.hidden{display:none;}
-  .alert-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
-  .alert-bar ul{margin:6px 0 0 16px;display:flex;flex-direction:column;gap:3px;}
+  .alert-toggle{width:100%;background:none;border:none;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-family:inherit;font-size:13px;text-align:left;}
+  .alert-body{padding:0 18px 14px;display:none;}
+  .alert-body.open{display:block;}
+  .alert-body ul{margin-left:16px;display:flex;flex-direction:column;gap:3px;}
   /* Inline qty edit */
   .qty-edit{display:none;width:70px;font-size:14px;padding:4px 8px;border-radius:8px;text-align:center;}
   .qty-bal{font-size:15px;font-weight:700;cursor:pointer;border-bottom:2px dashed var(--border);transition:border-color .15s;}
@@ -113,8 +115,11 @@
 
 <main>
   <div class="alert-bar hidden" id="alert-bar">
-    <span class="alert-icon">&#x26A0;&#xFE0F;</span>
-    <div><strong>Low Stock Alert</strong><ul id="alert-list"></ul></div>
+    <button class="alert-toggle" onclick="toggleAlert()">
+      <span>⚠️ <strong>Low Stock Alert</strong> <span id="alert-count" style="font-weight:400;color:#7a5500;"></span></span>
+      <span id="alert-chevron" style="font-size:11px;color:#7a5500;">▼ show</span>
+    </button>
+    <div class="alert-body" id="alert-body"><ul id="alert-list"></ul></div>
   </div>
 
   <div class="stats" id="stats-row"></div>
@@ -247,7 +252,15 @@ function renderAlerts(){
   const bar=document.getElementById('alert-bar');
   if(!alerts.length){bar.classList.add('hidden');return;}
   bar.classList.remove('hidden');
-  document.getElementById('alert-list').innerHTML=alerts.slice(0,8).map(i=>`<li><strong>${i.name}</strong> — ${statusOf(i).label} (${Math.max(0,i.qty)} left)</li>`).join('');
+  document.getElementById('alert-count').textContent=`— ${alerts.length} item${alerts.length!==1?'s':''}`;
+  document.getElementById('alert-list').innerHTML=alerts.map(i=>`<li><strong>${i.name}</strong> — ${statusOf(i).label} (${Math.max(0,i.qty)} left)</li>`).join('');
+}
+
+function toggleAlert(){
+  const body=document.getElementById('alert-body');
+  const chevron=document.getElementById('alert-chevron');
+  const open=body.classList.toggle('open');
+  chevron.textContent=open?'▲ hide':'▼ show';
 }
 
 function renderTable(){
