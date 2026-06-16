@@ -124,7 +124,6 @@
       <h2>I&amp;D Merchandise</h2>
       <div class="btn-group">
         <button class="btn btn-secondary btn-sm" onclick="exportCSV()">&#x2B07; Export CSV</button>
-        <select id="filter-cat" onchange="renderTable()" style="font-size:13px;padding:7px 10px;"><option value="">All Categories</option></select>
         <select id="filter-status" onchange="renderTable()" style="font-size:13px;padding:7px 10px;">
           <option value="">All Statuses</option>
           <option value="ok">In Stock</option>
@@ -254,13 +253,11 @@ function renderAlerts(){
 
 function renderTable(){
   const q=document.getElementById('search').value.toLowerCase();
-  const cat=document.getElementById('filter-cat').value;
+  const cat='';
   const status=document.getElementById('filter-status').value;
   const chorus=document.getElementById('chorus-only').checked;
   const loc=document.getElementById('filter-loc').value;
   const cats=[...new Set(inv.map(i=>i.category))].sort();
-  const prevCat=document.getElementById('filter-cat').value;
-  document.getElementById('filter-cat').innerHTML='<option value="">All Categories</option>'+cats.map(c=>`<option value="${c}"${c===prevCat?' selected':''}>${c}</option>`).join('');
 
   const filtered=inv.filter(i=>{
     const st=statusOf(i);
