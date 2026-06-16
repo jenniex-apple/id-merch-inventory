@@ -151,20 +151,6 @@
       </div>
       <div class="tbl-wrap">
         <div id="inv-body"></div>
-        <table style="width:100%;border-collapse:collapse;font-size:13.5px;margin-top:12px;">
-          <thead><tr style="background:var(--bg);">
-            <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;">Quick Add New Item</th>
-            <th style="padding:8px 12px;"><select id="qa-cat" style="font-size:12px;padding:5px 8px;"><option>Apparel</option><option>Accessories</option><option>Bags</option><option>Drinkware</option><option>Kits</option><option>Stationery</option><option>Other</option></select></th>
-            <th style="padding:8px 12px;"><input type="number" id="qa-qty" min="0" value="0" style="width:70px;font-size:12px;padding:5px 8px;"/></th>
-            <th colspan="2" style="padding:8px 12px;font-size:11px;color:var(--sub);">Threshold: <input type="number" id="qa-thresh" min="0" value="5" style="width:50px;font-size:12px;padding:5px 8px;"/></th>
-            <th style="padding:8px 12px;"><input type="text" id="qa-loc4" placeholder="4F" style="width:38px;font-size:12px;padding:5px 6px;"/> <input type="text" id="qa-loc3" placeholder="3F" style="width:38px;font-size:12px;padding:5px 6px;"/> <input type="text" id="qa-mead" placeholder="Mead" style="width:48px;font-size:12px;padding:5px 6px;"/></th>
-            <th style="padding:8px 12px;"><input type="number" id="qa-cost" min="0" step="0.01" placeholder="$" style="width:60px;font-size:12px;padding:5px 8px;"/></th>
-            <th style="padding:8px 12px;">
-              <input type="text" id="qa-name" placeholder="Item name…" style="font-size:12px;padding:5px 8px;width:160px;"/>
-              <button class="btn btn-primary btn-sm" onclick="quickAdd()" style="margin-left:6px;">+ Add</button>
-            </th>
-          </tr></thead>
-        </table>
       </div>
     </div>
   </div>
@@ -382,26 +368,6 @@ function cancelQtyEdit(id){
   const inp=document.getElementById('qe-'+id);
   inp.style.display='none';
   inp.previousElementSibling.style.display='';
-}
-
-function quickAdd(){
-  const name=document.getElementById('qa-name').value.trim();
-  if(!name){toast('⚠️ Item name required.');document.getElementById('qa-name').focus();return;}
-  const cat=document.getElementById('qa-cat').value;
-  const qty=parseInt(document.getElementById('qa-qty').value)||0;
-  const thresh=parseInt(document.getElementById('qa-thresh').value)||5;
-  const cost=parseFloat(document.getElementById('qa-cost').value)||null;
-  const loc4=document.getElementById('qa-loc4').value.trim();
-  const loc3=document.getElementById('qa-loc3').value.trim();
-  const mead=document.getElementById('qa-mead').value.trim();
-  const item={id:nxId++,name,category:cat,qty,totalQty:qty,requested:0,threshold:thresh,unitCost:cost,notes:'',loc4th:loc4,loc3rd:loc3,mead,onChorus:false};
-  inv.push(item);save(inv);
-  log.push({type:'add',msg:`Added ${qty}× <strong>${name}</strong>`,time:new Date().toLocaleString()});saveLog(log);
-  // Clear quick-add row
-  ['qa-name','qa-loc4','qa-loc3','qa-mead'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('qa-qty').value='0';document.getElementById('qa-cost').value='';
-  toast(`✅ "${name}" added!`);renderAll();
-  document.getElementById('qa-name').focus();
 }
 
 function renderReqDropdown(){
