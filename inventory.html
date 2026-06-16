@@ -83,7 +83,14 @@
   .alert-bar.hidden{display:none;}
   .alert-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
   .alert-bar ul{margin:6px 0 0 16px;display:flex;flex-direction:column;gap:3px;}
-  .empty{text-align:center;padding:36px;color:var(--sub);font-size:13px;}
+  /* Inline qty edit */
+  .qty-edit{display:none;width:70px;font-size:14px;padding:4px 8px;border-radius:8px;text-align:center;}
+  .qty-bal{font-size:15px;font-weight:700;cursor:pointer;border-bottom:2px dashed var(--border);transition:border-color .15s;}
+  .qty-bal:hover{border-color:var(--accent);}
+  /* Quick-add row */
+  .qa-row td{background:#f9f9fb;padding:8px 12px!important;}
+  .qa-row input,.qa-row select{font-size:12px;padding:5px 8px;}
+  .qa-row .btn{padding:5px 12px;font-size:12px;}
   @media(max-width:650px){.form-grid{grid-template-columns:1fr;}.stats{grid-template-columns:1fr 1fr;}main{padding:16px 14px;}header{padding:0 16px;}.bar-wrap,.locs{display:none;}}
 </style>
 </head>
@@ -126,16 +133,33 @@
       <div class="toolbar">
         <div class="search-wrap">
           <span class="si">&#x1F50D;</span>
-          <input type="text" id="search" placeholder="Search items&#x2026;" oninput="renderTable()"/>
+          <input type="text" id="search" placeholder="Search by name, category, location&#x2026;" oninput="renderTable()"/>
         </div>
+        <select id="filter-loc" onchange="renderTable()" style="font-size:13px;padding:7px 10px;">
+          <option value="">All Locations</option>
+          <option value="4f">CC1 4th Floor</option>
+          <option value="3f">CC1 3rd Floor</option>
+          <option value="mead">Mead</option>
+        </select>
         <label style="display:flex;align-items:center;gap:6px;font-size:13px;text-transform:none;letter-spacing:0;color:var(--text);cursor:pointer;">
           <input type="checkbox" id="chorus-only" onchange="renderTable()" style="width:auto;padding:0;background:none;border:none;"/> On Chorus page only
         </label>
       </div>
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>Item</th><th>Category</th><th>Balance</th><th>Status</th><th>Stock Level</th><th>Locations</th><th>Unit Cost</th><th></th></tr></thead>
+          <thead><tr><th>Item</th><th>Category</th><th>Balance</th><th>Status</th><th>Stock Level</th><th>Locations</th><th>Unit Cost</th><th>✏️ Edit / 🗑</th></tr></thead>
           <tbody id="inv-body"></tbody>
+          <tfoot>
+            <tr class="qa-row">
+              <td><input type="text" id="qa-name" placeholder="New item name…" style="width:100%"/></td>
+              <td><select id="qa-cat"><option>Apparel</option><option>Accessories</option><option>Bags</option><option>Drinkware</option><option>Kits</option><option>Stationery</option><option>Other</option></select></td>
+              <td><input type="number" id="qa-qty" min="0" value="0" style="width:70px"/></td>
+              <td colspan="2" style="color:var(--sub);font-size:12px;">Low stock threshold: <input type="number" id="qa-thresh" min="0" value="5" style="width:50px"/></td>
+              <td><input type="text" id="qa-loc4" placeholder="4F" style="width:40px"/> <input type="text" id="qa-loc3" placeholder="3F" style="width:40px"/> <input type="text" id="qa-mead" placeholder="Mead" style="width:50px"/></td>
+              <td><input type="number" id="qa-cost" min="0" step="0.01" placeholder="$" style="width:60px"/></td>
+              <td><button class="btn btn-primary btn-sm" onclick="quickAdd()">+ Add</button></td>
+            </tr>
+          </tfoot>
         </table>
       </div>
     </div>
@@ -237,10 +261,16 @@ function renderTable(){
   const cat=document.getElementById('filter-cat').value;
   const status=document.getElementById('filter-status').value;
   const chorus=document.getElementById('chorus-only').checked;
+  const loc=document.getElementById('filter-loc').value;
   const cats=[...new Set(inv.map(i=>i.category))].sort();
   const prevCat=document.getElementById('filter-cat').value;
   document.getElementById('filter-cat').innerHTML='<option value="">All Categories</option>'+cats.map(c=>`<option value="${c}"${c===prevCat?' selected':''}>${c}</option>`).join('');
-  const filtered=inv.filter(i=>{const st=statusOf(i);return(!q||i.name.toLowerCase().includes(q)||i.category.toLowerCase().includes(q)||i.notes.toLowerCase().includes(q))&&(!cat||i.category===cat)&&(!status||st.key===status)&&(!chorus||i.onChorus);});
+  const filtered=inv.filter(i=>{
+    const st=statusOf(i);
+    const locMatch=(!loc)||(loc==='4f'&&i.loc4th&&i.loc4th!=='0'&&i.loc4th!=='')||(loc==='3f'&&i.loc3rd&&i.loc3rd!=='0'&&i.loc3rd!=='')||(loc==='mead'&&i.mead&&i.mead!=='0'&&i.mead!=='');
+    const searchStr=[i.name,i.category,i.notes,i.loc4th,i.loc3rd,i.mead].join(' ').toLowerCase();
+    return(!q||searchStr.includes(q))&&(!cat||i.category===cat)&&(!status||st.key===status)&&(!chorus||i.onChorus)&&locMatch;
+  });
   const maxQ=Math.max(1,...inv.map(i=>Math.max(0,i.qty)));
   const tbody=document.getElementById('inv-body');
   if(!filtered.length){tbody.innerHTML='<tr><td colspan="8"><p class="empty">No items match.</p></td></tr>';return;}
@@ -252,14 +282,67 @@ function renderTable(){
     return `<tr>
       <td><div class="item-name">${item.name}${item.onChorus?'<span class="badge b-chorus" style="font-size:10px;">Chorus</span>':''}</div>${item.notes?`<div class="item-note">${item.notes}</div>`:''}</td>
       <td><span style="font-size:12px;color:var(--sub)">${item.category}</span></td>
-      <td><div class="qty-info"><span class="qty-bal">${q}</span><span class="qty-meta">of ${item.totalQty} · ${item.requested} req.</span></div></td>
+      <td>
+        <div class="qty-info">
+          <span class="qty-bal" title="Click to edit quantity" onclick="startQtyEdit(${item.id},this)">${q}</span>
+          <input class="qty-edit" id="qe-${item.id}" type="number" min="0" value="${q}" onblur="saveQtyEdit(${item.id})" onkeydown="if(event.key==='Enter')saveQtyEdit(${item.id});if(event.key==='Escape')cancelQtyEdit(${item.id})"/>
+          <span class="qty-meta">of ${item.totalQty} · ${item.requested} req.</span>
+        </div>
+      </td>
       <td><span class="badge ${st.cls}">${st.label}</span></td>
       <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div><span class="bar-pct">${pct}%</span></div></td>
       <td>${locHTML}</td>
       <td style="font-size:13px;white-space:nowrap">${fmtCost(item.unitCost)}</td>
-      <td><button class="btn btn-danger btn-sm" onclick="delItem(${item.id})">Remove</button></td>
+      <td><button class="btn btn-danger btn-sm" onclick="delItem(${item.id})">🗑</button></td>
     </tr>`;
   }).join('');
+}
+
+function startQtyEdit(id,el){
+  el.style.display='none';
+  const inp=document.getElementById('qe-'+id);
+  inp.style.display='inline-block';inp.focus();inp.select();
+}
+function saveQtyEdit(id){
+  const inp=document.getElementById('qe-'+id);
+  const newQty=parseInt(inp.value);
+  if(isNaN(newQty)||newQty<0){cancelQtyEdit(id);return;}
+  const item=inv.find(i=>i.id===id);
+  if(!item){cancelQtyEdit(id);return;}
+  const old=item.qty;
+  item.qty=newQty;
+  if(newQty>old) item.totalQty=Math.max(item.totalQty,newQty);
+  save(inv);
+  log.push({type:'add',msg:`Updated <strong>${item.name}</strong> qty: ${old} → ${newQty}`,time:new Date().toLocaleString()});
+  saveLog(log);
+  toast(`✅ ${item.name} updated to ${newQty}`);
+  renderAll();
+}
+function cancelQtyEdit(id){
+  const item=inv.find(i=>i.id===id);if(!item)return;
+  const inp=document.getElementById('qe-'+id);
+  inp.style.display='none';
+  inp.previousElementSibling.style.display='';
+}
+
+function quickAdd(){
+  const name=document.getElementById('qa-name').value.trim();
+  if(!name){toast('⚠️ Item name required.');document.getElementById('qa-name').focus();return;}
+  const cat=document.getElementById('qa-cat').value;
+  const qty=parseInt(document.getElementById('qa-qty').value)||0;
+  const thresh=parseInt(document.getElementById('qa-thresh').value)||5;
+  const cost=parseFloat(document.getElementById('qa-cost').value)||null;
+  const loc4=document.getElementById('qa-loc4').value.trim();
+  const loc3=document.getElementById('qa-loc3').value.trim();
+  const mead=document.getElementById('qa-mead').value.trim();
+  const item={id:nxId++,name,category:cat,qty,totalQty:qty,requested:0,threshold:thresh,unitCost:cost,notes:'',loc4th:loc4,loc3rd:loc3,mead,onChorus:false};
+  inv.push(item);save(inv);
+  log.push({type:'add',msg:`Added ${qty}× <strong>${name}</strong>`,time:new Date().toLocaleString()});saveLog(log);
+  // Clear quick-add row
+  ['qa-name','qa-loc4','qa-loc3','qa-mead'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('qa-qty').value='0';document.getElementById('qa-cost').value='';
+  toast(`✅ "${name}" added!`);renderAll();
+  document.getElementById('qa-name').focus();
 }
 
 function renderReqDropdown(){
