@@ -122,7 +122,7 @@
 
   <div class="card">
     <div class="card-hd">
-      <h2>I&amp;D Merchandise</h2>
+      <h2>All Items</h2>
       <div class="btn-group">
         <select id="filter-cat" onchange="renderTable()" style="font-size:13px;padding:7px 10px;"><option value="">All Categories</option></select>
         <select id="filter-status" onchange="renderTable()" style="font-size:13px;padding:7px 10px;">
@@ -130,12 +130,6 @@
           <option value="ok">In Stock</option>
           <option value="low">Low Stock</option>
           <option value="out">Out of Stock</option>
-        </select>
-        <select id="filter-loc" onchange="renderTable()" style="font-size:13px;padding:7px 10px;">
-          <option value="">All Locations</option>
-          <option value="4f">CC1 4th Floor</option>
-          <option value="3f">CC1 3rd Floor</option>
-          <option value="mead">Mead</option>
         </select>
       </div>
     </div>
@@ -145,6 +139,15 @@
           <span class="si">&#x1F50D;</span>
           <input type="text" id="search" placeholder="Search by name, category, location&#x2026;" oninput="renderTable()"/>
         </div>
+        <select id="filter-loc" onchange="renderTable()" style="font-size:13px;padding:7px 10px;">
+          <option value="">All Locations</option>
+          <option value="4f">CC1 4th Floor</option>
+          <option value="3f">CC1 3rd Floor</option>
+          <option value="mead">Mead</option>
+        </select>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;text-transform:none;letter-spacing:0;color:var(--text);cursor:pointer;">
+          <input type="checkbox" id="chorus-only" onchange="renderTable()" style="width:auto;padding:0;background:none;border:none;"/> On Chorus page only
+        </label>
       </div>
       <div class="tbl-wrap">
         <div id="inv-body"></div>
