@@ -87,10 +87,14 @@
   .qty-edit{display:none;width:70px;font-size:14px;padding:4px 8px;border-radius:8px;text-align:center;}
   .qty-bal{font-size:15px;font-weight:700;cursor:pointer;border-bottom:2px dashed var(--border);transition:border-color .15s;}
   .qty-bal:hover{border-color:var(--accent);}
-  /* Quick-add row */
-  .qa-row td{background:#f9f9fb;padding:8px 12px!important;}
-  .qa-row input,.qa-row select{font-size:12px;padding:5px 8px;}
-  .qa-row .btn{padding:5px 12px;font-size:12px;}
+  /* Category groups */
+  .cat-group{margin-top:10px;}
+  .cat-toggle{width:100%;background:var(--bg);border:none;border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--text);transition:background .15s;}
+  .cat-toggle:hover{background:#ebebef;}
+  .cat-toggle .cat-arrow{font-size:11px;color:var(--sub);transition:transform .2s;}
+  .cat-toggle.open .cat-arrow{transform:rotate(90deg);}
+  .cat-toggle .cat-meta{font-size:11px;color:var(--sub);font-weight:400;margin-left:8px;}
+  .cat-body{display:none;} .cat-body.open{display:table-row-group;}
   @media(max-width:650px){.form-grid{grid-template-columns:1fr;}.stats{grid-template-columns:1fr 1fr;}main{padding:16px 14px;}header{padding:0 16px;}.bar-wrap,.locs{display:none;}}
 </style>
 </head>
@@ -146,20 +150,20 @@
         </label>
       </div>
       <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Item</th><th>Category</th><th>Balance</th><th>Status</th><th>Stock Level</th><th>Locations</th><th>Unit Cost</th><th>✏️ Edit / 🗑</th></tr></thead>
-          <tbody id="inv-body"></tbody>
-          <tfoot>
-            <tr class="qa-row">
-              <td><input type="text" id="qa-name" placeholder="New item name…" style="width:100%"/></td>
-              <td><select id="qa-cat"><option>Apparel</option><option>Accessories</option><option>Bags</option><option>Drinkware</option><option>Kits</option><option>Stationery</option><option>Other</option></select></td>
-              <td><input type="number" id="qa-qty" min="0" value="0" style="width:70px"/></td>
-              <td colspan="2" style="color:var(--sub);font-size:12px;">Low stock threshold: <input type="number" id="qa-thresh" min="0" value="5" style="width:50px"/></td>
-              <td><input type="text" id="qa-loc4" placeholder="4F" style="width:40px"/> <input type="text" id="qa-loc3" placeholder="3F" style="width:40px"/> <input type="text" id="qa-mead" placeholder="Mead" style="width:50px"/></td>
-              <td><input type="number" id="qa-cost" min="0" step="0.01" placeholder="$" style="width:60px"/></td>
-              <td><button class="btn btn-primary btn-sm" onclick="quickAdd()">+ Add</button></td>
-            </tr>
-          </tfoot>
+        <div id="inv-body"></div>
+        <table style="width:100%;border-collapse:collapse;font-size:13.5px;margin-top:12px;">
+          <thead><tr style="background:var(--bg);">
+            <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;">Quick Add New Item</th>
+            <th style="padding:8px 12px;"><select id="qa-cat" style="font-size:12px;padding:5px 8px;"><option>Apparel</option><option>Accessories</option><option>Bags</option><option>Drinkware</option><option>Kits</option><option>Stationery</option><option>Other</option></select></th>
+            <th style="padding:8px 12px;"><input type="number" id="qa-qty" min="0" value="0" style="width:70px;font-size:12px;padding:5px 8px;"/></th>
+            <th colspan="2" style="padding:8px 12px;font-size:11px;color:var(--sub);">Threshold: <input type="number" id="qa-thresh" min="0" value="5" style="width:50px;font-size:12px;padding:5px 8px;"/></th>
+            <th style="padding:8px 12px;"><input type="text" id="qa-loc4" placeholder="4F" style="width:38px;font-size:12px;padding:5px 6px;"/> <input type="text" id="qa-loc3" placeholder="3F" style="width:38px;font-size:12px;padding:5px 6px;"/> <input type="text" id="qa-mead" placeholder="Mead" style="width:48px;font-size:12px;padding:5px 6px;"/></th>
+            <th style="padding:8px 12px;"><input type="number" id="qa-cost" min="0" step="0.01" placeholder="$" style="width:60px;font-size:12px;padding:5px 8px;"/></th>
+            <th style="padding:8px 12px;">
+              <input type="text" id="qa-name" placeholder="Item name…" style="font-size:12px;padding:5px 8px;width:160px;"/>
+              <button class="btn btn-primary btn-sm" onclick="quickAdd()" style="margin-left:6px;">+ Add</button>
+            </th>
+          </tr></thead>
         </table>
       </div>
     </div>
@@ -265,37 +269,92 @@ function renderTable(){
   const cats=[...new Set(inv.map(i=>i.category))].sort();
   const prevCat=document.getElementById('filter-cat').value;
   document.getElementById('filter-cat').innerHTML='<option value="">All Categories</option>'+cats.map(c=>`<option value="${c}"${c===prevCat?' selected':''}>${c}</option>`).join('');
+
   const filtered=inv.filter(i=>{
     const st=statusOf(i);
     const locMatch=(!loc)||(loc==='4f'&&i.loc4th&&i.loc4th!=='0'&&i.loc4th!=='')||(loc==='3f'&&i.loc3rd&&i.loc3rd!=='0'&&i.loc3rd!=='')||(loc==='mead'&&i.mead&&i.mead!=='0'&&i.mead!=='');
     const searchStr=[i.name,i.category,i.notes,i.loc4th,i.loc3rd,i.mead].join(' ').toLowerCase();
     return(!q||searchStr.includes(q))&&(!cat||i.category===cat)&&(!status||st.key===status)&&(!chorus||i.onChorus)&&locMatch;
   });
+
   const maxQ=Math.max(1,...inv.map(i=>Math.max(0,i.qty)));
-  const tbody=document.getElementById('inv-body');
-  if(!filtered.length){tbody.innerHTML='<tr><td colspan="8"><p class="empty">No items match.</p></td></tr>';return;}
-  tbody.innerHTML=filtered.map(item=>{
-    const st=statusOf(item);const q=Math.max(0,item.qty);const pct=Math.round(q/maxQ*100);
-    const color=st.key==='ok'?'#34c759':st.key==='low'?'#ff9500':'#ff3b30';
-    const locs=locStr(item);
-    const locHTML=locs.length?`<div class="locs">${locs.map(l=>`<span class="loc-pill">${l.lbl} <span>${l.val}</span></span>`).join('')}</div>`:'<span style="font-size:12px;color:var(--sub)">—</span>';
-    return `<tr>
-      <td><div class="item-name">${item.name}${item.onChorus?'<span class="badge b-chorus" style="font-size:10px;">Chorus</span>':''}</div>${item.notes?`<div class="item-note">${item.notes}</div>`:''}</td>
-      <td><span style="font-size:12px;color:var(--sub)">${item.category}</span></td>
-      <td>
-        <div class="qty-info">
-          <span class="qty-bal" title="Click to edit quantity" onclick="startQtyEdit(${item.id},this)">${q}</span>
-          <input class="qty-edit" id="qe-${item.id}" type="number" min="0" value="${q}" onblur="saveQtyEdit(${item.id})" onkeydown="if(event.key==='Enter')saveQtyEdit(${item.id});if(event.key==='Escape')cancelQtyEdit(${item.id})"/>
-          <span class="qty-meta">of ${item.totalQty} · ${item.requested} req.</span>
-        </div>
-      </td>
-      <td><span class="badge ${st.cls}">${st.label}</span></td>
-      <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div><span class="bar-pct">${pct}%</span></div></td>
-      <td>${locHTML}</td>
-      <td style="font-size:13px;white-space:nowrap">${fmtCost(item.unitCost)}</td>
-      <td><button class="btn btn-danger btn-sm" onclick="delItem(${item.id})">🗑</button></td>
-    </tr>`;
+  const container=document.getElementById('inv-body');
+
+  if(!filtered.length){
+    container.innerHTML='<p style="text-align:center;padding:36px;color:var(--sub);font-size:13px;">No items match.</p>';
+    return;
+  }
+
+  // Group by category
+  const groups={};
+  filtered.forEach(item=>{
+    if(!groups[item.category]) groups[item.category]=[];
+    groups[item.category].push(item);
+  });
+
+  // Preserve open/closed state
+  const openCats=new Set();
+  container.querySelectorAll('.cat-toggle.open').forEach(el=>openCats.add(el.dataset.cat));
+  // If nothing was open before (first render), open all
+  const firstRender=openCats.size===0;
+
+  container.innerHTML=Object.keys(groups).sort().map(catName=>{
+    const items=groups[catName];
+    const isOpen=firstRender||openCats.has(catName);
+    const lowCount=items.filter(i=>statusOf(i).key==='low').length;
+    const outCount=items.filter(i=>statusOf(i).key==='out').length;
+    const badges=(outCount?`<span style="background:#ffd7d5;color:#8a1a14;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;margin-left:6px;">${outCount} out</span>`:'')+
+                 (lowCount?`<span style="background:#fff3cd;color:#7a5500;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;margin-left:4px;">${lowCount} low</span>`:'');
+    const rows=items.map(item=>{
+      const st=statusOf(item);const q=Math.max(0,item.qty);const pct=Math.round(q/maxQ*100);
+      const color=st.key==='ok'?'#34c759':st.key==='low'?'#ff9500':'#ff3b30';
+      const locs=locStr(item);
+      const locHTML=locs.length?`<div class="locs">${locs.map(l=>`<span class="loc-pill">${l.lbl} <span>${l.val}</span></span>`).join('')}</div>`:'<span style="font-size:12px;color:var(--sub)">—</span>';
+      return `<tr>
+        <td><div class="item-name">${item.name}${item.onChorus?'<span class="badge b-chorus" style="font-size:10px;">Chorus</span>':''}</div>${item.notes?`<div class="item-note">${item.notes}</div>`:''}</td>
+        <td><span style="font-size:12px;color:var(--sub)">${item.category}</span></td>
+        <td>
+          <div class="qty-info">
+            <span class="qty-bal" title="Click to edit" onclick="startQtyEdit(${item.id},this)">${q}</span>
+            <input class="qty-edit" id="qe-${item.id}" type="number" min="0" value="${q}" onblur="saveQtyEdit(${item.id})" onkeydown="if(event.key==='Enter')saveQtyEdit(${item.id});if(event.key==='Escape')cancelQtyEdit(${item.id})"/>
+            <span class="qty-meta">of ${item.totalQty} · ${item.requested} req.</span>
+          </div>
+        </td>
+        <td><span class="badge ${st.cls}">${st.label}</span></td>
+        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div><span class="bar-pct">${pct}%</span></div></td>
+        <td>${locHTML}</td>
+        <td style="font-size:13px;white-space:nowrap">${fmtCost(item.unitCost)}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="delItem(${item.id})">Remove</button></td>
+      </tr>`;
+    }).join('');
+
+    return `<div class="cat-group">
+      <button class="cat-toggle${isOpen?' open':''}" data-cat="${catName}" onclick="toggleCat(this)">
+        <span>▶ <span class="cat-arrow"></span> ${catName} <span class="cat-meta">${items.length} item${items.length!==1?'s':''}</span>${badges}</span>
+        <span style="font-size:12px;color:var(--sub)">${isOpen?'▲ collapse':'▼ expand'}</span>
+      </button>
+      <table class="${isOpen?'cat-body open':'cat-body'}" style="width:100%;border-collapse:collapse;font-size:13.5px;">
+        <thead><tr>
+          <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">Item</th>
+          <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">Category</th>
+          <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">Balance</th>
+          <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">Status</th>
+          <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">Stock Level</th>
+          <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">Locations</th>
+          <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">Unit Cost</th>
+          <th style="border-bottom:1px solid var(--border);"></th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
   }).join('');
+}
+
+function toggleCat(btn){
+  btn.classList.toggle('open');
+  const table=btn.nextElementSibling;
+  table.classList.toggle('open');
+  btn.lastElementChild.textContent=btn.classList.contains('open')?'▲ collapse':'▼ expand';
 }
 
 function startQtyEdit(id,el){
