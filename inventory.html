@@ -87,7 +87,22 @@
   .qty-edit{display:none;width:70px;font-size:14px;padding:4px 8px;border-radius:8px;text-align:center;}
   .qty-bal{font-size:15px;font-weight:700;cursor:pointer;border-bottom:2px dashed var(--border);transition:border-color .15s;}
   .qty-bal:hover{border-color:var(--accent);}
-  /* Category groups */
+  /* Item picker */
+  .picker-wrap{border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+  .picker-search{padding:10px 14px;border-bottom:1px solid var(--border);background:var(--bg);}
+  .picker-search input{width:100%;background:var(--card);}
+  .picker-list{max-height:280px;overflow-y:auto;}
+  .picker-cat-label{padding:6px 14px;font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;background:var(--bg);position:sticky;top:0;}
+  .picker-item{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;transition:background .1s;border-bottom:1px solid #f5f5f7;}
+  .picker-item:last-child{border-bottom:none;}
+  .picker-item:hover{background:#f5f5f7;}
+  .picker-item.out-of-stock{opacity:.45;cursor:not-allowed;}
+  .picker-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);flex-shrink:0;}
+  .picker-item .pi-name{font-size:13px;font-weight:500;flex:1;}
+  .picker-item .pi-avail{font-size:11px;color:var(--sub);white-space:nowrap;}
+  .picker-item .pi-qty{width:58px;font-size:13px;padding:4px 7px;display:none;}
+  .picker-item.checked .pi-qty{display:inline-block;}
+  .selected-summary{font-size:12px;color:var(--sub);margin-top:6px;min-height:18px;}
   .cat-group{margin-top:10px;}
   .cat-toggle{width:100%;background:var(--bg);border:none;border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:var(--text);transition:background .15s;}
   .cat-toggle:hover{background:#ebebef;}
@@ -160,9 +175,17 @@
     <div class="card-bd">
       <div class="form-grid">
         <div class="fg"><label>Your Name</label><input type="text" id="req-name" placeholder="e.g. Alex Johnson"/></div>
-        <div class="fg"><label>Item</label><select id="req-item" onchange="updateMaxQty()"></select></div>
-        <div class="fg"><label>Quantity Needed</label><input type="number" id="req-qty" min="1" value="1"/></div>
         <div class="fg"><label>Project / Reason</label><input type="text" id="req-reason" placeholder="e.g. New hire onboarding Q3"/></div>
+        <div class="fg full">
+          <label>Select Items &amp; Quantities</label>
+          <div class="picker-wrap">
+            <div class="picker-search">
+              <input type="text" id="picker-search" placeholder="&#x1F50D; Search items…" oninput="renderPicker()" style="border:none;box-shadow:none;padding:6px 10px;"/>
+            </div>
+            <div class="picker-list" id="picker-list"></div>
+          </div>
+          <div class="selected-summary" id="selected-summary">No items selected</div>
+        </div>
         <div class="fg full"><button class="btn btn-primary" style="width:fit-content;" onclick="submitRequest()">Submit Request &#x2192; Auto-Deduct</button></div>
       </div>
     </div>
@@ -371,42 +394,106 @@ function cancelQtyEdit(id){
   inp.previousElementSibling.style.display='';
 }
 
-function renderReqDropdown(){
-  const avail=inv.filter(i=>i.qty>0).sort((a,b)=>a.name.localeCompare(b.name));
-  document.getElementById('req-item').innerHTML=avail.length?avail.map(i=>`<option value="${i.id}">${i.name} (${i.qty} avail.)</option>`).join(''):'<option value="">No items in stock</option>';
-  updateMaxQty();
+function renderPicker(){
+  const q=(document.getElementById('picker-search')?.value||'').toLowerCase();
+  const avail=inv.filter(i=>i.qty>0);
+  const groups={};
+  avail.forEach(i=>{
+    if(!q||i.name.toLowerCase().includes(q)||i.category.toLowerCase().includes(q)){
+      if(!groups[i.category]) groups[i.category]=[];
+      groups[i.category].push(i);
+    }
+  });
+  // Also show out-of-stock if searched
+  if(q){
+    inv.filter(i=>i.qty<=0&&(i.name.toLowerCase().includes(q)||i.category.toLowerCase().includes(q))).forEach(i=>{
+      if(!groups[i.category]) groups[i.category]=[];
+      if(!groups[i.category].find(x=>x.id===i.id)) groups[i.category].push(i);
+    });
+  }
+  const list=document.getElementById('picker-list');
+  if(!Object.keys(groups).length){list.innerHTML='<p style="padding:20px;text-align:center;color:var(--sub);font-size:13px;">No items found.</p>';return;}
+  list.innerHTML=Object.keys(groups).sort().map(cat=>`
+    <div class="picker-cat-label">${cat}</div>
+    ${groups[cat].map(item=>{
+      const isOut=item.qty<=0;
+      const checked=pickerSelections.has(item.id);
+      const qtyVal=pickerQtys[item.id]||1;
+      return `<label class="picker-item${isOut?' out-of-stock':''}${checked?' checked':''}" id="pi-${item.id}">
+        <input type="checkbox" ${checked?'checked':''} ${isOut?'disabled':''} onchange="pickerToggle(${item.id},this)"/>
+        <span class="pi-name">${item.name}</span>
+        <span class="pi-avail">${isOut?'Out of stock':item.qty+' avail.'}</span>
+        <input class="pi-qty" type="number" min="1" max="${item.qty}" value="${qtyVal}" id="pq-${item.id}"
+          onclick="event.preventDefault()" onchange="pickerQtys[${item.id}]=Math.min(parseInt(this.value)||1,${item.qty});updateSummary()"/>
+      </label>`;
+    }).join('')}`).join('');
+  updateSummary();
 }
-function updateMaxQty(){const id=parseInt(document.getElementById('req-item').value);const item=inv.find(i=>i.id===id);if(item)document.getElementById('req-qty').max=item.qty;}
 
+const pickerSelections=new Set();
+const pickerQtys={};
+
+function pickerToggle(id,cb){
+  const label=document.getElementById('pi-'+id);
+  if(cb.checked){
+    pickerSelections.add(id);
+    if(!pickerQtys[id]) pickerQtys[id]=1;
+    label.classList.add('checked');
+  } else {
+    pickerSelections.delete(id);
+    label.classList.remove('checked');
+  }
+  updateSummary();
+}
+
+function updateSummary(){
+  const el=document.getElementById('selected-summary');
+  if(!pickerSelections.size){el.textContent='No items selected';return;}
+  const parts=[...pickerSelections].map(id=>{
+    const item=inv.find(i=>i.id===id);
+    const qty=pickerQtys[id]||1;
+    return item?`${qty}× ${item.name}`:'';
+  }).filter(Boolean);
+  el.textContent=parts.join(' · ');
+}
+
+function renderReqDropdown(){ renderPicker(); }
+function updateMaxQty(){}
+
+function submitRequest(){
+  const name=document.getElementById('req-name').value.trim();
+  const reason=document.getElementById('req-reason').value.trim();
+  if(!name){toast('⚠️ Please enter your name.');return;}
+  if(!pickerSelections.size){toast('⚠️ Please select at least one item.');return;}
+  const errors=[];
+  pickerSelections.forEach(id=>{
+    const item=inv.find(i=>i.id===id);
+    const qty=Math.min(parseInt(document.getElementById('pq-'+id)?.value)||1, item?.qty||0);
+    if(!item||qty<1){errors.push(item?.name||id);return;}
+    if(qty>item.qty){errors.push(`Only ${item.qty} of ${item.name} available`);return;}
+    item.qty-=qty; item.requested+=qty;
+    log.push({type:'deduct',msg:`${name} requested ${qty}× <strong>${item.name}</strong>${reason?' — '+reason:''}`,time:new Date().toLocaleString()});
+  });
+  if(errors.length){toast('⚠️ '+errors[0]);return;}
+  save(inv); saveLog(log);
+  pickerSelections.clear();
+  Object.keys(pickerQtys).forEach(k=>delete pickerQtys[k]);
+  document.getElementById('req-name').value='';
+  document.getElementById('req-reason').value='';
+  document.getElementById('picker-search').value='';
+  toast(`✅ Request submitted for ${pickerSelections.size||'selected'} item(s)!`);
+  renderAll();
+}
 function renderLog(){
   const el=document.getElementById('log-list');
   document.getElementById('log-count').textContent=log.length?`${log.length} entries`:'';
-  if(!log.length){el.innerHTML='<p class="empty">No activity yet.</p>';return;}
+  if(!log.length){el.innerHTML='<p style="text-align:center;padding:24px;color:var(--sub);font-size:13px;">No activity yet.</p>';return;}
   el.innerHTML=[...log].reverse().slice(0,50).map(e=>`<div class="log-item"><div class="log-dot ld-${e.type}"></div><div><div>${e.msg}</div><div class="log-time">${e.time}</div></div></div>`).join('');
 }
 
 function renderAll(){renderStats();renderAlerts();renderTable();renderReqDropdown();renderLog();document.getElementById('last-upd').textContent='Updated '+new Date().toLocaleTimeString();}
 
-function submitRequest(){
-  const name=document.getElementById('req-name').value.trim();
-  const itemId=parseInt(document.getElementById('req-item').value);
-  const qty=parseInt(document.getElementById('req-qty').value);
-  const reason=document.getElementById('req-reason').value.trim();
-  if(!name){toast('⚠️ Please enter your name.');return;}
-  if(!itemId){toast('⚠️ Please select an item.');return;}
-  if(!qty||qty<1){toast('⚠️ Quantity must be at least 1.');return;}
-  const item=inv.find(i=>i.id===itemId);
-  if(!item){toast('⚠️ Item not found.');return;}
-  if(qty>item.qty){toast(`⚠️ Only ${item.qty} available.`);return;}
-  item.qty-=qty;item.requested+=qty;
-  save(inv);
-  log.push({type:'deduct',msg:`${name} requested ${qty}× <strong>${item.name}</strong>${reason?' — '+reason:''}`,time:new Date().toLocaleString()});
-  saveLog(log);
-  document.getElementById('req-name').value='';document.getElementById('req-qty').value='1';document.getElementById('req-reason').value='';
-  toast(`✅ ${qty}× ${item.name} deducted. Balance: ${item.qty}`);renderAll();
-}
 
-function delItem(id){
   const item=inv.find(i=>i.id===id);if(!item)return;
   if(!confirm(`Remove "${item.name}"?`))return;
   inv=inv.filter(i=>i.id!==id);save(inv);
