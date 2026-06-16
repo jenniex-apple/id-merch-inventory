@@ -186,6 +186,7 @@
       <div class="fg"><label>4th Floor Location</label><input type="text" id="n-loc4" placeholder="e.g. 12"/></div>
       <div class="fg"><label>3rd Floor Location</label><input type="text" id="n-loc3" placeholder="e.g. 0"/></div>
       <div class="fg"><label>Mead Location</label><input type="text" id="n-mead" placeholder="e.g. 44"/></div>
+      <div class="fg"><label>Country of Origin</label><input type="text" id="n-origin" placeholder="e.g. USA, China, Vietnam"/></div>
       <div class="fg full"><label>Notes</label><textarea id="n-notes" placeholder="Optional notes&#x2026;"></textarea></div>
       <div class="fg" style="flex-direction:row;align-items:center;gap:8px;">
         <input type="checkbox" id="n-chorus" style="width:auto;padding:0;background:none;border:none;"/>
@@ -281,8 +282,8 @@ function renderTable(){
   // Preserve open/closed state
   const openCats=new Set();
   container.querySelectorAll('.cat-toggle.open').forEach(el=>openCats.add(el.dataset.cat));
-  // If nothing was open before (first render), open all
-  const firstRender=openCats.size===0;
+  // All categories start collapsed on first render
+  const firstRender=false;
 
   container.innerHTML=Object.keys(groups).sort().map(catName=>{
     const items=groups[catName];
@@ -426,10 +427,11 @@ function addItem(){
   const loc4=document.getElementById('n-loc4').value.trim();
   const loc3=document.getElementById('n-loc3').value.trim();
   const mead=document.getElementById('n-mead').value.trim();
+  const origin=document.getElementById('n-origin').value.trim();
   const notes=document.getElementById('n-notes').value.trim();
   const chorus=document.getElementById('n-chorus').checked;
   if(!name){toast('⚠️ Item name required.');return;}
-  const item={id:nxId++,name,category:cat,qty,totalQty:qty,requested:0,threshold:thresh,unitCost:cost,notes,loc4th:loc4,loc3rd:loc3,mead,onChorus:chorus};
+  const item={id:nxId++,name,category:cat,qty,totalQty:qty,requested:0,threshold:thresh,unitCost:cost,notes,loc4th:loc4,loc3rd:loc3,mead,origin,onChorus:chorus};
   inv.push(item);save(inv);
   log.push({type:'add',msg:`Added ${qty}× <strong>${name}</strong>`,time:new Date().toLocaleString()});saveLog(log);
   closeModal();toast(`✅ "${name}" added!`);renderAll();
