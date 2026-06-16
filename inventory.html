@@ -107,7 +107,6 @@
   </div>
   <div class="header-right">
     <span class="last-upd" id="last-upd">&#x2014;</span>
-    <button class="btn btn-secondary btn-sm" onclick="exportCSV()">&#x2B07; Export CSV</button>
     <button class="btn btn-primary btn-sm" onclick="openModal()">+ Add Item</button>
   </div>
 </header>
@@ -124,6 +123,7 @@
     <div class="card-hd">
       <h2>I&amp;D Merchandise</h2>
       <div class="btn-group">
+        <button class="btn btn-secondary btn-sm" onclick="exportCSV()">&#x2B07; Export CSV</button>
         <select id="filter-cat" onchange="renderTable()" style="font-size:13px;padding:7px 10px;"><option value="">All Categories</option></select>
         <select id="filter-status" onchange="renderTable()" style="font-size:13px;padding:7px 10px;">
           <option value="">All Statuses</option>
@@ -171,6 +171,7 @@
     <div class="card-hd"><h2>&#x1F4CB; Activity Log</h2>
       <div style="display:flex;gap:8px;align-items:center;">
         <span id="log-count" style="font-size:12px;color:var(--sub);"></span>
+        <button class="btn btn-secondary btn-sm" onclick="exportLogCSV()">&#x2B07; Export CSV</button>
         <button class="btn btn-danger btn-sm" onclick="clearLog()">Clear All</button>
       </div>
     </div>
@@ -478,7 +479,16 @@ function exportCSV(){
   inv.forEach(i=>rows.push([i.name,i.category,Math.max(0,i.qty),i.totalQty,i.requested,statusOf(i).label,i.unitCost??'',i.loc4th,i.loc3rd,i.mead,i.onChorus?'Yes':'No',i.notes]));
   const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([csv],{type:'text/csv'})),download:'ID-Merch-Inventory.csv'});
-  a.click();toast('📥 Exported!');
+  a.click();toast('📥 Inventory exported!');
+}
+
+function exportLogCSV(){
+  if(!log.length){toast('⚠️ No activity to export.');return;}
+  const rows=[['Timestamp','Type','Details']];
+  [...log].reverse().forEach(e=>rows.push([e.time,e.type,e.msg.replace(/<[^>]+>/g,'')]));
+  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([csv],{type:'text/csv'})),download:'ID-Merch-Activity-Log.csv'});
+  a.click();toast('📥 Activity log exported!');
 }
 
 let tt;
