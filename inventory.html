@@ -394,10 +394,19 @@ function renderLog(){
 }
 
 function deleteLogEntry(i){
+  const entry=log[i];
+  if(entry.type==='deduct'&&entry.itemId&&entry.qty){
+    const item=inv.find(x=>x.id===entry.itemId);
+    if(item){
+      item.qty+=entry.qty;
+      item.requested=Math.max(0,item.requested-entry.qty);
+      save(inv);
+      toast(`↩️ ${entry.qty} returned to inventory.`);
+    }
+  }
   log.splice(i,1);
   saveLog(log);
-  renderLog();
-  document.getElementById('log-count').textContent=log.length?`${log.length} entries`:'';
+  renderAll();
 }
 
 function clearLog(){
@@ -423,7 +432,7 @@ function submitRequest(){
   if(qty>item.qty){toast(`⚠️ Only ${item.qty} available.`);return;}
   item.qty-=qty;item.requested+=qty;
   save(inv);
-  log.push({type:'deduct',msg:`${name} requested ${qty}× <strong>${item.name}</strong>${reason?' — '+reason:''}`,time:new Date().toLocaleString()});
+  log.push({type:'deduct',itemId,qty,msg:`${name} requested ${qty}× <strong>${item.name}</strong>${reason?' — '+reason:''}`,time:new Date().toLocaleString()});
   saveLog(log);
   document.getElementById('req-name').value='';document.getElementById('req-qty').value='1';document.getElementById('req-reason').value='';
   toast(`✅ ${qty}× ${item.name} deducted. Balance: ${item.qty}`);renderAll();
