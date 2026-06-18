@@ -509,14 +509,15 @@ function renderLog(){
 
 function deleteLogEntry(i){
   const entry=log[i];
-  if(entry.type==='deduct'&&entry.itemId&&entry.qty){
-    const item=inv.find(x=>x.id===entry.itemId);
-    if(item){
-      item.qty+=entry.qty;
-      item.requested=Math.max(0,item.requested-entry.qty);
-      save(inv);
-      toast(`↩️ ${entry.qty} returned to inventory.`);
-    }
+  if(entry.type==='deduct'){
+    // Handle both new multi-line format and old single-item format
+    const lines=entry.lines||( entry.itemId ? [{itemId:entry.itemId,qty:entry.qty}] : []);
+    lines.forEach(l=>{
+      const item=inv.find(x=>x.id===l.itemId);
+      if(item){item.qty+=l.qty;item.requested=Math.max(0,item.requested-l.qty);}
+    });
+    if(lines.length) save(inv);
+    toast(`↩️ Items returned to inventory.`);
   }
   log.splice(i,1);
   saveLog(log);
@@ -541,7 +542,7 @@ function submitRequest(){
   if(!email){toast('⚠️ Please enter your Apple email.');return;}
   if(!email.endsWith('@apple.com')){toast('⚠️ Please use your @apple.com email address.');return;}
   if(!reqLines.length){toast('⚠️ Please add at least one item.');return;}
-  // Validate all lines
+  // Validate all lines first
   for(const line of reqLines){
     const item=inv.find(i=>i.id===line.itemId);
     const qty=parseInt(line.qty)||1;
@@ -549,20 +550,29 @@ function submitRequest(){
     if(qty<1){toast(`⚠️ Quantity for "${item.name}" must be at least 1.`);return;}
     if(qty>item.qty){toast(`⚠️ Only ${item.qty} of "${item.name}" available.`);return;}
   }
-  // Deduct all
-  reqLines.forEach(line=>{
+  // Deduct all and build one combined log entry
+  const lineDetails=reqLines.map(line=>{
     const item=inv.find(i=>i.id===line.itemId);
     const qty=parseInt(line.qty)||1;
     item.qty-=qty; item.requested+=qty;
-    log.push({type:'deduct',itemId:line.itemId,qty,msg:`${name} (${email}) requested ${qty}× <strong>${item.name}</strong>${reason?' — '+reason:''}`,time:new Date().toLocaleString()});
+    return `${qty}× <strong>${item.name}</strong>`;
   });
-  save(inv); saveLog(log);
+  save(inv);
+  const summary=lineDetails.join(', ');
+  log.push({
+    type:'deduct',
+    lines: reqLines.map(l=>({itemId:l.itemId,qty:parseInt(l.qty)||1})),
+    msg:`${name} (${email}) requested: ${summary}${reason?' — '+reason:''}`,
+    time:new Date().toLocaleString()
+  });
+  saveLog(log);
+  const count=reqLines.length;
   reqLines=[];
   document.getElementById('req-name').value='';
   document.getElementById('req-email').value='';
   document.getElementById('req-reason').value='';
   renderReqLines();
-  toast(`✅ Request submitted! ${reqLines.length||'All'} item(s) deducted.`);
+  toast(`✅ Request submitted! ${count} item${count!==1?'s':''} deducted.`);
   renderAll();
 }
 
