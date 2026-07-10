@@ -180,7 +180,24 @@
   </div>
 
   <div class="card">
-    <div class="card-hd"><h2>&#x1F64B; Request Items</h2></div>
+    <div class="card-hd">
+      <h2>📊 Tableau Live Sync</h2>
+      <span id="tableau-sync-status" style="font-size:12px;color:var(--sub);"></span>
+    </div>
+    <div class="card-bd">
+      <p style="font-size:13px;color:var(--sub);margin-bottom:16px;line-height:1.6;">Push your current inventory to a live data file that Tableau can read. Once synced, connect Tableau using the Web Data Connector URL below.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <button class="btn btn-primary" onclick="syncToTableau()">&#x1F504; Sync Inventory to Tableau</button>
+        <button class="btn btn-secondary" onclick="copyWDCUrl()">&#x1F4CB; Copy Connector URL</button>
+      </div>
+      <div style="margin-top:14px;background:var(--bg);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--sub);">
+        <strong style="color:var(--text);">How to connect in Tableau:</strong><br/>
+        1. Open Tableau Desktop → <em>Connect → Web Data Connector</em><br/>
+        2. Paste the Connector URL → click <em>Connect to Tableau</em><br/>
+        3. Hit <em>&#x1F504; Sync</em> here anytime your inventory changes to refresh Tableau
+      </div>
+    </div>
+  </div>
     <div class="card-bd">
       <div class="form-grid">
         <div class="fg"><label>Your Name</label><input type="text" id="req-name" placeholder="e.g. Alex Johnson" style="width:100%;"/></div>
@@ -437,7 +454,57 @@ function cancelQtyEdit(id){
   inp.previousElementSibling.style.display='';
 }
 
-// ── Item picker & line items ──────────────────────────────────────────────────
+// ── Tableau Sync ──────────────────────────────────────────────────────────────
+const WDC_URL  = 'https://jenniex-apple.github.io/id-merch-inventory/wdc.html';
+const GH_REPO  = 'jenniex-apple/id-merch-inventory';
+const TAB_TOKEN_KEY = 'id_merch_gh_tab_token';
+
+function getTabToken(){
+  let t = localStorage.getItem(TAB_TOKEN_KEY);
+  if(!t){
+    t = prompt('Enter your GitHub Personal Access Token to enable Tableau sync:\n(stored only in your browser)');
+    if(t) localStorage.setItem(TAB_TOKEN_KEY, t.trim());
+  }
+  return t;
+}
+
+async function syncToTableau(){
+  const token = getTabToken();
+  if(!token){toast('⚠️ Token required to sync.');return;}
+  const statusEl = document.getElementById('tableau-sync-status');
+  statusEl.textContent = '⏳ Syncing…';
+  statusEl.style.color = 'var(--warning)';
+  try {
+    const data = JSON.stringify({inv});
+    const b64  = btoa(unescape(encodeURIComponent(data)));
+    let sha = '';
+    try {
+      const chk = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/inventory-data.json`,
+        {headers:{Authorization:`token ${token}`,Accept:'application/vnd.github+json'}});
+      if(chk.ok){ const d=await chk.json(); sha=d.sha; }
+    } catch(e){}
+    const body = {message:'Sync inventory data for Tableau', content:b64};
+    if(sha) body.sha = sha;
+    const res = await fetch(`https://api.github.com/repos/${GH_REPO}/contents/inventory-data.json`,{
+      method:'PUT',
+      headers:{Authorization:`token ${token}`,Accept:'application/vnd.github+json','Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    if(!res.ok) throw new Error(await res.text());
+    statusEl.textContent = `✅ Synced at ${new Date().toLocaleTimeString()}`;
+    statusEl.style.color = 'var(--success)';
+    toast('✅ Inventory synced! Refresh Tableau to see latest data.');
+  } catch(e) {
+    statusEl.textContent = '❌ Sync failed';
+    statusEl.style.color = 'var(--danger)';
+    toast('⚠️ Sync failed — check your token.');
+    console.error(e);
+  }
+}
+
+function copyWDCUrl(){
+  navigator.clipboard.writeText(WDC_URL).then(()=>toast('📋 Connector URL copied! Paste it into Tableau.'));
+}
 let reqLines = []; // [{itemId, qty}]
 
 function renderReqDropdown(){ /* no-op — using picker instead */ }
