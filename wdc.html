@@ -29,20 +29,21 @@ var connector = tableau.makeConnector();
 
 connector.getSchema = function(schemaCallback) {
   var cols = [
-    {id:'id',         alias:'ID',               dataType:tableau.dataTypeEnum.int},
-    {id:'name',       alias:'Item Name',        dataType:tableau.dataTypeEnum.string},
-    {id:'category',   alias:'Category',         dataType:tableau.dataTypeEnum.string},
-    {id:'qty',        alias:'Current Balance',  dataType:tableau.dataTypeEnum.int},
-    {id:'totalQty',   alias:'Total Qty',        dataType:tableau.dataTypeEnum.int},
-    {id:'requested',  alias:'Qty Requested',    dataType:tableau.dataTypeEnum.int},
-    {id:'threshold',  alias:'Low Stock Threshold', dataType:tableau.dataTypeEnum.int},
-    {id:'unitCost',   alias:'Unit Cost',        dataType:tableau.dataTypeEnum.float},
-    {id:'status',     alias:'Status',           dataType:tableau.dataTypeEnum.string},
-    {id:'loc4th',     alias:'CC1 4th Floor',    dataType:tableau.dataTypeEnum.string},
-    {id:'loc3rd',     alias:'CC1 3rd Floor',    dataType:tableau.dataTypeEnum.string},
-    {id:'mead',       alias:'Mead',             dataType:tableau.dataTypeEnum.string},
-    {id:'notes',      alias:'Notes',            dataType:tableau.dataTypeEnum.string},
-    {id:'origin',     alias:'Country of Origin',dataType:tableau.dataTypeEnum.string},
+    {id:'channel',    alias:'Channel',           dataType:tableau.dataTypeEnum.string},
+    {id:'id',         alias:'ID',                dataType:tableau.dataTypeEnum.int},
+    {id:'name',       alias:'Item Name',         dataType:tableau.dataTypeEnum.string},
+    {id:'category',   alias:'Category',          dataType:tableau.dataTypeEnum.string},
+    {id:'qty',        alias:'Current Balance',   dataType:tableau.dataTypeEnum.int},
+    {id:'totalQty',   alias:'Total Qty',         dataType:tableau.dataTypeEnum.int},
+    {id:'requested',  alias:'Qty Requested',     dataType:tableau.dataTypeEnum.int},
+    {id:'threshold',  alias:'Low Stock Threshold',dataType:tableau.dataTypeEnum.int},
+    {id:'unitCost',   alias:'Unit Cost',         dataType:tableau.dataTypeEnum.float},
+    {id:'status',     alias:'Status',            dataType:tableau.dataTypeEnum.string},
+    {id:'loc4th',     alias:'CC1 4th Floor',     dataType:tableau.dataTypeEnum.string},
+    {id:'loc3rd',     alias:'CC1 3rd Floor',     dataType:tableau.dataTypeEnum.string},
+    {id:'mead',       alias:'Mead',              dataType:tableau.dataTypeEnum.string},
+    {id:'notes',      alias:'Notes',             dataType:tableau.dataTypeEnum.string},
+    {id:'origin',     alias:'Country of Origin', dataType:tableau.dataTypeEnum.string},
   ];
   schemaCallback([{id:'id_merch_inventory', alias:'I&D Merch Inventory', columns:cols}]);
 };
@@ -55,6 +56,7 @@ connector.getData = function(table, doneCallback) {
         var q = Math.max(0, i.qty);
         var status = q === 0 ? 'Out of Stock' : q <= i.threshold ? 'Low Stock' : 'In Stock';
         return {
+          channel:   i.channel  || 'I&D',
           id:        i.id,
           name:      i.name,
           category:  i.category,
