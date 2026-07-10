@@ -475,7 +475,7 @@ async function syncToTableau(){
   statusEl.textContent = '⏳ Syncing…';
   statusEl.style.color = 'var(--warning)';
   try {
-    const data = JSON.stringify({inv});
+    const data = JSON.stringify({inv: inv.map(i=>({...i, channel:'I&D'}))});
     const b64  = btoa(unescape(encodeURIComponent(data)));
     let sha = '';
     try {
