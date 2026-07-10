@@ -198,19 +198,20 @@
       </div>
     </div>
   </div>
+
+  <div class="card">
+    <div class="card-hd"><h2>&#x1F64B; Submit a Request</h2></div>
     <div class="card-bd">
       <div class="form-grid">
         <div class="fg"><label>Your Name</label><input type="text" id="req-name" placeholder="e.g. Alex Johnson" style="width:100%;"/></div>
         <div class="fg"><label>Apple Email</label><input type="email" id="req-email" placeholder="e.g. alexjohnson@apple.com" style="width:100%;"/></div>
         <div class="fg full"><label>Project / Reason</label><input type="text" id="req-reason" placeholder="e.g. New hire onboarding Q3" style="width:100%;"/></div>
       </div>
-
       <div style="margin-top:18px;">
         <label style="font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;">Items</label>
         <div id="req-lines" style="display:flex;flex-direction:column;gap:10px;margin-top:8px;"></div>
         <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="addReqLine()">+ Add Item</button>
       </div>
-
       <div style="margin-top:18px;">
         <button class="btn btn-primary" style="width:fit-content;" onclick="submitRequest()">Submit Request &#x2192; Auto-Deduct</button>
       </div>
