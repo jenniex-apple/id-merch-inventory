@@ -394,7 +394,7 @@
           <div class="card-bd">
             <div class="fg full"><label>Additional Notes</label><textarea id="dna-notes" placeholder="e.g. Ship by end of week, fragile items..."></textarea></div>
             <div style="display:flex;justify-content:flex-end;margin-top:16px;">
-              <button class="btn btn-primary" style="padding:0 32px;" onclick="dnaSubmitOrder()">Submit Order</button>
+              <button class="btn btn-primary" style="width:fit-content;" onclick="dnaSubmitOrder()">Submit Order</button>
             </div>
           </div>
         </div>
@@ -430,6 +430,7 @@
                   <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:11%;">Destination</th>
                   <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);">Items</th>
                   <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:17%;">Status</th>
+                  <th style="border-bottom:1px solid var(--border);width:8%;"></th>
                 </tr></thead>
                 <tbody id="dna-log-body"></tbody>
               </table>
@@ -824,6 +825,7 @@ function dnaRenderLog(){
         <td style="padding:12px 14px;font-size:13px;">${dest||'—'}</td>
         <td style="padding:12px 14px;"><div style="display:flex;flex-wrap:wrap;gap:4px;">${pills}</div></td>
         <td style="padding:12px 14px;"><select onchange="dnaUpdateStatus(${e.num},this.value)" style="height:30px;padding:0 8px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit;background:var(--bg);">${opts}</select></td>
+        <td style="padding:12px 14px;"><button class="btn btn-danger btn-sm" onclick="dnaDeleteOne(${e.num})">Delete</button></td>
       </tr>`;
     }).join('');
   }
@@ -832,6 +834,20 @@ function dnaRenderLog(){
   if(sa) sa.checked=false;
   dnaUpdateDeleteBtn();
   dnaRenderHome();
+}
+
+function dnaDeleteOne(num){
+  if(!confirm(`Delete order #${String(num).padStart(3,'0')}?`)) return;
+  dnaOrderLog=dnaOrderLog.filter(e=>e.num!==num);
+  dnaSaveLog();dnaRenderLog();
+  toast(`🗑 Order #${String(num).padStart(3,'0')} deleted.`);
+}
+
+function dnaDeleteOne(num){
+  if(!confirm(`Delete order #${String(num).padStart(3,'0')}?`)) return;
+  dnaOrderLog=dnaOrderLog.filter(e=>e.num!==num);
+  dnaSaveLog();dnaRenderLog();
+  toast(`🗑 Order #${String(num).padStart(3,'0')} deleted.`);
 }
 
 function dnaUpdateDeleteBtn(){
