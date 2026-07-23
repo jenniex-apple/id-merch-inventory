@@ -416,19 +416,20 @@
             <div style="font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:4px;">Orders Placed</div>
             <div style="font-size:13px;color:var(--sub);">All submitted DNA order requests and their fulfillment status.</div>
           </div>
-          <button onclick="dnaClearLog()" style="font-size:12px;font-weight:500;color:var(--danger);background:none;border:none;cursor:pointer;font-family:inherit;">Clear All</button>
+          <button id="dna-delete-selected-btn" class="btn btn-danger btn-sm" onclick="dnaDeleteSelected()" style="display:none;">Delete Selected</button>
         </div>
         <div class="card">
           <div class="card-bd" style="padding:0;">
             <div style="overflow-x:auto;">
               <table style="width:100%;border-collapse:collapse;font-size:13px;">
                 <thead><tr>
+                  <th style="padding:10px 14px;width:4%;border-bottom:1px solid var(--border);"><input type="checkbox" id="dna-select-all" onclick="dnaToggleSelectAll(this)" style="cursor:pointer;width:auto;padding:0;background:none;border:1px solid var(--border);border-radius:4px;"/></th>
                   <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:6%;">#</th>
                   <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:13%;">Date</th>
-                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:18%;">Recipient</th>
-                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:12%;">Destination</th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:17%;">Recipient</th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:11%;">Destination</th>
                   <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);">Items</th>
-                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:18%;">Status</th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:17%;">Status</th>
                 </tr></thead>
                 <tbody id="dna-log-body"></tbody>
               </table>
@@ -802,7 +803,7 @@ function dnaRenderLog(){
   const tbody=document.getElementById('dna-log-body');
   if(!tbody) return;
   if(!dnaOrderLog.length){
-    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--sub);font-size:13px;">No orders placed yet</td></tr>';
+    tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--sub);font-size:13px;">No orders placed yet</td></tr>';
   } else {
     tbody.innerHTML=dnaOrderLog.map(e=>{
       const r=e.recipient;
@@ -816,6 +817,7 @@ function dnaRenderLog(){
       const status=e.status||'pending';
       const opts=Object.entries(DNA_STATUS).map(([v,l])=>`<option value="${v}"${v===status?' selected':''}>${l}</option>`).join('');
       return `<tr>
+        <td style="padding:12px 14px;"><input type="checkbox" class="dna-row-cb" data-num="${e.num}" onchange="dnaUpdateDeleteBtn()" style="cursor:pointer;width:auto;padding:0;background:none;"/></td>
         <td style="padding:12px 14px;"><span style="font-size:11px;font-weight:700;font-family:monospace;background:#f5f5f7;color:var(--sub);border:1px solid var(--border);border-radius:6px;padding:2px 7px;">#${String(e.num).padStart(3,'0')}</span></td>
         <td style="padding:12px 14px;font-size:12px;color:var(--sub);">${dateStr}</td>
         <td style="padding:12px 14px;"><div style="font-weight:500;">${r.firstName} ${r.lastName}</div><div style="font-size:12px;color:var(--sub);">${r.email}</div></td>
@@ -825,7 +827,37 @@ function dnaRenderLog(){
       </tr>`;
     }).join('');
   }
+  // Reset select-all and delete button
+  const sa=document.getElementById('dna-select-all');
+  if(sa) sa.checked=false;
+  dnaUpdateDeleteBtn();
   dnaRenderHome();
+}
+
+function dnaUpdateDeleteBtn(){
+  const checked=document.querySelectorAll('.dna-row-cb:checked').length;
+  const btn=document.getElementById('dna-delete-selected-btn');
+  if(!btn) return;
+  if(checked>0){
+    btn.style.display='';
+    btn.textContent=`Delete Selected (${checked})`;
+  } else {
+    btn.style.display='none';
+  }
+}
+
+function dnaToggleSelectAll(cb){
+  document.querySelectorAll('.dna-row-cb').forEach(c=>c.checked=cb.checked);
+  dnaUpdateDeleteBtn();
+}
+
+function dnaDeleteSelected(){
+  const nums=new Set([...document.querySelectorAll('.dna-row-cb:checked')].map(c=>parseInt(c.dataset.num)));
+  if(!nums.size) return;
+  if(!confirm(`Delete ${nums.size} selected order${nums.size!==1?'s':''}?`)) return;
+  dnaOrderLog=dnaOrderLog.filter(e=>!nums.has(e.num));
+  dnaSaveLog();dnaRenderLog();
+  toast(`🗑 ${nums.size} order${nums.size!==1?'s':''} deleted.`);
 }
 
 function dnaRenderHome(){
