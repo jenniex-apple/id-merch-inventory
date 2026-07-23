@@ -138,9 +138,8 @@
   .nav-children-wrap{display:none;} .nav-children-wrap.open{display:block;}
   .nav-divider{height:1px;background:var(--border);margin:8px 6px;}
   .content-area{margin-left:220px;flex:1;padding-top:0;}
-  .page{display:none;} .page.active{display:block;}
-  @media(max-width:800px){.sidebar{display:none;}.content-area{margin-left:0;}}
-</style>
+  .page{display:none;} .page.active{display:flex;flex-direction:column;gap:24px;}
+  @media(max-width:800px){.sidebar{display:none;}.content-area{margin-left:0;}}</style>
 </head>
 <body>
 
@@ -165,7 +164,7 @@
     <div class="nav-divider"></div>
     <div class="sidebar-label">Order Portals</div>
 
-    <button class="nav-group-btn open" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+    <button class="nav-group-btn open" onclick="showPage('page-dna-home',this);this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
       <span class="nav-icon">📋</span> DNA Order Portal <span class="nav-chevron">▶</span>
     </button>
     <div class="nav-children-wrap open">
@@ -272,6 +271,72 @@
       </div>
 
       </div><!-- /page-id -->
+
+      <!-- PAGE: DNA Order Portal Home -->
+      <div class="page" id="page-dna-home">
+        <div>
+          <div style="font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:6px;">📋 DNA Order Portal</div>
+          <div style="font-size:14px;color:var(--sub);">Partner fulfillment portal for the DNA team. Submit orders and track fulfillment status.</div>
+        </div>
+
+        <!-- Quick actions -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="card" style="cursor:pointer;transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 28px rgba(0,0,0,.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''" onclick="showPage('page-dna',document.querySelector('.nav-child'))">
+            <div class="card-bd" style="display:flex;align-items:center;gap:16px;">
+              <div style="width:48px;height:48px;border-radius:12px;background:#e8f1fd;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">📝</div>
+              <div>
+                <div style="font-size:15px;font-weight:600;margin-bottom:3px;">New Order Request</div>
+                <div style="font-size:13px;color:var(--sub);">Fill out recipient info and select items to ship</div>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="cursor:pointer;transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 28px rgba(0,0,0,.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''" onclick="showPage('page-dna-log',document.querySelectorAll('.nav-child')[1])">
+            <div class="card-bd" style="display:flex;align-items:center;gap:16px;">
+              <div style="width:48px;height:48px;border-radius:12px;background:#e8f9f0;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">📦</div>
+              <div>
+                <div style="font-size:15px;font-weight:600;margin-bottom:3px;">View Orders Placed</div>
+                <div style="font-size:13px;color:var(--sub);">Track fulfillment status of all submitted orders</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="card">
+          <div class="card-hd"><h2>Order Summary</h2></div>
+          <div class="card-bd">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;" id="dna-home-stats">
+              <div style="text-align:center;padding:16px;background:var(--bg);border-radius:12px;">
+                <div style="font-size:28px;font-weight:700;" id="dna-stat-total">0</div>
+                <div style="font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;margin-top:4px;">Total Orders</div>
+              </div>
+              <div style="text-align:center;padding:16px;background:var(--bg);border-radius:12px;">
+                <div style="font-size:28px;font-weight:700;color:var(--warning);" id="dna-stat-pending">0</div>
+                <div style="font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;margin-top:4px;">Pending</div>
+              </div>
+              <div style="text-align:center;padding:16px;background:var(--bg);border-radius:12px;">
+                <div style="font-size:28px;font-weight:700;color:var(--accent);" id="dna-stat-shipping">0</div>
+                <div style="font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;margin-top:4px;">In Progress</div>
+              </div>
+              <div style="text-align:center;padding:16px;background:var(--bg);border-radius:12px;">
+                <div style="font-size:28px;font-weight:700;color:var(--success);" id="dna-stat-completed">0</div>
+                <div style="font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;margin-top:4px;">Completed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent orders -->
+        <div class="card">
+          <div class="card-hd">
+            <h2>Recent Orders</h2>
+            <button class="btn btn-secondary btn-sm" onclick="showPage('page-dna-log',document.querySelectorAll('.nav-child')[1])">View All</button>
+          </div>
+          <div class="card-bd" style="padding:0;">
+            <div id="dna-home-recent" style="padding:0 22px;"></div>
+          </div>
+        </div>
+      </div><!-- /page-dna-home -->
 
       <!-- PAGE: DNA Order Request -->
       <div class="page" id="page-dna">
@@ -737,30 +802,63 @@ function dnaRenderLog(){
   const tbody=document.getElementById('dna-log-body');
   if(!tbody) return;
   if(!dnaOrderLog.length){
-    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--sub);font-size:13px;">No orders placed yet</td></tr>';return;
+    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--sub);font-size:13px;">No orders placed yet</td></tr>';
+  } else {
+    tbody.innerHTML=dnaOrderLog.map(e=>{
+      const r=e.recipient;
+      const dt=new Date(e.timestamp);
+      const dateStr=dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      const dest=[r.city,r.state,r.country].filter(Boolean).join(', ');
+      const pills=e.items.map(i=>{
+        const found=DNA_CATALOG.find(c=>c.partNumber===i.partNumber);
+        return `<span style="font-size:11.5px;background:#f0f7ff;color:var(--accent);border:1px solid #c5dff9;border-radius:20px;padding:2px 9px;white-space:nowrap;">${found?found.description:i.partNumber} x${i.qty}</span>`;
+      }).join(' ');
+      const status=e.status||'pending';
+      const opts=Object.entries(DNA_STATUS).map(([v,l])=>`<option value="${v}"${v===status?' selected':''}>${l}</option>`).join('');
+      return `<tr>
+        <td style="padding:12px 14px;"><span style="font-size:11px;font-weight:700;font-family:monospace;background:#f5f5f7;color:var(--sub);border:1px solid var(--border);border-radius:6px;padding:2px 7px;">#${String(e.num).padStart(3,'0')}</span></td>
+        <td style="padding:12px 14px;font-size:12px;color:var(--sub);">${dateStr}</td>
+        <td style="padding:12px 14px;"><div style="font-weight:500;">${r.firstName} ${r.lastName}</div><div style="font-size:12px;color:var(--sub);">${r.email}</div></td>
+        <td style="padding:12px 14px;font-size:13px;">${dest||'—'}</td>
+        <td style="padding:12px 14px;"><div style="display:flex;flex-wrap:wrap;gap:4px;">${pills}</div></td>
+        <td style="padding:12px 14px;"><select onchange="dnaUpdateStatus(${e.num},this.value)" style="height:30px;padding:0 8px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit;background:var(--bg);">${opts}</select></td>
+      </tr>`;
+    }).join('');
   }
-  tbody.innerHTML=dnaOrderLog.map(e=>{
+  dnaRenderHome();
+}
+
+function dnaRenderHome(){
+  // Stats
+  const total=dnaOrderLog.length;
+  const pending=dnaOrderLog.filter(e=>e.status==='pending').length;
+  const shipping=dnaOrderLog.filter(e=>e.status==='submitted'||e.status==='shipping').length;
+  const completed=dnaOrderLog.filter(e=>e.status==='completed').length;
+  const ts=document.getElementById('dna-stat-total');   if(ts) ts.textContent=total;
+  const ps=document.getElementById('dna-stat-pending'); if(ps) ps.textContent=pending;
+  const ss=document.getElementById('dna-stat-shipping');if(ss) ss.textContent=shipping;
+  const cs=document.getElementById('dna-stat-completed');if(cs) cs.textContent=completed;
+  // Recent orders (last 5)
+  const recent=document.getElementById('dna-home-recent');
+  if(!recent) return;
+  if(!dnaOrderLog.length){
+    recent.innerHTML='<p style="padding:20px 0;text-align:center;color:var(--sub);font-size:13px;">No orders yet — <a href="#" onclick="showPage(\'page-dna\',document.querySelector(\'.nav-child\'));return false;" style="color:var(--accent);">place your first order</a></p>';
+    return;
+  }
+  recent.innerHTML=dnaOrderLog.slice(0,5).map(e=>{
     const r=e.recipient;
     const dt=new Date(e.timestamp);
-    const dateStr=dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-    const dest=[r.city,r.state,r.country].filter(Boolean).join(', ');
-    const pills=e.items.map(i=>{
-      const found=DNA_CATALOG.find(c=>c.partNumber===i.partNumber);
-      return `<span style="font-size:11.5px;background:#f0f7ff;color:var(--accent);border:1px solid #c5dff9;border-radius:20px;padding:2px 9px;white-space:nowrap;">${found?found.description:i.partNumber} x${i.qty}</span>`;
-    }).join(' ');
+    const dateStr=dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});
     const status=e.status||'pending';
-    const opts=Object.entries(DNA_STATUS).map(([v,l])=>`<option value="${v}"${v===status?' selected':''}>${l}</option>`).join('');
-    return `<tr>
-      <td style="padding:12px 14px;"><span style="font-size:11px;font-weight:700;font-family:monospace;background:#f5f5f7;color:var(--sub);border:1px solid var(--border);border-radius:6px;padding:2px 7px;">#${String(e.num).padStart(3,'0')}</span></td>
-      <td style="padding:12px 14px;font-size:12px;color:var(--sub);">${dateStr}</td>
-      <td style="padding:12px 14px;"><div style="font-weight:500;">${r.firstName} ${r.lastName}</div><div style="font-size:12px;color:var(--sub);">${r.email}</div></td>
-      <td style="padding:12px 14px;font-size:13px;">${dest||'—'}</td>
-      <td style="padding:12px 14px;"><div style="display:flex;flex-wrap:wrap;gap:4px;">${pills}</div></td>
-      <td style="padding:12px 14px;"><select onchange="dnaUpdateStatus(${e.num},this.value)" style="height:30px;padding:0 8px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit;background:var(--bg);">${opts}</select></td>
-    </tr>`;
+    const statusColor={pending:'var(--sub)',submitted:'var(--accent)',shipping:'var(--accent)',completed:'var(--success)'};
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f0f0f3;gap:12px;">
+      <span style="font-size:11px;font-weight:700;font-family:monospace;background:#f5f5f7;color:var(--sub);border:1px solid var(--border);border-radius:6px;padding:2px 6px;flex-shrink:0;">#${String(e.num).padStart(3,'0')}</span>
+      <div style="flex:1;min-width:0;"><div style="font-weight:500;font-size:13px;">${r.firstName} ${r.lastName}</div><div style="font-size:11px;color:var(--sub);">${e.items.length} item${e.items.length!==1?'s':''}</div></div>
+      <span style="font-size:11px;font-weight:600;color:${statusColor[status]||'var(--sub)'};">${DNA_STATUS[status]||status}</span>
+      <span style="font-size:11px;color:var(--sub);white-space:nowrap;">${dateStr}</span>
+    </div>`;
   }).join('');
 }
-dnaRenderLog();
 
 function dnaBuildSummary(r,items,notes){
   const itemLines=items.map(i=>{const f=DNA_CATALOG.find(c=>c.partNumber===i.partNumber);return `  - ${f?f.description:i.partNumber} [${i.partNumber}] x${i.qty}`;}).join('\n');
@@ -823,6 +921,7 @@ function dnaClearLog(){
   if(!confirm('Clear all DNA order history?')) return;
   dnaOrderLog=[];dnaOrderCounter=0;dnaSaveLog();dnaRenderLog();toast('Order history cleared');
 }
+dnaRenderLog();
 
 // ── Tableau Sync ──────────────────────────────────────────────────────────────
 const WDC_URL  = 'https://jenniex-apple.github.io/id-merch-inventory/wdc.html';
