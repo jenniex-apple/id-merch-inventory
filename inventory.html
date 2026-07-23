@@ -119,7 +119,19 @@
   .cat-toggle.open .cat-arrow{transform:rotate(90deg);}
   .cat-toggle .cat-meta{font-size:11px;color:var(--sub);font-weight:400;margin-left:8px;}
   .cat-body{display:none;} .cat-body.open{display:table-row-group;}
-  @media(max-width:650px){.form-grid{grid-template-columns:1fr;}.stats{grid-template-columns:1fr 1fr;}main{padding:16px 14px;}header{padding:0 16px;}.bar-wrap,.locs{display:none;}}
+  /* Sidebar nav */
+  .app-layout{display:flex;min-height:100vh;}
+  .sidebar{width:220px;background:var(--card);border-right:1px solid var(--border);position:fixed;top:62px;left:0;bottom:0;display:flex;flex-direction:column;padding:16px 10px;gap:4px;overflow-y:auto;z-index:90;}
+  .sidebar-label{font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.6px;padding:10px 10px 4px;margin-top:6px;}
+  .sidebar-label:first-child{margin-top:0;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;color:var(--sub);border:none;background:none;width:100%;text-align:left;font-family:inherit;transition:background .12s,color .12s;}
+  .nav-item:hover{background:var(--bg);color:var(--text);}
+  .nav-item.active{background:#e8f1fd;color:var(--accent);font-weight:600;}
+  .nav-item .nav-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0;}
+  .content-area{margin-left:220px;flex:1;padding-top:0;}
+  .content-section{display:none;}
+  .content-section.active{display:block;}
+  @media(max-width:800px){.sidebar{display:none;}.content-area{margin-left:0;}}
 </style>
 </head>
 <body>
@@ -135,99 +147,133 @@
   </div>
 </header>
 
-<main>
-  <div class="alert-bar hidden" id="alert-bar">
-    <button class="alert-toggle" onclick="toggleAlert()">
-      <span>⚠️ <strong>Low Stock Alert</strong> <span id="alert-count" style="font-weight:400;color:#7a5500;"></span></span>
-      <span id="alert-chevron" style="font-size:11px;color:#7a5500;">▼ show</span>
-    </button>
-    <div class="alert-body" id="alert-body"><ul id="alert-list"></ul></div>
-  </div>
+<div class="app-layout">
 
-  <div class="stats" id="stats-row"></div>
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-label">Overview</div>
+    <button class="nav-item active" onclick="navTo('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</button>
 
-  <div class="card">
-    <div class="card-hd">
-      <h2>I&amp;D Merchandise</h2>
-      <div class="btn-group">
-        <select id="filter-status" onchange="renderTable()" style="font-size:13px;padding:7px 10px;">
-          <option value="">All Statuses</option>
-          <option value="ok">In Stock</option>
-          <option value="low">Low Stock</option>
-          <option value="out">Out of Stock</option>
-        </select>
-        <select id="filter-loc" onchange="renderTable()" style="font-size:13px;padding:7px 10px;">
-          <option value="">All Locations</option>
-          <option value="4f">CC1 4th Floor</option>
-          <option value="3f">CC1 3rd Floor</option>
-          <option value="mead">Mead</option>
-        </select>
-        <button class="btn btn-secondary btn-sm" onclick="exportCSV()">&#x2B07; Export CSV</button>
+    <div class="sidebar-label">Inventory</div>
+    <button class="nav-item" onclick="navTo('merchandise',this)"><span class="nav-icon">📦</span> I&amp;D Merchandise</button>
+    <button class="nav-item" onclick="navTo('tableau',this)"><span class="nav-icon">📈</span> Tableau Sync</button>
+
+    <div class="sidebar-label">Requests</div>
+    <button class="nav-item" onclick="navTo('request',this)"><span class="nav-icon">🙋</span> Submit a Request</button>
+    <button class="nav-item" onclick="navTo('log',this)"><span class="nav-icon">📋</span> Activity Log</button>
+  </nav>
+
+  <!-- Content -->
+  <div class="content-area">
+    <main>
+
+      <!-- Dashboard section -->
+      <div class="content-section active" id="sec-dashboard">
+        <div class="alert-bar hidden" id="alert-bar">
+          <button class="alert-toggle" onclick="toggleAlert()">
+            <span>⚠️ <strong>Low Stock Alert</strong> <span id="alert-count" style="font-weight:400;color:#7a5500;"></span></span>
+            <span id="alert-chevron" style="font-size:11px;color:#7a5500;">▼ show</span>
+          </button>
+          <div class="alert-body" id="alert-body"><ul id="alert-list"></ul></div>
+        </div>
+        <div class="stats" id="stats-row"></div>
       </div>
-    </div>
-    <div class="card-bd">
-      <input type="checkbox" id="chorus-only" onchange="renderTable()" style="display:none;"/>
-      <div class="toolbar">
-        <div class="search-wrap">
-          <span class="si">&#x1F50D;</span>
-          <input type="text" id="search" placeholder="Search by name, category, location&#x2026;" oninput="renderTable()"/>
+
+      <!-- Merchandise section -->
+      <div class="content-section" id="sec-merchandise">
+        <div class="card">
+          <div class="card-hd">
+            <h2>I&amp;D Merchandise</h2>
+            <div class="btn-group">
+              <select id="filter-status" onchange="renderTable()" style="font-size:13px;padding:7px 10px;">
+                <option value="">All Statuses</option>
+                <option value="ok">In Stock</option>
+                <option value="low">Low Stock</option>
+                <option value="out">Out of Stock</option>
+              </select>
+              <select id="filter-loc" onchange="renderTable()" style="font-size:13px;padding:7px 10px;">
+                <option value="">All Locations</option>
+                <option value="4f">CC1 4th Floor</option>
+                <option value="3f">CC1 3rd Floor</option>
+                <option value="mead">Mead</option>
+              </select>
+              <button class="btn btn-secondary btn-sm" onclick="exportCSV()">&#x2B07; Export CSV</button>
+            </div>
+          </div>
+          <div class="card-bd">
+            <input type="checkbox" id="chorus-only" onchange="renderTable()" style="display:none;"/>
+            <div class="toolbar">
+              <div class="search-wrap">
+                <span class="si">&#x1F50D;</span>
+                <input type="text" id="search" placeholder="Search by name, category, location&#x2026;" oninput="renderTable()"/>
+              </div>
+            </div>
+            <div class="tbl-wrap"><div id="inv-body"></div></div>
+          </div>
         </div>
       </div>
-      <div class="tbl-wrap">
-        <div id="inv-body"></div>
-      </div>
-    </div>
-  </div>
 
-  <div class="card">
-    <div class="card-hd">
-      <h2>📊 Tableau Live Sync</h2>
-      <span id="tableau-sync-status" style="font-size:12px;color:var(--sub);"></span>
-    </div>
-    <div class="card-bd">
-      <p style="font-size:13px;color:var(--sub);margin-bottom:16px;line-height:1.6;">Push your current inventory to a live data file that Tableau can read. Once synced, connect Tableau using the Web Data Connector URL below.</p>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-        <button class="btn btn-primary" onclick="syncToTableau()">&#x1F504; Sync Inventory to Tableau</button>
-        <button class="btn btn-secondary" onclick="copyWDCUrl()">&#x1F4CB; Copy Connector URL</button>
+      <!-- Tableau section -->
+      <div class="content-section" id="sec-tableau">
+        <div class="card">
+          <div class="card-hd">
+            <h2>📊 Tableau Live Sync</h2>
+            <span id="tableau-sync-status" style="font-size:12px;color:var(--sub);"></span>
+          </div>
+          <div class="card-bd">
+            <p style="font-size:13px;color:var(--sub);margin-bottom:16px;line-height:1.6;">Push your current inventory to a live data file that Tableau can read. Once synced, connect Tableau using the Web Data Connector URL below.</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+              <button class="btn btn-primary" onclick="syncToTableau()">&#x1F504; Sync Inventory to Tableau</button>
+              <button class="btn btn-secondary" onclick="copyWDCUrl()">&#x1F4CB; Copy Connector URL</button>
+            </div>
+            <div style="margin-top:14px;background:var(--bg);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--sub);">
+              <strong style="color:var(--text);">How to connect in Tableau:</strong><br/>
+              1. Open Tableau Desktop → <em>Connect → Web Data Connector</em><br/>
+              2. Paste the Connector URL → click <em>Connect to Tableau</em><br/>
+              3. Hit <em>&#x1F504; Sync</em> here anytime your inventory changes to refresh Tableau
+            </div>
+          </div>
+        </div>
       </div>
-      <div style="margin-top:14px;background:var(--bg);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--sub);">
-        <strong style="color:var(--text);">How to connect in Tableau:</strong><br/>
-        1. Open Tableau Desktop → <em>Connect → Web Data Connector</em><br/>
-        2. Paste the Connector URL → click <em>Connect to Tableau</em><br/>
-        3. Hit <em>&#x1F504; Sync</em> here anytime your inventory changes to refresh Tableau
-      </div>
-    </div>
-  </div>
 
-  <div class="card">
-    <div class="card-hd"><h2>&#x1F64B; Submit a Request</h2></div>
-    <div class="card-bd">
-      <div class="form-grid">
-        <div class="fg"><label>Your Name</label><input type="text" id="req-name" placeholder="e.g. Alex Johnson" style="width:100%;"/></div>
-        <div class="fg"><label>Apple Email</label><input type="email" id="req-email" placeholder="e.g. alexjohnson@apple.com" style="width:100%;"/></div>
-        <div class="fg full"><label>Project / Reason</label><input type="text" id="req-reason" placeholder="e.g. New hire onboarding Q3" style="width:100%;"/></div>
+      <!-- Request section -->
+      <div class="content-section" id="sec-request">
+        <div class="card">
+          <div class="card-hd"><h2>&#x1F64B; Submit a Request</h2></div>
+          <div class="card-bd">
+            <div class="form-grid">
+              <div class="fg"><label>Your Name</label><input type="text" id="req-name" placeholder="e.g. Alex Johnson" style="width:100%;"/></div>
+              <div class="fg"><label>Apple Email</label><input type="email" id="req-email" placeholder="e.g. alexjohnson@apple.com" style="width:100%;"/></div>
+              <div class="fg full"><label>Project / Reason</label><input type="text" id="req-reason" placeholder="e.g. New hire onboarding Q3" style="width:100%;"/></div>
+            </div>
+            <div style="margin-top:18px;">
+              <label style="font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;">Items</label>
+              <div id="req-lines" style="display:flex;flex-direction:column;gap:10px;margin-top:8px;"></div>
+              <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="addReqLine()">+ Add Item</button>
+            </div>
+            <div style="margin-top:18px;">
+              <button class="btn btn-primary" style="width:fit-content;" onclick="submitRequest()">Submit Request &#x2192; Auto-Deduct</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div style="margin-top:18px;">
-        <label style="font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;">Items</label>
-        <div id="req-lines" style="display:flex;flex-direction:column;gap:10px;margin-top:8px;"></div>
-        <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="addReqLine()">+ Add Item</button>
-      </div>
-      <div style="margin-top:18px;">
-        <button class="btn btn-primary" style="width:fit-content;" onclick="submitRequest()">Submit Request &#x2192; Auto-Deduct</button>
-      </div>
-    </div>
-  </div>
 
-  <div class="card">
-    <div class="card-hd"><h2>&#x1F4CB; Activity Log</h2>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <span id="log-count" style="font-size:12px;color:var(--sub);"></span>
-        <button class="btn btn-secondary btn-sm" onclick="exportLogCSV()">&#x2B07; Export CSV</button>
+      <!-- Activity Log section -->
+      <div class="content-section" id="sec-log">
+        <div class="card">
+          <div class="card-hd"><h2>&#x1F4CB; Activity Log</h2>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span id="log-count" style="font-size:12px;color:var(--sub);"></span>
+              <button class="btn btn-secondary btn-sm" onclick="exportLogCSV()">&#x2B07; Export CSV</button>
+            </div>
+          </div>
+          <div class="card-bd"><div id="log-list"><p class="empty">No activity yet.</p></div></div>
+        </div>
       </div>
-    </div>
-    <div class="card-bd"><div id="log-list"><p class="empty">No activity yet.</p></div></div>
+
+    </main>
   </div>
-</main>
+</div>
 
 <div class="modal-bg" id="modal-bg" onclick="bgClose(event)">
   <div class="modal">
@@ -453,6 +499,14 @@ function cancelQtyEdit(id){
   const inp=document.getElementById('qe-'+id);
   inp.style.display='none';
   inp.previousElementSibling.style.display='';
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function navTo(section, btn){
+  document.querySelectorAll('.content-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sec-'+section).classList.add('active');
+  btn.classList.add('active');
 }
 
 // ── Tableau Sync ──────────────────────────────────────────────────────────────
