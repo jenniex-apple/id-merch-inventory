@@ -375,7 +375,7 @@
               <table style="width:100%;border-collapse:collapse;font-size:13.5px;">
                 <thead><tr>
                   <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:54%;">Item</th>
-                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:20%;">Part #</th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:20%;">Category</th>
                   <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:14%;">Qty</th>
                   <th style="text-align:center;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:12%;">Del</th>
                 </tr></thead>
@@ -678,34 +678,17 @@ function showPage(pageId, btn){
 }
 
 // ── DNA Order Portal ──────────────────────────────────────────────────────────
-const DNA_CATALOG = [
-  {partNumber:'AP@A_Notebook',  description:'AsiaPacific@Apple Notebook',     category:'Notebooks'},
-  {partNumber:'B@A_Notebook',   description:'Black@Apple Notebook',            category:'Notebooks'},
-  {partNumber:'F@A_Notebook',   description:'Familia@Apple Notebook',          category:'Notebooks'},
-  {partNumber:'W@A_Notebook',   description:'Women@Apple Notebook',            category:'Notebooks'},
-  {partNumber:'AP@A_Tote',      description:'AsiaPacific@Apple Tote',          category:'Totes'},
-  {partNumber:'B@A_Btag',       description:'Black@Apple BadgeTag',            category:'Badge Tags'},
-  {partNumber:'F@A_Btag',       description:'Familia@Apple BadgeTag',          category:'Badge Tags'},
-  {partNumber:'W@A_Btag',       description:'Women@Apple BadgeTag',            category:'Badge Tags'},
-  {partNumber:'A@A_Btag',       description:'Accessibility@Apple BadgeTag',    category:'Badge Tags'},
-  {partNumber:'BEA@A_Btag',     description:'Beacon@Apple BadgeTag',           category:'Badge Tags'},
-  {partNumber:'I@A_sticker',    description:'Indigenous@Apple Sticker',        category:'Stickers'},
-  {partNumber:'P@A_sticker',    description:'Pride@Apple Sticker',             category:'Stickers'},
-  {partNumber:'SA@A_sticker',   description:'SouthAsian@Apple Sticker',        category:'Stickers'},
-  {partNumber:'V@A_sticker',    description:'Veterans@Apple Sticker',          category:'Stickers'},
-  {partNumber:'Merge_sticker',  description:'DNA Merge Sticker',               category:'Stickers'},
-  {partNumber:'DNA_CableOrg',   description:'Cable Organizers with DNA Merge', category:'Other'},
-  {partNumber:'DOT_WaterBottle',description:'16.9 oz Water Bottles (Dots Logo)',category:'Other'},
-  {partNumber:'DOT_BucketHat',  description:'Bucket Hats',                     category:'Other'},
-];
 
 function dnaBuildSelectOptions(){
   const groups={};
-  DNA_CATALOG.forEach(i=>{if(!groups[i.category])groups[i.category]=[];groups[i.category].push(i);});
+  inv.filter(i=>i.qty>0).forEach(i=>{
+    if(!groups[i.category]) groups[i.category]=[];
+    groups[i.category].push(i);
+  });
   let html='<option value="" disabled selected>— Select item —</option>';
   for(const [cat,items] of Object.entries(groups)){
     html+=`<optgroup label="${cat}">`;
-    items.forEach(i=>{html+=`<option value="${i.partNumber}">${i.description}</option>`;});
+    items.forEach(i=>{html+=`<option value="${i.id}">${i.name} (${i.qty} avail.)</option>`;});
     html+='</optgroup>';
   }
   return html;
@@ -730,8 +713,13 @@ function dnaAddItem(){
 function dnaUpdateTag(id){
   const sel=document.getElementById(`dna-item-${id}`);
   const tag=document.getElementById(`dna-tag-${id}`);
-  if(sel.value){tag.textContent=sel.value;tag.style.cssText='font-size:11px;font-weight:600;font-family:monospace;color:#6e6e73;font-style:normal;';}
-  else{tag.textContent='—';tag.style.cssText='font-size:11px;color:#b0b0b5;font-style:italic;';}
+  if(sel.value){
+    const item=inv.find(i=>i.id===parseInt(sel.value));
+    tag.textContent=item?item.category:'—';
+    tag.style.cssText='font-size:11px;font-weight:600;color:#6e6e73;font-style:normal;';
+  } else {
+    tag.textContent='—';tag.style.cssText='font-size:11px;color:#b0b0b5;font-style:italic;';
+  }
 }
 
 function dnaRemoveItem(id){
@@ -767,7 +755,10 @@ function dnaCollectItems(){
     const id=row.id.replace('dna-row-','');
     const sel=document.getElementById(`dna-item-${id}`);
     const qty=document.getElementById(`dna-qty-${id}`);
-    if(sel&&sel.value) items.push({partNumber:sel.value,qty:qty.value||1});
+    if(sel&&sel.value){
+      const invItem=inv.find(i=>i.id===parseInt(sel.value));
+      items.push({invId:parseInt(sel.value), name:invItem?invItem.name:sel.value, category:invItem?invItem.category:'', qty:parseInt(qty.value)||1});
+    }
   });
   return items;
 }
@@ -812,8 +803,8 @@ function dnaRenderLog(){
       const dateStr=dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
       const dest=[r.city,r.state,r.country].filter(Boolean).join(', ');
       const pills=e.items.map(i=>{
-        const found=DNA_CATALOG.find(c=>c.partNumber===i.partNumber);
-        return `<span style="font-size:11.5px;background:#f0f7ff;color:var(--accent);border:1px solid #c5dff9;border-radius:20px;padding:2px 9px;white-space:nowrap;">${found?found.description:i.partNumber} x${i.qty}</span>`;
+        const label=i.name||i.partNumber||'Item';
+        return `<span style="font-size:11.5px;background:#f0f7ff;color:var(--accent);border:1px solid #c5dff9;border-radius:20px;padding:2px 9px;white-space:nowrap;">${label} x${i.qty}</span>`;
       }).join(' ');
       const status=e.status||'pending';
       const statusColors={pending:'#f5f5f7',submitted:'#fff4e6',shipping:'#e8f4fd',completed:'#e8f9f0'};
@@ -915,7 +906,7 @@ function dnaRenderHome(){
 }
 
 function dnaBuildSummary(r,items,notes){
-  const itemLines=items.map(i=>{const f=DNA_CATALOG.find(c=>c.partNumber===i.partNumber);return `  - ${f?f.description:i.partNumber} [${i.partNumber}] x${i.qty}`;}).join('\n');
+  const itemLines=items.map(i=>`  - ${i.name} x${i.qty}`).join('\n');
   const now=new Date();
   return ['─────────────────────────','  DNA ORDER REQUEST',`  ${now.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}`,
     '─────────────────────────','','SHIP TO',
@@ -938,7 +929,7 @@ function dnaSubmitOrder(){
   dnaOrderLog.unshift({num:dnaOrderCounter,timestamp:new Date().toISOString(),recipient:r,items,notes,status:'pending',statusHistory:[{status:'pending',timestamp:new Date().toISOString()}]});
   dnaSaveLog();dnaRenderLog();
   const dest=[r.addr1,r.addr2,r.city,r.state,r.zip,r.country].filter(Boolean).join(', ');
-  const itemList=items.map(i=>{const f=DNA_CATALOG.find(c=>c.partNumber===i.partNumber);return `${f?f.description:i.partNumber} x${i.qty}`;}).join(' · ');
+  const itemList=items.map(i=>`${i.name} x${i.qty}`).join(' · ');
   document.getElementById('dna-success-detail').innerHTML=`
     <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f5f5f7;font-size:13px;"><span style="color:var(--sub);">Recipient</span><span style="font-weight:500;">${r.firstName} ${r.lastName}</span></div>
     <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f5f5f7;font-size:13px;"><span style="color:var(--sub);">Email</span><span style="font-weight:500;">${r.email}</span></div>
