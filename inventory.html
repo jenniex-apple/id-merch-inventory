@@ -851,7 +851,7 @@ function dnaRenderLog(){
         <td style="padding:12px 14px;font-size:12px;color:var(--sub);">${dateStr}</td>
         <td style="padding:12px 14px;"><div style="font-weight:500;">${r.firstName} ${r.lastName}</div><div style="font-size:12px;color:var(--sub);">${r.email}</div></td>
         <td style="padding:12px 14px;font-size:13px;">${dest||'—'}</td>
-        <td style="padding:12px 14px;"><div style="display:flex;flex-wrap:wrap;gap:4px;">${pills}</div></td>
+        <td style="padding:12px 14px;"><div style="display:flex;flex-wrap:wrap;gap:4px;">${pills}</div>${e.notes?`<div style="font-size:11px;color:var(--sub);font-style:italic;margin-top:5px;">📝 ${e.notes}</div>`:''}</td>
         <td style="padding:12px 14px;" onclick="event.stopPropagation()"><select onchange="dnaUpdateStatus(${e.num},this.value)" style="height:32px;padding:0 28px 0 10px;border:1.5px solid ${sb};border-radius:20px;font-size:12px;font-weight:600;font-family:inherit;background:${sc};color:${stc};cursor:pointer;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22 viewBox=%220 0 12 8%22%3E%3Cpath fill=%22%236e6e73%22 d=%22M6 8L0 0h12z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 10px center;">${opts}</select></td>
         <td style="padding:12px 14px;" onclick="event.stopPropagation()"><button class="btn btn-danger btn-sm" onclick="dnaDeleteOne(${e.num})">Delete</button></td>
       </tr>
