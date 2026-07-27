@@ -179,9 +179,11 @@
       <button class="nav-child" onclick="showPage('page-id-order',this)">📝 Order Request</button>
       <button class="nav-child" id="nav-id-log" onclick="showPage('page-id-log',this)">📦 Orders Placed</button>
     </div>
-  </nav>
 
-  <!-- Content -->
+    <div class="nav-divider"></div>
+    <div class="sidebar-label">Summaries</div>
+    <button class="nav-item" onclick="showPage('page-dashboard',this);dashRender()"><span class="nav-icon">📊</span> Orders Dashboard</button>
+  </nav>
   <div class="content-area">
     <main>
 
@@ -585,6 +587,54 @@
         </div>
       </div><!-- /page-id-log -->
 
+      <!-- PAGE: Orders Dashboard -->
+      <div class="page" id="page-dashboard">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:4px;">
+          <div>
+            <div style="font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:6px;">📊 Orders Dashboard</div>
+            <div style="font-size:14px;color:var(--sub);">Combined view of all DNA and I&amp;D orders.</div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            <select id="dash-filter-portal" onchange="dashRender()" style="font-size:13px;padding:7px 10px;">
+              <option value="">All Portals</option>
+              <option value="dna">DNA Only</option>
+              <option value="id">I&amp;D Only</option>
+            </select>
+            <select id="dash-filter-status" onchange="dashRender()" style="font-size:13px;padding:7px 10px;">
+              <option value="">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="submitted">Submitted to Vendor</option>
+              <option value="shipping">Shipping</option>
+              <option value="completed">Completed</option>
+            </select>
+            <button class="btn btn-secondary btn-sm" onclick="dashExportCSV()">⬇ Export CSV</button>
+          </div>
+        </div>
+
+        <!-- Summary stats -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;" id="dash-stats"></div>
+
+        <!-- Orders table -->
+        <div class="card">
+          <div class="card-bd" style="padding:0;">
+            <div style="overflow-x:auto;">
+              <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                <thead><tr>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:6%;">#</th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:8%;">Portal</th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:11%;">Date</th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:16%;">Recipient</th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:10%;">Destination</th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);">Items</th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:15%;">Status</th>
+                </tr></thead>
+                <tbody id="dash-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div><!-- /page-dashboard -->
+
     </main>
   </div>
 </div>
@@ -603,6 +653,14 @@
       <div class="fg"><label>Mead Location</label><input type="text" id="n-mead" placeholder="e.g. 44"/></div>
       <div class="fg"><label>Country of Origin</label><input type="text" id="n-origin" placeholder="e.g. USA, China, Vietnam"/></div>
       <div class="fg full"><label>Notes</label><textarea id="n-notes" placeholder="Optional notes&#x2026;"></textarea></div>
+      <div class="fg full">
+        <label>Photo</label>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:2px;">
+          <label for="n-image" style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text);text-transform:none;letter-spacing:0;transition:background .15s;" onmouseover="this.style.background='#ebebef'" onmouseout="this.style.background='var(--bg)'">📷 Choose Photo<input type="file" id="n-image" accept="image/*" style="display:none;" onchange="previewAddPhoto(this)"/></label>
+          <span id="n-image-name" style="font-size:12px;color:var(--sub);">No photo selected</span>
+        </div>
+        <img id="n-image-preview" src="" alt="" style="display:none;margin-top:10px;width:80px;height:80px;object-fit:cover;border-radius:10px;border:1px solid var(--border);"/>
+      </div>
       <div class="fg" style="flex-direction:row;align-items:center;gap:8px;">
         <input type="checkbox" id="n-chorus" style="width:auto;padding:0;background:none;border:none;"/>
         <label style="text-transform:none;letter-spacing:0;color:var(--text);font-size:13px;cursor:pointer;">On Chorus page</label>
@@ -799,7 +857,14 @@ function renderTable(){
         <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div><span class="bar-pct">${pct}%</span></div></td>
         <td>${locHTML}</td>
         <td style="font-size:13px;white-space:nowrap">${fmtCost(item.unitCost)}</td>
-        <td><button class="btn btn-danger btn-sm" onclick="delItem(${item.id})">Remove</button></td>
+        <td>
+          <div style="display:flex;gap:6px;align-items:center;">
+            ${item.image
+              ? `<button class="btn btn-secondary btn-sm" onclick="setItemPhoto(${item.id})" title="Change photo">📷</button><button class="btn btn-danger btn-sm" onclick="removeItemPhoto(${item.id})" title="Remove photo">✕ Photo</button>`
+              : `<button class="btn btn-secondary btn-sm" onclick="setItemPhoto(${item.id})">📷 Add Photo</button>`}
+            <button class="btn btn-danger btn-sm" onclick="delItem(${item.id})">Remove</button>
+          </div>
+        </td>
       </tr>`;
     }).join('');
 
@@ -1428,8 +1493,21 @@ function delItem(id){
 }
 
 function openModal(){document.getElementById('modal-bg').classList.add('open');document.getElementById('n-name').focus();}
-function closeModal(){document.getElementById('modal-bg').classList.remove('open');}
+function closeModal(){
+  document.getElementById('modal-bg').classList.remove('open');
+  document.getElementById('n-image').value='';
+  document.getElementById('n-image-name').textContent='No photo selected';
+  const prev=document.getElementById('n-image-preview');prev.src='';prev.style.display='none';
+}
 function bgClose(e){if(e.target===document.getElementById('modal-bg'))closeModal();}
+
+function previewAddPhoto(input){
+  const file=input.files[0];if(!file)return;
+  document.getElementById('n-image-name').textContent=file.name;
+  const reader=new FileReader();
+  reader.onload=ev=>{const prev=document.getElementById('n-image-preview');prev.src=ev.target.result;prev.style.display='block';};
+  reader.readAsDataURL(file);
+}
 
 function addItem(){
   const name=document.getElementById('n-name').value.trim();
@@ -1443,11 +1521,32 @@ function addItem(){
   const origin=document.getElementById('n-origin').value.trim();
   const notes=document.getElementById('n-notes').value.trim();
   const chorus=document.getElementById('n-chorus').checked;
+  const imagePreview=document.getElementById('n-image-preview');
+  const image=imagePreview.src&&imagePreview.style.display!=='none'?imagePreview.src:null;
   if(!name){toast('⚠️ Item name required.');return;}
-  const item={id:nxId++,name,category:cat,qty,totalQty:qty,requested:0,threshold:thresh,unitCost:cost,notes,loc4th:loc4,loc3rd:loc3,mead,origin,onChorus:chorus};
+  const item={id:nxId++,name,category:cat,qty,totalQty:qty,requested:0,threshold:thresh,unitCost:cost,notes,loc4th:loc4,loc3rd:loc3,mead,origin,onChorus:chorus,image};
   inv.push(item);save(inv);
   log.push({type:'add',msg:`Added ${qty}× <strong>${name}</strong>`,time:new Date().toLocaleString()});saveLog(log);
   closeModal();toast(`✅ "${name}" added!`);renderAll();
+}
+
+function setItemPhoto(id){
+  const input=document.createElement('input');input.type='file';input.accept='image/*';
+  input.onchange=()=>{
+    const file=input.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      const item=inv.find(i=>i.id===id);if(!item)return;
+      item.image=ev.target.result;save(inv);renderAll();toast('📷 Photo saved!');
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+}
+
+function removeItemPhoto(id){
+  const item=inv.find(i=>i.id===id);if(!item)return;
+  item.image=null;save(inv);renderAll();toast('🗑 Photo removed.');
 }
 
 function exportCSV(){
@@ -1595,6 +1694,75 @@ function dnaEditSave(){
   dnaCloseEdit();toast(`✅ Order #${String(num).padStart(3,'0')} updated!`);
 }
 idRenderLog();
+
+// ── Orders Dashboard ──────────────────────────────────────────────────────────
+function dashGetFiltered(){
+  const portal=document.getElementById('dash-filter-portal')?.value||'';
+  const status=document.getElementById('dash-filter-status')?.value||'';
+  const all=[
+    ...dnaOrderLog.map(e=>({...e,_portal:'dna'})),
+    ...idOrderLog.map(e=>({...e,_portal:'id'}))
+  ].sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+  return all.filter(e=>(!portal||e._portal===portal)&&(!status||(e.status||'pending')===status));
+}
+function dashRender(){
+  const filtered=dashGetFiltered();
+  const all=[...dnaOrderLog,...idOrderLog];
+  const statDefs=[
+    {lbl:'Total Orders',val:all.length,color:'var(--text)'},
+    {lbl:'DNA Orders',val:dnaOrderLog.length,color:'var(--accent)'},
+    {lbl:'I&D Orders',val:idOrderLog.length,color:'var(--purple)'},
+    {lbl:'Pending',val:all.filter(e=>(e.status||'pending')==='pending').length,color:'var(--warning)'},
+    {lbl:'In Progress',val:all.filter(e=>e.status==='submitted'||e.status==='shipping').length,color:'var(--accent)'},
+    {lbl:'Completed',val:all.filter(e=>e.status==='completed').length,color:'var(--success)'},
+  ];
+  document.getElementById('dash-stats').innerHTML=statDefs.map(s=>`
+    <div style="background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px;">
+      <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;">${s.lbl}</div>
+      <div style="font-size:28px;font-weight:700;color:${s.color};letter-spacing:-1px;margin-top:4px;">${s.val}</div>
+    </div>`).join('');
+  const statusColors={pending:'#f5f5f7',submitted:'#fff4e6',shipping:'#e8f4fd',completed:'#e8f9f0'};
+  const statusTextColors={pending:'#6e6e73',submitted:'#bf6200',shipping:'#004f9e',completed:'#1a7a3e'};
+  const statusBorder={pending:'#d2d2d7',submitted:'#ffd199',shipping:'#b3d7f7',completed:'#a3e4bc'};
+  const statusLabel={pending:'Pending',submitted:'Submitted to Vendor',shipping:'Shipping',completed:'Completed'};
+  const tbody=document.getElementById('dash-body');
+  if(!filtered.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--sub);font-size:13px;">No orders match.</td></tr>';return;}
+  tbody.innerHTML=filtered.map(e=>{
+    const r=e.recipient;
+    const dateStr=new Date(e.timestamp).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    const dest=[r.city,r.state,r.country].filter(Boolean).join(', ');
+    const pills=e.items.map(i=>`<span style="font-size:11px;background:#f0f7ff;color:var(--accent);border:1px solid #c5dff9;border-radius:20px;padding:2px 8px;white-space:nowrap;">${i.name||'Item'} ×${i.qty}</span>`).join(' ');
+    const status=e.status||'pending';
+    const sc=statusColors[status]||'#f5f5f7';const stc=statusTextColors[status]||'#6e6e73';const sb=statusBorder[status]||'#d2d2d7';
+    const portalBadge=e._portal==='dna'
+      ?`<span style="font-size:11px;font-weight:600;background:#e8f1fd;color:var(--accent);border-radius:20px;padding:2px 9px;white-space:nowrap;">DNA</span>`
+      :`<span style="font-size:11px;font-weight:600;background:#ede6ff;color:var(--purple);border-radius:20px;padding:2px 9px;white-space:nowrap;">I&amp;D</span>`;
+    return `<tr style="transition:background .12s;" onmouseover="this.style.background='#f7f7fa'" onmouseout="this.style.background=''">
+      <td style="padding:11px 14px;"><span style="font-size:11px;font-weight:700;font-family:monospace;background:#f5f5f7;color:var(--sub);border:1px solid var(--border);border-radius:6px;padding:2px 7px;">#${String(e.num).padStart(3,'0')}</span></td>
+      <td style="padding:11px 14px;">${portalBadge}</td>
+      <td style="padding:11px 14px;font-size:12px;color:var(--sub);">${dateStr}</td>
+      <td style="padding:11px 14px;"><div style="font-weight:500;">${r.firstName} ${r.lastName}</div><div style="font-size:11px;color:var(--sub);">${r.email}</div></td>
+      <td style="padding:11px 14px;font-size:12px;">${dest||'—'}</td>
+      <td style="padding:11px 14px;"><div style="display:flex;flex-wrap:wrap;gap:4px;">${pills}</div>${e.notes?`<div style="font-size:11px;color:var(--sub);font-style:italic;margin-top:4px;">📝 ${e.notes}</div>`:''}</td>
+      <td style="padding:11px 14px;"><span style="font-size:12px;font-weight:600;background:${sc};color:${stc};border:1px solid ${sb};border-radius:20px;padding:3px 11px;white-space:nowrap;">${statusLabel[status]||status}</span></td>
+    </tr>`;
+  }).join('');
+}
+function dashExportCSV(){
+  const filtered=dashGetFiltered();
+  if(!filtered.length){toast('⚠️ No orders to export.');return;}
+  const rows=[['Portal','Order #','Date','First Name','Last Name','Email','Phone','Address 1','Address 2','City','State','ZIP','Country','Items','Notes','Status']];
+  const statusLabel={pending:'Pending',submitted:'Submitted to Vendor',shipping:'Shipping',completed:'Completed'};
+  filtered.forEach(e=>{
+    const r=e.recipient;
+    const dt=new Date(e.timestamp).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    const items=e.items.map(i=>`${i.name} x${i.qty}`).join(' | ');
+    rows.push([e._portal==='dna'?'DNA':'I&D','#'+String(e.num).padStart(3,'0'),dt,r.firstName,r.lastName,r.email,r.phone||'',r.addr1,r.addr2||'',r.city,r.state||'',r.zip,r.country,items,e.notes||'',statusLabel[e.status||'pending']||e.status]);
+  });
+  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([csv],{type:'text/csv'})),download:'Orders-Dashboard.csv'});
+  a.click();toast('📥 Orders exported!');
+}
 
 renderAll();
 </script>
