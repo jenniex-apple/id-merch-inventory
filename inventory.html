@@ -171,6 +171,14 @@
       <button class="nav-child" onclick="showPage('page-dna',this)">📝 Order Request</button>
       <button class="nav-child" id="nav-dna-log" onclick="showPage('page-dna-log',this)">📦 Orders Placed</button>
     </div>
+
+    <button class="nav-group-btn" onclick="showPage('page-id-home',this);this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
+      <span class="nav-icon">📋</span> I&amp;D Order Portal <span class="nav-chevron">▶</span>
+    </button>
+    <div class="nav-children-wrap">
+      <button class="nav-child" onclick="showPage('page-id-order',this)">📝 Order Request</button>
+      <button class="nav-child" id="nav-id-log" onclick="showPage('page-id-log',this)">📦 Orders Placed</button>
+    </div>
   </nav>
 
   <!-- Content -->
@@ -439,6 +447,144 @@
         </div>
       </div><!-- /page-dna-log -->
 
+      <!-- PAGE: I&D Order Portal Home -->
+      <div class="page" id="page-id-home">
+        <div>
+          <div style="font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:6px;">📋 I&amp;D Order Portal</div>
+          <div style="font-size:14px;color:var(--sub);">Internal I&amp;D fulfillment portal. Submit orders and track fulfillment status.</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="card" style="cursor:pointer;transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 28px rgba(0,0,0,.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''" onclick="showPage('page-id-order',document.querySelector('#nav-id-log').previousElementSibling)">
+            <div class="card-bd" style="display:flex;align-items:center;gap:16px;">
+              <div style="width:48px;height:48px;border-radius:12px;background:#e8f1fd;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">📝</div>
+              <div><div style="font-size:15px;font-weight:600;margin-bottom:3px;">New Order Request</div><div style="font-size:13px;color:var(--sub);">Fill out recipient info and select items to ship</div></div>
+            </div>
+          </div>
+          <div class="card" style="cursor:pointer;transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 28px rgba(0,0,0,.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''" onclick="showPage('page-id-log',document.getElementById('nav-id-log'))">
+            <div class="card-bd" style="display:flex;align-items:center;gap:16px;">
+              <div style="width:48px;height:48px;border-radius:12px;background:#e8f9f0;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">📦</div>
+              <div><div style="font-size:15px;font-weight:600;margin-bottom:3px;">View Orders Placed</div><div style="font-size:13px;color:var(--sub);">Track fulfillment status of all submitted orders</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h2>Order Summary</h2></div>
+          <div class="card-bd">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;">
+              <div style="text-align:center;padding:16px;background:var(--bg);border-radius:12px;"><div style="font-size:28px;font-weight:700;" id="id-stat-total">0</div><div style="font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;margin-top:4px;">Total Orders</div></div>
+              <div style="text-align:center;padding:16px;background:var(--bg);border-radius:12px;"><div style="font-size:28px;font-weight:700;color:var(--warning);" id="id-stat-pending">0</div><div style="font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;margin-top:4px;">Pending</div></div>
+              <div style="text-align:center;padding:16px;background:var(--bg);border-radius:12px;"><div style="font-size:28px;font-weight:700;color:var(--accent);" id="id-stat-shipping">0</div><div style="font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;margin-top:4px;">In Progress</div></div>
+              <div style="text-align:center;padding:16px;background:var(--bg);border-radius:12px;"><div style="font-size:28px;font-weight:700;color:var(--success);" id="id-stat-completed">0</div><div style="font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;margin-top:4px;">Completed</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h2>Recent Orders</h2><button class="btn btn-secondary btn-sm" onclick="showPage('page-id-log',document.getElementById('nav-id-log'))">View All</button></div>
+          <div class="card-bd" style="padding:0;"><div id="id-home-recent" style="padding:0 22px;"></div></div>
+        </div>
+      </div><!-- /page-id-home -->
+
+      <!-- PAGE: I&D Order Request -->
+      <div class="page" id="page-id-order">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:28px;">
+          <div>
+            <div style="font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:4px;">I&amp;D Team Order Request</div>
+            <div style="font-size:13px;color:var(--sub);">Fill out the form and submit to log the order.</div>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-secondary btn-sm" onclick="idResetForm()">Reset</button>
+            <button class="btn btn-secondary btn-sm" onclick="idCopyOrderSummary()">Copy Summary</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h2>Recipient Information</h2></div>
+          <div class="card-bd">
+            <div class="form-grid">
+              <div class="fg"><label>First Name <span style="color:var(--danger)">*</span></label><input type="text" id="id-firstName" placeholder="Jane"/></div>
+              <div class="fg"><label>Last Name <span style="color:var(--danger)">*</span></label><input type="text" id="id-lastName" placeholder="Doe"/></div>
+              <div class="fg full"><label>Company Name</label><input type="text" id="id-company" placeholder="Apple Inc."/></div>
+              <div class="fg"><label>Email <span style="color:var(--danger)">*</span></label><input type="email" id="id-email" placeholder="jane@apple.com"/></div>
+              <div class="fg"><label>Phone <span style="color:var(--danger)">*</span></label><input type="tel" id="id-phone" placeholder="+1 (555) 000-0000"/></div>
+              <div class="fg full"><label>Address Line 1 <span style="color:var(--danger)">*</span></label><input type="text" id="id-addr1" placeholder="123 Main Street"/></div>
+              <div class="fg full"><label>Address Line 2</label><input type="text" id="id-addr2" placeholder="Suite, Apt, Floor..."/></div>
+              <div class="fg"><label>City <span style="color:var(--danger)">*</span></label><input type="text" id="id-city" placeholder="Cupertino"/></div>
+              <div class="fg"><label>State / Province</label><input type="text" id="id-state" placeholder="CA"/></div>
+              <div class="fg"><label>Country Code <span style="color:var(--danger)">*</span></label><input type="text" id="id-country" placeholder="US" maxlength="3"/></div>
+              <div class="fg"><label>ZIP / Postal Code <span style="color:var(--danger)">*</span></label><input type="text" id="id-zip" placeholder="95014"/></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h2>Requested Items</h2></div>
+          <div class="card-bd" style="padding:0;">
+            <div style="overflow-x:auto;">
+              <table style="width:100%;border-collapse:collapse;font-size:13.5px;">
+                <thead><tr>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:54%;">Item</th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:20%;">Category</th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:14%;">Qty</th>
+                  <th style="text-align:center;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:12%;">Del</th>
+                </tr></thead>
+                <tbody id="id-items-body">
+                  <tr id="id-empty-row"><td colspan="4" style="text-align:center;padding:24px;color:var(--sub);font-size:13px;border-bottom:none;">No items yet — click "Add Item"</td></tr>
+                </tbody>
+                <tfoot><tr><td colspan="4" style="padding:12px 14px;">
+                  <button class="btn btn-secondary btn-sm" onclick="idAddItem()" style="border:1.5px dashed var(--accent);color:var(--accent);background:transparent;">+ Add Item</button>
+                </td></tr></tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h2>Notes</h2></div>
+          <div class="card-bd">
+            <div class="fg full"><label>Additional Notes</label><textarea id="id-notes" placeholder="e.g. Ship by end of week, fragile items..."></textarea></div>
+            <div style="display:flex;justify-content:flex-end;margin-top:16px;">
+              <button class="btn btn-primary" style="width:fit-content;" onclick="idSubmitOrder()">Submit Order</button>
+            </div>
+          </div>
+        </div>
+        <div id="id-success" style="display:none;flex-direction:column;align-items:center;text-align:center;padding:60px 32px;gap:18px;">
+          <div style="width:68px;height:68px;border-radius:50%;background:var(--success);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(52,199,89,.3);">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div style="font-size:22px;font-weight:700;">Order Submitted</div>
+          <div style="font-size:14px;color:var(--sub);max-width:360px;line-height:1.5;">Your order has been logged and the summary copied to your clipboard.</div>
+          <div id="id-success-detail" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 24px;text-align:left;min-width:320px;max-width:480px;width:100%;font-size:13px;"></div>
+          <button class="btn btn-primary" style="padding:0 32px;" onclick="idNewOrder()">Place Another Order</button>
+        </div>
+      </div><!-- /page-id-order -->
+
+      <!-- PAGE: I&D Orders Placed -->
+      <div class="page" id="page-id-log">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:28px;">
+          <div>
+            <div style="font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:4px;">Orders Placed</div>
+            <div style="font-size:13px;color:var(--sub);">All submitted I&amp;D order requests and their fulfillment status.</div>
+          </div>
+          <button id="id-delete-selected-btn" class="btn btn-danger btn-sm" onclick="idDeleteSelected()" style="display:none;">Delete Selected</button>
+        </div>
+        <div class="card">
+          <div class="card-bd" style="padding:0;">
+            <div style="overflow-x:auto;">
+              <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                <thead><tr>
+                  <th style="padding:10px 14px;width:4%;border-bottom:1px solid var(--border);"><input type="checkbox" id="id-select-all" onclick="idToggleSelectAll(this)" style="cursor:pointer;width:auto;padding:0;background:none;border:1px solid var(--border);border-radius:4px;"/></th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:6%;">#</th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:13%;">Date</th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:17%;">Recipient</th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:11%;">Destination</th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);">Items</th>
+                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:17%;">Status</th>
+                  <th style="border-bottom:1px solid var(--border);width:8%;"></th>
+                </tr></thead>
+                <tbody id="id-log-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div><!-- /page-id-log -->
+
     </main>
   </div>
 </div>
@@ -482,6 +628,50 @@
     <div id="picker-list" style="max-height:420px;overflow-y:auto;"></div>
     <div class="modal-actions" style="margin-top:14px;">
       <button class="btn btn-secondary" onclick="closePicker()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- DNA Edit Order Modal -->
+<div class="modal-bg" id="dna-edit-modal-bg" onclick="dnaEditBgClose(event)">
+  <div class="modal" style="max-width:580px;">
+    <h3>✏️ Edit Order <span id="dna-edit-order-num" style="font-size:13px;font-weight:400;color:var(--sub);"></span></h3>
+    <div style="display:flex;flex-direction:column;gap:18px;">
+      <!-- Recipient -->
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Recipient</div>
+        <div class="form-grid">
+          <div class="fg"><label>First Name</label><input type="text" id="edit-firstName"/></div>
+          <div class="fg"><label>Last Name</label><input type="text" id="edit-lastName"/></div>
+          <div class="fg full"><label>Company</label><input type="text" id="edit-company"/></div>
+          <div class="fg"><label>Email</label><input type="email" id="edit-email"/></div>
+          <div class="fg"><label>Phone</label><input type="tel" id="edit-phone"/></div>
+        </div>
+      </div>
+      <!-- Address -->
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Ship To</div>
+        <div class="form-grid">
+          <div class="fg full"><label>Address Line 1</label><input type="text" id="edit-addr1"/></div>
+          <div class="fg full"><label>Address Line 2</label><input type="text" id="edit-addr2"/></div>
+          <div class="fg"><label>City</label><input type="text" id="edit-city"/></div>
+          <div class="fg"><label>State</label><input type="text" id="edit-state"/></div>
+          <div class="fg"><label>Country Code</label><input type="text" id="edit-country" maxlength="3"/></div>
+          <div class="fg"><label>ZIP / Postal Code</label><input type="text" id="edit-zip"/></div>
+        </div>
+      </div>
+      <!-- Items -->
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Items</div>
+        <div id="edit-items-wrap" style="display:flex;flex-direction:column;gap:8px;"></div>
+        <button class="btn btn-secondary btn-sm" style="margin-top:10px;border:1.5px dashed var(--accent);color:var(--accent);background:transparent;" onclick="dnaEditAddItem()">+ Add Item</button>
+      </div>
+      <!-- Notes -->
+      <div class="fg full"><label>Notes</label><textarea id="edit-notes" style="width:100%;"></textarea></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="dnaCloseEdit()">Cancel</button>
+      <button class="btn btn-primary" onclick="dnaEditSave()">Save Changes</button>
     </div>
   </div>
 </div>
@@ -853,7 +1043,7 @@ function dnaRenderLog(){
         <td style="padding:12px 14px;font-size:13px;">${dest||'—'}</td>
         <td style="padding:12px 14px;"><div style="display:flex;flex-wrap:wrap;gap:4px;">${pills}</div>${e.notes?`<div style="font-size:11px;color:var(--sub);font-style:italic;margin-top:5px;">📝 ${e.notes}</div>`:''}</td>
         <td style="padding:12px 14px;" onclick="event.stopPropagation()"><select onchange="dnaUpdateStatus(${e.num},this.value)" style="height:32px;padding:0 28px 0 10px;border:1.5px solid ${sb};border-radius:20px;font-size:12px;font-weight:600;font-family:inherit;background:${sc};color:${stc};cursor:pointer;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22 viewBox=%220 0 12 8%22%3E%3Cpath fill=%22%236e6e73%22 d=%22M6 8L0 0h12z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 10px center;">${opts}</select></td>
-        <td style="padding:12px 14px;" onclick="event.stopPropagation()"><button class="btn btn-danger btn-sm" onclick="dnaDeleteOne(${e.num})">Delete</button></td>
+        <td style="padding:12px 14px;" onclick="event.stopPropagation()"><div style="display:flex;gap:6px;"><button class="btn btn-secondary btn-sm" onclick="dnaOpenEdit(${e.num})">Edit</button><button class="btn btn-danger btn-sm" onclick="dnaDeleteOne(${e.num})">Delete</button></div></td>
       </tr>
       <tr id="dna-detail-${e.num}" style="display:none;">
         <td colspan="8" style="padding:0;">
@@ -1279,6 +1469,132 @@ function exportLogCSV(){
 
 let tt;
 function toast(msg){const el=document.getElementById('toast');el.innerHTML=msg;el.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),3400);}
+
+// ── I&D Order Portal ──────────────────────────────────────────────────────────
+let idRowCount=0;
+function idAddItem(){
+  const emptyRow=document.getElementById('id-empty-row');if(emptyRow)emptyRow.remove();
+  idRowCount++;const id=idRowCount;const tr=document.createElement('tr');tr.id=`id-row-${id}`;
+  tr.innerHTML=`<td><select id="id-item-${id}" onchange="idUpdateTag(${id})" style="width:100%;">${dnaBuildSelectOptions()}</select></td><td><span id="id-tag-${id}" style="font-size:11px;color:#b0b0b5;font-style:italic;">—</span></td><td><input type="number" id="id-qty-${id}" value="1" min="1" style="width:70px;text-align:center;"/></td><td style="text-align:center;"><button onclick="idRemoveItem(${id})" style="width:26px;height:26px;border:none;border-radius:50%;background:#fff0f0;color:var(--danger);font-size:14px;cursor:pointer;">✕</button></td>`;
+  document.getElementById('id-items-body').appendChild(tr);
+}
+function idUpdateTag(id){const sel=document.getElementById(`id-item-${id}`);const tag=document.getElementById(`id-tag-${id}`);if(sel.value){const item=inv.find(i=>i.id===parseInt(sel.value));tag.textContent=item?item.category:'—';tag.style.cssText='font-size:11px;font-weight:600;color:#6e6e73;font-style:normal;';}else{tag.textContent='—';tag.style.cssText='font-size:11px;color:#b0b0b5;font-style:italic;';}}
+function idRemoveItem(id){const row=document.getElementById(`id-row-${id}`);if(row)row.remove();const tbody=document.getElementById('id-items-body');if(tbody.children.length===0){const tr=document.createElement('tr');tr.id='id-empty-row';tr.innerHTML='<td colspan="4" style="text-align:center;padding:24px;color:var(--sub);font-size:13px;border-bottom:none;">No items yet — click "Add Item"</td>';tbody.appendChild(tr);}}
+function idCollectRecipient(){return{firstName:document.getElementById('id-firstName').value.trim(),lastName:document.getElementById('id-lastName').value.trim(),company:document.getElementById('id-company').value.trim(),email:document.getElementById('id-email').value.trim(),phone:document.getElementById('id-phone').value.trim(),addr1:document.getElementById('id-addr1').value.trim(),addr2:document.getElementById('id-addr2').value.trim(),city:document.getElementById('id-city').value.trim(),state:document.getElementById('id-state').value.trim(),country:document.getElementById('id-country').value.trim().toUpperCase(),zip:document.getElementById('id-zip').value.trim()};}
+function idCollectItems(){const items=[];document.querySelectorAll('#id-items-body tr[id^="id-row-"]').forEach(row=>{const id=row.id.replace('id-row-','');const sel=document.getElementById(`id-item-${id}`);const qty=document.getElementById(`id-qty-${id}`);if(sel&&sel.value){const invItem=inv.find(i=>i.id===parseInt(sel.value));items.push({invId:parseInt(sel.value),name:invItem?invItem.name:sel.value,category:invItem?invItem.category:'',qty:parseInt(qty.value)||1});}});return items;}
+function idValidate(){const r=idCollectRecipient();const req={firstName:'First Name',lastName:'Last Name',email:'Email',phone:'Phone',addr1:'Address',city:'City',country:'Country Code',zip:'ZIP Code'};for(const[k,l]of Object.entries(req)){if(!r[k]){toast(`⚠️ Please fill in: ${l}`);return false;}}if(idCollectItems().length===0){toast('⚠️ Please add at least one item');return false;}return true;}
+let idOrderLog=JSON.parse(localStorage.getItem('id_order_log')||'[]');
+let idOrderCounter=parseInt(localStorage.getItem('id_order_counter')||'0');
+function idSaveLog(){localStorage.setItem('id_order_log',JSON.stringify(idOrderLog));localStorage.setItem('id_order_counter',String(idOrderCounter));}
+const ID_STATUS={pending:'Pending',submitted:'Submitted to Vendor',shipping:'Shipping',completed:'Completed'};
+function idUpdateStatus(num,newStatus){const entry=idOrderLog.find(e=>e.num===num);if(!entry||entry.status===newStatus)return;entry.status=newStatus;entry.statusHistory=entry.statusHistory||[];entry.statusHistory.push({status:newStatus,timestamp:new Date().toISOString()});idSaveLog();idRenderLog();toast(`Order #${String(num).padStart(3,'0')} → ${ID_STATUS[newStatus]}`);}
+function idRenderLog(){
+  const tbody=document.getElementById('id-log-body');if(!tbody)return;
+  if(!idOrderLog.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--sub);font-size:13px;">No orders placed yet</td></tr>';}
+  else{tbody.innerHTML=idOrderLog.map(e=>{
+    const r=e.recipient;const dt=new Date(e.timestamp);const dateStr=dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    const dest=[r.city,r.state,r.country].filter(Boolean).join(', ');
+    const pills=e.items.map(i=>`<span style="font-size:11.5px;background:#f0f7ff;color:var(--accent);border:1px solid #c5dff9;border-radius:20px;padding:2px 9px;white-space:nowrap;">${i.name||'Item'} x${i.qty}</span>`).join(' ');
+    const status=e.status||'pending';
+    const statusColors={pending:'#f5f5f7',submitted:'#fff4e6',shipping:'#e8f4fd',completed:'#e8f9f0'};
+    const statusTextColors={pending:'#6e6e73',submitted:'#bf6200',shipping:'#004f9e',completed:'#1a7a3e'};
+    const statusBorder={pending:'#d2d2d7',submitted:'#ffd199',shipping:'#b3d7f7',completed:'#a3e4bc'};
+    const opts=Object.entries(ID_STATUS).map(([v,l])=>`<option value="${v}"${v===status?' selected':''}>${l}</option>`).join('');
+    const sc=statusColors[status]||'#f5f5f7';const stc=statusTextColors[status]||'#6e6e73';const sb=statusBorder[status]||'#d2d2d7';
+    const addr=[r.addr1,r.addr2?r.addr2:null,r.city,r.state?r.state:null,r.zip,r.country].filter(Boolean).join(', ');
+    const itemRows=e.items.map(i=>`<tr><td style="padding:7px 12px;font-size:13px;font-weight:500;border-bottom:1px solid #f0f0f3;">${i.name||'—'}</td><td style="padding:7px 12px;font-size:12px;color:var(--sub);border-bottom:1px solid #f0f0f3;">${i.category||'—'}</td><td style="padding:7px 12px;font-size:13px;font-weight:600;text-align:center;border-bottom:1px solid #f0f0f3;">${i.qty}</td></tr>`).join('');
+    const detailHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px;"><div><div style="font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Recipient</div><div style="font-size:13px;font-weight:600;">${r.firstName} ${r.lastName}${r.company?' — '+r.company:''}</div><div style="font-size:12px;color:var(--sub);margin-top:2px;">${r.email}</div><div style="font-size:12px;color:var(--sub);margin-top:2px;">${r.phone||'—'}</div></div><div><div style="font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Ship To</div><div style="font-size:13px;line-height:1.6;">${addr||'—'}</div></div></div><div style="font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Items Ordered</div><table style="width:100%;border-collapse:collapse;"><thead><tr><th style="text-align:left;padding:6px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;background:#f7f7fa;">Item</th><th style="text-align:left;padding:6px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;background:#f7f7fa;">Category</th><th style="text-align:center;padding:6px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;background:#f7f7fa;">Qty</th></tr></thead><tbody>${itemRows}</tbody></table>${e.notes?`<div style="margin-top:14px;"><div style="font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Notes</div><div style="font-size:13px;color:var(--text);">${e.notes}</div></div>`:''}`;
+    return `<tr class="id-log-row" onclick="idToggleDetail(${e.num},this)" style="cursor:pointer;">
+      <td style="padding:12px 14px;" onclick="event.stopPropagation()"><input type="checkbox" class="id-row-cb" data-num="${e.num}" onchange="idUpdateDeleteBtn()" style="cursor:pointer;width:auto;padding:0;background:none;"/></td>
+      <td style="padding:12px 14px;"><span style="font-size:11px;font-weight:700;font-family:monospace;background:#f5f5f7;color:var(--sub);border:1px solid var(--border);border-radius:6px;padding:2px 7px;">#${String(e.num).padStart(3,'0')}</span></td>
+      <td style="padding:12px 14px;font-size:12px;color:var(--sub);">${dateStr}</td>
+      <td style="padding:12px 14px;"><div style="font-weight:500;">${r.firstName} ${r.lastName}</div><div style="font-size:12px;color:var(--sub);">${r.email}</div></td>
+      <td style="padding:12px 14px;font-size:13px;">${dest||'—'}</td>
+      <td style="padding:12px 14px;"><div style="display:flex;flex-wrap:wrap;gap:4px;">${pills}</div>${e.notes?`<div style="font-size:11px;color:var(--sub);font-style:italic;margin-top:5px;">📝 ${e.notes}</div>`:''}</td>
+      <td style="padding:12px 14px;" onclick="event.stopPropagation()"><select onchange="idUpdateStatus(${e.num},this.value)" style="height:32px;padding:0 28px 0 10px;border:1.5px solid ${sb};border-radius:20px;font-size:12px;font-weight:600;font-family:inherit;background:${sc};color:${stc};cursor:pointer;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22 viewBox=%220 0 12 8%22%3E%3Cpath fill=%22%236e6e73%22 d=%22M6 8L0 0h12z%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 10px center;">${opts}</select></td>
+      <td style="padding:12px 14px;" onclick="event.stopPropagation()"><div style="display:flex;gap:6px;"><button class="btn btn-secondary btn-sm" onclick="idOpenEdit(${e.num})">Edit</button><button class="btn btn-danger btn-sm" onclick="idDeleteOne(${e.num})">Delete</button></div></td>
+    </tr>
+    <tr id="id-detail-${e.num}" style="display:none;"><td colspan="8" style="padding:0;"><div style="padding:20px 24px;background:#fafafe;border-top:1px solid var(--border);border-bottom:2px solid var(--accent);">${detailHTML}</div></td></tr>`;
+  }).join('');}
+  const sa=document.getElementById('id-select-all');if(sa)sa.checked=false;idUpdateDeleteBtn();idRenderHome();
+}
+function idToggleDetail(num,row){const detail=document.getElementById(`id-detail-${num}`);if(!detail)return;const isOpen=detail.style.display!=='none';detail.style.display=isOpen?'none':'table-row';row.style.background=isOpen?'':'#f0f5ff';}
+function idDeleteOne(num){if(!confirm(`Delete order #${String(num).padStart(3,'0')}?`))return;idOrderLog=idOrderLog.filter(e=>e.num!==num);idSaveLog();idRenderLog();toast(`🗑 Order #${String(num).padStart(3,'0')} deleted.`);}
+function idUpdateDeleteBtn(){const checked=document.querySelectorAll('.id-row-cb:checked').length;const btn=document.getElementById('id-delete-selected-btn');if(!btn)return;if(checked>0){btn.style.display='';btn.textContent=`Delete Selected (${checked})`;}else{btn.style.display='none';}}
+function idToggleSelectAll(cb){document.querySelectorAll('.id-row-cb').forEach(c=>c.checked=cb.checked);idUpdateDeleteBtn();}
+function idDeleteSelected(){const nums=new Set([...document.querySelectorAll('.id-row-cb:checked')].map(c=>parseInt(c.dataset.num)));if(!nums.size)return;if(!confirm(`Delete ${nums.size} selected order${nums.size!==1?'s':''}?`))return;idOrderLog=idOrderLog.filter(e=>!nums.has(e.num));idSaveLog();idRenderLog();toast(`🗑 ${nums.size} order${nums.size!==1?'s':''} deleted.`);}
+function idRenderHome(){
+  const total=idOrderLog.length;const pending=idOrderLog.filter(e=>e.status==='pending').length;const shipping=idOrderLog.filter(e=>e.status==='submitted'||e.status==='shipping').length;const completed=idOrderLog.filter(e=>e.status==='completed').length;
+  const ts=document.getElementById('id-stat-total');if(ts)ts.textContent=total;const ps=document.getElementById('id-stat-pending');if(ps)ps.textContent=pending;const ss=document.getElementById('id-stat-shipping');if(ss)ss.textContent=shipping;const cs=document.getElementById('id-stat-completed');if(cs)cs.textContent=completed;
+  idUpdatePendingBadge();
+  const recent=document.getElementById('id-home-recent');if(!recent)return;
+  if(!idOrderLog.length){recent.innerHTML='<p style="padding:20px 0;text-align:center;color:var(--sub);font-size:13px;">No orders yet.</p>';return;}
+  recent.innerHTML=idOrderLog.slice(0,5).map(e=>{const r=e.recipient;const dt=new Date(e.timestamp);const dateStr=dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});const status=e.status||'pending';const statusColor={pending:'var(--sub)',submitted:'var(--accent)',shipping:'var(--accent)',completed:'var(--success)'};return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f0f0f3;gap:12px;"><span style="font-size:11px;font-weight:700;font-family:monospace;background:#f5f5f7;color:var(--sub);border:1px solid var(--border);border-radius:6px;padding:2px 6px;flex-shrink:0;">#${String(e.num).padStart(3,'0')}</span><div style="flex:1;min-width:0;"><div style="font-weight:500;font-size:13px;">${r.firstName} ${r.lastName}</div><div style="font-size:11px;color:var(--sub);">${e.items.length} item${e.items.length!==1?'s':''}</div></div><span style="font-size:11px;font-weight:600;color:${statusColor[status]||'var(--sub)'};">${ID_STATUS[status]||status}</span><span style="font-size:11px;color:var(--sub);white-space:nowrap;">${dateStr}</span></div>`;}).join('');
+}
+function idUpdatePendingBadge(){const btn=document.getElementById('nav-id-log');if(!btn)return;const count=idOrderLog.filter(e=>e.status==='pending').length;const existing=btn.querySelector('.pending-badge');if(existing)existing.remove();if(count>0){const badge=document.createElement('span');badge.className='pending-badge';badge.textContent=count;badge.style.cssText='display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:20px;background:var(--danger);color:#fff;font-size:10px;font-weight:700;margin-left:auto;flex-shrink:0;';btn.style.display='flex';btn.appendChild(badge);}}
+function idBuildSummary(r,items,notes){const itemLines=items.map(i=>`  - ${i.name} x${i.qty}`).join('\n');const now=new Date();return['─────────────────────────','  I&D ORDER REQUEST',`  ${now.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}`,'─────────────────────────','','SHIP TO',`  ${r.firstName} ${r.lastName}${r.company?' — '+r.company:''}`,`  ${r.email}${r.phone?'  |  '+r.phone:''}`,`  ${r.addr1}${r.addr2?', '+r.addr2:''}`,`  ${r.city}${r.state?', '+r.state:''}  ${r.zip}`,`  ${r.country}`,'','ITEMS',itemLines,...(notes?['','NOTES',`  ${notes}`]:[]),'','─────────────────────────'].join('\n');}
+function idSubmitOrder(){
+  if(!idValidate())return;const r=idCollectRecipient();const items=idCollectItems();const notes=document.getElementById('id-notes').value.trim();
+  navigator.clipboard.writeText(idBuildSummary(r,items,notes)).catch(()=>{});
+  idOrderCounter++;idOrderLog.unshift({num:idOrderCounter,timestamp:new Date().toISOString(),recipient:r,items,notes,status:'pending',statusHistory:[{status:'pending',timestamp:new Date().toISOString()}]});
+  idSaveLog();idRenderLog();
+  const dest=[r.addr1,r.addr2,r.city,r.state,r.zip,r.country].filter(Boolean).join(', ');const itemList=items.map(i=>`${i.name} x${i.qty}`).join(' · ');
+  document.getElementById('id-success-detail').innerHTML=`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f5f5f7;font-size:13px;"><span style="color:var(--sub);">Recipient</span><span style="font-weight:500;">${r.firstName} ${r.lastName}</span></div><div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f5f5f7;font-size:13px;"><span style="color:var(--sub);">Email</span><span style="font-weight:500;">${r.email}</span></div><div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f5f5f7;font-size:13px;"><span style="color:var(--sub);">Ship to</span><span style="font-weight:500;text-align:right;">${dest}</span></div><div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px;"><span style="color:var(--sub);">Items</span><span style="font-weight:500;text-align:right;">${itemList}</span></div>`;
+  document.querySelectorAll('#page-id-order .card').forEach(c=>c.style.display='none');document.getElementById('id-success').style.display='flex';idResetForm();
+}
+function idNewOrder(){document.getElementById('id-success').style.display='none';document.querySelectorAll('#page-id-order .card').forEach(c=>c.style.display='');}
+function idResetForm(){['id-firstName','id-lastName','id-company','id-email','id-phone','id-addr1','id-addr2','id-city','id-state','id-country','id-zip','id-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('id-items-body').innerHTML='<tr id="id-empty-row"><td colspan="4" style="text-align:center;padding:24px;color:var(--sub);font-size:13px;border-bottom:none;">No items yet — click "Add Item"</td></tr>';idRowCount=0;toast('Form reset');}
+function idCopyOrderSummary(){if(!idValidate())return;const r=idCollectRecipient();const items=idCollectItems();const notes=document.getElementById('id-notes').value.trim();navigator.clipboard.writeText(idBuildSummary(r,items,notes)).then(()=>toast('📋 Order summary copied!')).catch(()=>toast('Could not copy'));}
+function idOpenEdit(num){
+  const e=idOrderLog.find(x=>x.num===num);if(!e)return;const r=e.recipient;
+  document.getElementById('dna-edit-order-num').textContent=`#${String(num).padStart(3,'0')}`;
+  ['firstName','lastName','company','email','phone','addr1','addr2','city','state','country','zip'].forEach(f=>{const el=document.getElementById(`edit-${f}`);if(el)el.value=r[f]||'';});
+  document.getElementById('edit-notes').value=e.notes||'';
+  const wrap=document.getElementById('edit-items-wrap');wrap.innerHTML='';
+  e.items.forEach((item,idx)=>{const div=document.createElement('div');div.style.cssText='display:flex;align-items:center;gap:8px;';div.innerHTML=`<select id="edit-item-sel-${idx}" style="flex:1;">${dnaBuildSelectOptions()}</select><input type="number" id="edit-item-qty-${idx}" value="${item.qty}" min="1" style="width:70px;text-align:center;"/><button onclick="this.parentElement.remove()" style="width:26px;height:26px;border:none;border-radius:50%;background:#fff0f0;color:var(--danger);font-size:14px;cursor:pointer;flex-shrink:0;">✕</button>`;wrap.appendChild(div);const sel=document.getElementById(`edit-item-sel-${idx}`);if(sel){[...sel.options].forEach(o=>{if(parseInt(o.value)===item.invId)o.selected=true;});}});
+  document.getElementById('dna-edit-modal-bg')._editPortal='id';document.getElementById('dna-edit-modal-bg')._editNum=num;
+  document.getElementById('dna-edit-modal-bg').classList.add('open');
+}
+
+// ── Shared Edit Modal save/close (handles both DNA and I&D) ───────────────────
+function dnaOpenEdit(num){
+  const e=dnaOrderLog.find(x=>x.num===num);if(!e)return;const r=e.recipient;
+  document.getElementById('dna-edit-order-num').textContent=`#${String(num).padStart(3,'0')}`;
+  ['firstName','lastName','company','email','phone','addr1','addr2','city','state','country','zip'].forEach(f=>{const el=document.getElementById(`edit-${f}`);if(el)el.value=r[f]||'';});
+  document.getElementById('edit-notes').value=e.notes||'';
+  const wrap=document.getElementById('edit-items-wrap');wrap.innerHTML='';
+  e.items.forEach((item,idx)=>{const div=document.createElement('div');div.style.cssText='display:flex;align-items:center;gap:8px;';div.innerHTML=`<select id="edit-item-sel-${idx}" style="flex:1;">${dnaBuildSelectOptions()}</select><input type="number" id="edit-item-qty-${idx}" value="${item.qty}" min="1" style="width:70px;text-align:center;"/><button onclick="this.parentElement.remove()" style="width:26px;height:26px;border:none;border-radius:50%;background:#fff0f0;color:var(--danger);font-size:14px;cursor:pointer;flex-shrink:0;">✕</button>`;wrap.appendChild(div);const sel=document.getElementById(`edit-item-sel-${idx}`);if(sel){[...sel.options].forEach(o=>{if(parseInt(o.value)===item.invId)o.selected=true;});}});
+  document.getElementById('dna-edit-modal-bg')._editPortal='dna';document.getElementById('dna-edit-modal-bg')._editNum=num;
+  document.getElementById('dna-edit-modal-bg').classList.add('open');
+}
+function dnaEditAddItem(){
+  const wrap=document.getElementById('edit-items-wrap');const idx=wrap.children.length;
+  const div=document.createElement('div');div.style.cssText='display:flex;align-items:center;gap:8px;';
+  div.innerHTML=`<select id="edit-item-sel-${idx}" style="flex:1;">${dnaBuildSelectOptions()}</select><input type="number" id="edit-item-qty-${idx}" value="1" min="1" style="width:70px;text-align:center;"/><button onclick="this.parentElement.remove()" style="width:26px;height:26px;border:none;border-radius:50%;background:#fff0f0;color:var(--danger);font-size:14px;cursor:pointer;flex-shrink:0;">✕</button>`;
+  wrap.appendChild(div);
+}
+function dnaCloseEdit(){document.getElementById('dna-edit-modal-bg').classList.remove('open');}
+function dnaEditBgClose(e){if(e.target===document.getElementById('dna-edit-modal-bg'))dnaCloseEdit();}
+function dnaEditSave(){
+  const bg=document.getElementById('dna-edit-modal-bg');const portal=bg._editPortal;const num=bg._editNum;
+  const orderLog=portal==='dna'?dnaOrderLog:idOrderLog;
+  const entry=orderLog.find(x=>x.num===num);if(!entry)return;
+  entry.recipient={
+    firstName:document.getElementById('edit-firstName').value.trim(),lastName:document.getElementById('edit-lastName').value.trim(),
+    company:document.getElementById('edit-company').value.trim(),email:document.getElementById('edit-email').value.trim(),
+    phone:document.getElementById('edit-phone').value.trim(),addr1:document.getElementById('edit-addr1').value.trim(),
+    addr2:document.getElementById('edit-addr2').value.trim(),city:document.getElementById('edit-city').value.trim(),
+    state:document.getElementById('edit-state').value.trim(),country:document.getElementById('edit-country').value.trim().toUpperCase(),
+    zip:document.getElementById('edit-zip').value.trim()
+  };
+  const wrap=document.getElementById('edit-items-wrap');const items=[];
+  [...wrap.children].forEach((div,idx)=>{const sel=document.getElementById(`edit-item-sel-${idx}`);const qty=document.getElementById(`edit-item-qty-${idx}`);if(sel&&sel.value){const invItem=inv.find(i=>i.id===parseInt(sel.value));items.push({invId:parseInt(sel.value),name:invItem?invItem.name:sel.value,category:invItem?invItem.category:'',qty:parseInt(qty.value)||1});}});
+  if(items.length===0){toast('⚠️ Please add at least one item');return;}
+  entry.items=items;entry.notes=document.getElementById('edit-notes').value.trim();
+  if(portal==='dna'){dnaSaveLog();dnaRenderLog();}else{idSaveLog();idRenderLog();}
+  dnaCloseEdit();toast(`✅ Order #${String(num).padStart(3,'0')} updated!`);
+}
+idRenderLog();
 
 renderAll();
 </script>
