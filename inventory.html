@@ -169,7 +169,7 @@
     </button>
     <div class="nav-children-wrap open">
       <button class="nav-child" onclick="showPage('page-dna',this)">📝 Order Request</button>
-      <button class="nav-child" onclick="showPage('page-dna-log',this)">📦 Orders Placed</button>
+      <button class="nav-child" id="nav-dna-log" onclick="showPage('page-dna-log',this)">📦 Orders Placed</button>
     </div>
   </nav>
 
@@ -922,6 +922,7 @@ function dnaRenderHome(){
   const ps=document.getElementById('dna-stat-pending'); if(ps) ps.textContent=pending;
   const ss=document.getElementById('dna-stat-shipping');if(ss) ss.textContent=shipping;
   const cs=document.getElementById('dna-stat-completed');if(cs) cs.textContent=completed;
+  dnaUpdatePendingBadge();
   // Recent orders (last 5)
   const recent=document.getElementById('dna-home-recent');
   if(!recent) return;
@@ -942,6 +943,22 @@ function dnaRenderHome(){
       <span style="font-size:11px;color:var(--sub);white-space:nowrap;">${dateStr}</span>
     </div>`;
   }).join('');
+}
+
+function dnaUpdatePendingBadge(){
+  const btn=document.getElementById('nav-dna-log');
+  if(!btn) return;
+  const count=dnaOrderLog.filter(e=>e.status==='pending').length;
+  const existing=btn.querySelector('.pending-badge');
+  if(existing) existing.remove();
+  if(count>0){
+    const badge=document.createElement('span');
+    badge.className='pending-badge';
+    badge.textContent=count;
+    badge.style.cssText='display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 5px;border-radius:20px;background:var(--danger);color:#fff;font-size:10px;font-weight:700;margin-left:auto;flex-shrink:0;';
+    btn.style.display='flex';
+    btn.appendChild(badge);
+  }
 }
 
 function dnaBuildSummary(r,items,notes){
