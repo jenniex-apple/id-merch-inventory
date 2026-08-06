@@ -231,6 +231,91 @@
         </div>
       </div>
 
+      <!-- ── Staples Order 032733263 ── -->
+      <div class="card" id="card-staples-order">
+        <div class="card-hd" style="cursor:pointer;" onclick="toggleStaplesOrder()">
+          <h2>🍎 Staples Order #032733263</h2>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <span style="background:#f0f7ff;color:var(--accent);font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid #c5dff9;">08/04/2026</span>
+              <span style="background:#f0f7ff;color:var(--accent);font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid #c5dff9;">PO# 6000874864</span>
+              <span style="background:#fff3cd;color:#856404;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid #ffd199;">⚠️ 2 Proofs Pending</span>
+              <span style="background:#f0f0f5;color:var(--sub);font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;">Total: $28,891.40</span>
+            </div>
+            <span id="staples-chevron" style="font-size:12px;color:var(--sub);transition:transform .2s;display:inline-block;">▼</span>
+          </div>
+        </div>
+        <div id="staples-order-body" class="card-bd" style="padding:0;display:none;">
+
+          <!-- Alert bar -->
+          <div style="margin:16px 22px 0;background:#fff8e6;border:1px solid #ffe5a0;border-radius:10px;padding:12px 16px;font-size:13px;">
+            ⚠️ <strong>Action needed:</strong> Pin proof and Umbrella proof are still awaiting your approval. Hoodie XS requests (3 units) were bumped to Small — no XS available in this style.
+          </div>
+
+          <!-- Summary badges -->
+          <div style="display:flex;gap:10px;flex-wrap:wrap;padding:16px 22px 0;">
+            <div style="background:var(--bg);border-radius:10px;padding:10px 16px;text-align:center;min-width:100px;">
+              <div style="font-size:20px;font-weight:700;">11</div>
+              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;margin-top:2px;">Line Items</div>
+            </div>
+            <div style="background:var(--bg);border-radius:10px;padding:10px 16px;text-align:center;min-width:100px;">
+              <div style="font-size:20px;font-weight:700;">2,150</div>
+              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;margin-top:2px;">Total Units</div>
+            </div>
+            <div style="background:var(--bg);border-radius:10px;padding:10px 16px;text-align:center;min-width:100px;">
+              <div style="font-size:20px;font-weight:700;">$26,390</div>
+              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;margin-top:2px;">Subtotal</div>
+            </div>
+            <div style="background:var(--bg);border-radius:10px;padding:10px 16px;text-align:center;min-width:100px;">
+              <div style="font-size:20px;font-weight:700;color:var(--success);">$28,891</div>
+              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;margin-top:2px;">Total w/ Tax</div>
+            </div>
+            <div style="background:var(--bg);border-radius:10px;padding:10px 16px;text-align:center;min-width:140px;">
+              <div style="font-size:14px;font-weight:700;">FedEx Priority</div>
+              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;margin-top:2px;">Ship Method</div>
+            </div>
+            <div style="background:var(--bg);border-radius:10px;padding:10px 16px;text-align:center;min-width:120px;">
+              <div style="font-size:14px;font-weight:700;">Kim Duffy</div>
+              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;margin-top:2px;">SPP Rep</div>
+            </div>
+          </div>
+
+          <!-- Items table -->
+          <div style="overflow-x:auto;margin-top:16px;">
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+              <thead><tr>
+                <th style="text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);">Item</th>
+                <th style="text-align:center;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);width:7%;">Qty</th>
+                <th style="text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);width:12%;">Color</th>
+                <th style="text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);width:18%;">Decoration</th>
+                <th style="text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);width:14%;">Price</th>
+                <th style="text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);width:13%;">Location</th>
+                <th style="text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);">Notes</th>
+              </tr></thead>
+              <tbody id="staples-tbody">
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Financial summary -->
+          <div style="display:flex;justify-content:flex-end;padding:16px 22px 20px;">
+            <div style="background:#1d1d1f;color:#fff;border-radius:14px;padding:16px 22px;min-width:260px;">
+              <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;"><span style="color:#a1a1a6;">Subtotal</span><span>$26,390.05</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;"><span style="color:#a1a1a6;">Estimated Tax</span><span>$2,501.35</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:700;border-top:1px solid #444;margin-top:6px;padding-top:8px;"><span>Total</span><span>$28,891.40</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+        <div class="card-hd">
+          <h2>DNA Merchandise</h2>
+          <button class="btn btn-secondary btn-sm" onclick="exportDNACSV()">&#x2B07; Export CSV</button>
+        </div>
+        <div class="card-bd">
+          <div class="tbl-wrap"><div id="dna-inv-body"></div></div>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-hd">
           <h2>📊 Tableau Live Sync</h2>
@@ -795,7 +880,9 @@ function renderTable(){
   const loc=document.getElementById('filter-loc').value;
   const cats=[...new Set(inv.map(i=>i.category))].sort();
 
+  // Exclude DNA items from I&D table
   const filtered=inv.filter(i=>{
+    if(i.name.toLowerCase().includes('dna')) return false;
     const st=statusOf(i);
     const locMatch=(!loc)||(loc==='4f'&&i.loc4th&&i.loc4th!=='0'&&i.loc4th!=='')||(loc==='3f'&&i.loc3rd&&i.loc3rd!=='0'&&i.loc3rd!=='')||(loc==='mead'&&i.mead&&i.mead!=='0'&&i.mead!=='');
     const searchStr=[i.name,i.category,i.notes,i.loc4th,i.loc3rd,i.mead].join(' ').toLowerCase();
@@ -890,8 +977,84 @@ function renderTable(){
   }).join('');
 }
 
-function toggleCat(btn){
-  btn.classList.toggle('open');
+function renderDNATable(){
+  const dnaItems=inv.filter(i=>i.name.toLowerCase().includes('dna'));
+  const container=document.getElementById('dna-inv-body');
+  if(!container) return;
+  if(!dnaItems.length){container.innerHTML='<p style="text-align:center;padding:24px;color:var(--sub);font-size:13px;">No DNA items yet. Add items with "DNA" in the name using the + Add Item button.</p>';return;}
+  const maxQ=Math.max(1,...dnaItems.map(i=>Math.max(0,i.qty)));
+  // Group by category
+  const groups={};
+  dnaItems.forEach(item=>{
+    if(!groups[item.category]) groups[item.category]=[];
+    groups[item.category].push(item);
+  });
+  const openCats=new Set();
+  container.querySelectorAll('.cat-toggle.open').forEach(el=>openCats.add(el.dataset.cat));
+  container.innerHTML=Object.keys(groups).sort().map(catName=>{
+    const items=groups[catName];
+    const isOpen=openCats.has(catName);
+    const lowCount=items.filter(i=>statusOf(i).key==='low').length;
+    const outCount=items.filter(i=>statusOf(i).key==='out').length;
+    const badges=(outCount?`<span style="background:#ffd7d5;color:#8a1a14;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;margin-left:6px;">${outCount} out</span>`:'')+
+                 (lowCount?`<span style="background:#fff3cd;color:#7a5500;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;margin-left:4px;">${lowCount} low</span>`:'');
+    const rows=items.map(item=>{
+      const st=statusOf(item);const q=Math.max(0,item.qty);const pct=Math.round(q/maxQ*100);
+      const color=st.key==='ok'?'#34c759':st.key==='low'?'#ff9500':'#ff3b30';
+      const locs=locStr(item);
+      const locHTML=locs.length?`<div class="locs">${locs.map(l=>`<span class="loc-pill">${l.lbl} <span>${l.val}</span></span>`).join('')}</div>`:'<span style="font-size:12px;color:var(--sub)">—</span>';
+      return `<tr>
+        <td style="display:flex;align-items:center;gap:10px;padding:11px 12px;">
+          ${item.image?`<img class="item-img" src="${item.image}" alt="${item.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="item-img-placeholder" style="display:none;">📦</div>`:`<div class="item-img-placeholder">📦</div>`}
+          <div><div class="item-name">${item.name}</div>${item.notes?`<div class="item-note">${item.notes}</div>`:''}</div>
+        </td>
+        <td><span style="font-size:12px;color:var(--sub)">${item.category}</span></td>
+        <td>
+          <div class="qty-info">
+            <span class="qty-bal" title="Click to edit" onclick="startQtyEdit(${item.id},this)">${q}</span>
+            <input class="qty-edit" id="qe-${item.id}" type="number" min="0" value="${q}" onblur="saveQtyEdit(${item.id})" onkeydown="if(event.key==='Enter')saveQtyEdit(${item.id});if(event.key==='Escape')cancelQtyEdit(${item.id})"/>
+            <span class="qty-meta">of ${item.totalQty} · ${item.requested} req.</span>
+          </div>
+        </td>
+        <td><span class="badge ${st.cls}">${st.label}</span></td>
+        <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div><span class="bar-pct">${pct}%</span></div></td>
+        <td>${locHTML}</td>
+        <td style="font-size:13px;white-space:nowrap">${fmtCost(item.unitCost)}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="delItem(${item.id})">Remove</button></td>
+      </tr>`;
+    }).join('');
+    return `<div class="cat-group">
+      <button class="cat-toggle${isOpen?' open':''}" data-cat="dna-${catName}" onclick="toggleCat(this)">
+        <span>▶ <span class="cat-arrow"></span> ${catName} <span class="cat-meta">${items.length} item${items.length!==1?'s':''}</span>${badges}</span>
+        <span style="font-size:12px;color:var(--sub)">${isOpen?'▲ collapse':'▼ expand'}</span>
+      </button>
+      <table class="${isOpen?'cat-body open':'cat-body'}" style="width:100%;border-collapse:collapse;font-size:13.5px;">
+        <thead><tr>
+          <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">Item</th>
+          <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">Category</th>
+          <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">Balance</th>
+          <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">Status</th>
+          <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">Stock Level</th>
+          <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">Locations</th>
+          <th style="text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);">Unit Cost</th>
+          <th style="border-bottom:1px solid var(--border);"></th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  }).join('');
+}
+
+function exportDNACSV(){
+  const dnaItems=inv.filter(i=>i.name.toLowerCase().includes('dna'));
+  const rows=[['Item','Category','Balance','Total Qty','Qty Requested','Status','Unit Cost','Notes']];
+  dnaItems.forEach(i=>rows.push([i.name,i.category,Math.max(0,i.qty),i.totalQty,i.requested,statusOf(i).label,i.unitCost??'',i.notes]));
+  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([csv],{type:'text/csv'})),download:'DNA-Merchandise.csv'});
+  a.click();toast('📥 DNA inventory exported!');
+}
+
+function toggleCat(btn){  btn.classList.toggle('open');
   const table=btn.nextElementSibling;
   table.classList.toggle('open');
   btn.lastElementChild.textContent=btn.classList.contains('open')?'▲ collapse':'▼ expand';
@@ -1440,7 +1603,7 @@ function clearLog(){
   toast('🗑 Activity log cleared.');
 }
 
-function renderAll(){renderStats();renderAlerts();renderTable();renderReqDropdown();renderReqLines();renderLog();document.getElementById('last-upd').textContent='Updated '+new Date().toLocaleTimeString();}
+function renderAll(){renderStats();renderAlerts();renderTable();renderDNATable();renderReqDropdown();renderReqLines();renderLog();document.getElementById('last-upd').textContent='Updated '+new Date().toLocaleTimeString();}
 
 function submitRequest(){
   const name=document.getElementById('req-name').value.trim();
@@ -1762,6 +1925,83 @@ function dashExportCSV(){
   const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([csv],{type:'text/csv'})),download:'Orders-Dashboard.csv'});
   a.click();toast('📥 Orders exported!');
+}
+
+// ── Staples Order 032733263 ───────────────────────────────────────────────────
+const STAPLES_NOTES_KEY = 'staples_032733263_notes';
+const STAPLES_LOC_KEY   = 'staples_032733263_locations';
+
+const STAPLES_ITEMS = [
+  {id:'pin',       name:'1.5" Hard Enamel + UV Print Pins w/ Backer', sku:'M110-3632 · Logo: DNA Merge',       qty:'500',  color:'Full Color Pin + 1/C on Card', deco:'Die Struck · Full Coverage',          unitPrice:'$5.45',    extPrice:'$2,980.00',  note:'incl. $255 setup', proof:true},
+  {id:'keyholder', name:'Twist Lock Keyholder',                        sku:'004-816RF925586008 · Logo: Apple',  qty:'200',  color:'Silver',                        deco:'Laser Engrave · Front',               unitPrice:'$4.50',    extPrice:'$900.00',    note:'',     proof:false},
+  {id:'journal',   name:'FSC® Mix Pedova™ Soft Bound Journal',         sku:'001-81GFJ1 · Logo: I&D vertical',  qty:'300',  color:'Black',                         deco:'Deboss · Spine/Cover',                unitPrice:'$8.35',    extPrice:'$2,513.35',  note:'',     proof:false},
+  {id:'tote',      name:'14oz Organic Cotton Tote',                    sku:'007-82HXB001 · Logo: I&D',         qty:'150',  color:'Natural',                       deco:'Embroidery · Front Pocket',           unitPrice:'$26.50',   extPrice:'$4,001.50',  note:'',     proof:false},
+  {id:'drawstring',name:'Repose 5oz Recycled Cotton Drawstring Bag',   sku:'010-82E8E001 · Logo: I&D',         qty:'150',  color:'Natural',                       deco:'Embroidery · Front Pocket',           unitPrice:'$10.35',   extPrice:'$1,562.85',  note:'',     proof:false},
+  {id:'pen',       name:'Jotter Gel Pen',                              sku:'002 754240 · Logo: Apple',         qty:'300',  color:'Black (White logo)',             deco:'Digital Print · Barrel',              unitPrice:'$1.15',    extPrice:'$345.00',    note:'',     proof:false},
+  {id:'umbrella',  name:'Executive Mini Umbrella',                     sku:'003-8134C1 753033 · Logo: Apple',  qty:'200',  color:'Black (White logo)',             deco:'Heat Transfer · Back Panel',          unitPrice:'$13.75',   extPrice:'$2,750.00',  note:'',     proof:true},
+  {id:'cap',       name:'Unstructured Laundered Organic Cotton Cap',   sku:'009 777567 · Logo: Apple (white)', qty:'150',  color:'50 Graphite / 50 Black / 50 Navy',deco:'Embroidery · Center Front',          unitPrice:'$13.40',   extPrice:'$2,010.00',  note:'',     proof:false},
+  {id:'bottle',    name:'h2go Silo Bottle',                            sku:'008 · Logo: I&D (white)',          qty:'300',  color:'Black',                         deco:'Screenprint · Standard Front',        unitPrice:'$13.75',   extPrice:'$4,240.00',  note:'',     proof:false},
+  {id:'hoodie-denim',  name:'Unisex Garment-Dyed Hooded Sweatshirt',   sku:'005-81D7V570 · Logo: I&D (white)', qty:'S:14 M:15 L:10 XL:8 2X:2 3X:1 = 50', color:'Denim', deco:'Screenprint · Upper Front', unitPrice:'$42.75–58.85', extPrice:'$2,351.60', note:'', proof:false},
+  {id:'hoodie-seafoam',name:'Unisex Garment-Dyed Hooded Sweatshirt',   sku:'006-81D7V475 · Logo: All Together Gradient', qty:'S:14 M:15 L:10 XL:8 2X:2 3X:1 = 50', color:'Seafoam', deco:'Digital Transfer · Upper Front', unitPrice:'$51.25–67.00', extPrice:'$2,735.75', note:'', proof:false},
+];
+
+const LOC_OPTIONS = ['','EO','CC01-3','CC01-4','Mead','Other'];
+
+function staplesInit(){
+  const notes = JSON.parse(localStorage.getItem(STAPLES_NOTES_KEY)||'{}');
+  const locs  = JSON.parse(localStorage.getItem(STAPLES_LOC_KEY)||'{}');
+  const tbody = document.getElementById('staples-tbody');
+  if(!tbody) return;
+  tbody.innerHTML = STAPLES_ITEMS.map(item=>{
+    const locOpts = LOC_OPTIONS.map(o=>`<option value="${o}"${locs[item.id]===o?' selected':''}>${o||'Select…'}</option>`).join('');
+    const proofBadge = item.proof ? `<span style="background:#fff3cd;color:#856404;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;border:1px solid #ffd199;white-space:nowrap;">⚠️ Proof Pending</span>` : '';
+    const decoParts = item.deco.split(' · ').map(d=>`<span style="display:inline-block;background:#f0f0f5;border-radius:6px;padding:2px 7px;font-size:11px;margin:1px;">${d}</span>`).join(' ');
+    return `<tr style="border-bottom:1px solid #f0f0f3;transition:background .12s;" onmouseover="this.style.background='#f7f7fa'" onmouseout="this.style.background=''">
+      <td style="padding:11px 14px;">
+        <div style="font-weight:600;font-size:13px;">${item.name} ${proofBadge}</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:2px;">${item.sku}</div>
+      </td>
+      <td style="padding:11px 14px;text-align:center;font-size:16px;font-weight:700;">${item.qty}</td>
+      <td style="padding:11px 14px;font-size:12px;">${item.color}</td>
+      <td style="padding:11px 14px;">${decoParts}</td>
+      <td style="padding:11px 14px;font-size:13px;">
+        <div style="font-weight:700;">${item.unitPrice}</div>
+        <div style="font-size:12px;color:var(--sub);">${item.extPrice}${item.note?'<br><span style="font-size:10px;">'+item.note+'</span>':''}</div>
+      </td>
+      <td style="padding:11px 14px;">
+        <select onchange="staplesSetLoc('${item.id}',this.value)" style="width:100%;padding:5px 8px;font-size:12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);">${locOpts}</select>
+      </td>
+      <td style="padding:11px 14px;">
+        <div contenteditable="true" id="staples-note-${item.id}" onblur="staplesSetNote('${item.id}',this)" style="min-height:40px;background:#fffdf5;border:1px dashed #e0d29a;border-radius:8px;padding:7px 10px;font-size:12px;color:#5a4a1f;outline:none;" data-placeholder="Add a note…">${notes[item.id]||''}</div>
+      </td>
+    </tr>`;
+  }).join('');
+  // placeholder behaviour
+  tbody.querySelectorAll('[data-placeholder]').forEach(el=>{
+    el.addEventListener('focus',()=>{if(!el.innerText.trim())el.innerHTML='';});
+    el.addEventListener('blur',()=>{if(!el.innerText.trim())el.innerHTML='';});
+  });
+}
+
+function staplesSetNote(id, el){
+  const notes=JSON.parse(localStorage.getItem(STAPLES_NOTES_KEY)||'{}');
+  notes[id]=el.innerText.trim();
+  localStorage.setItem(STAPLES_NOTES_KEY,JSON.stringify(notes));
+}
+
+function staplesSetLoc(id, val){
+  const locs=JSON.parse(localStorage.getItem(STAPLES_LOC_KEY)||'{}');
+  locs[id]=val;
+  localStorage.setItem(STAPLES_LOC_KEY,JSON.stringify(locs));
+}
+
+function toggleStaplesOrder(){
+  const body=document.getElementById('staples-order-body');
+  const chev=document.getElementById('staples-chevron');
+  const isOpen=body.style.display!=='none';
+  body.style.display=isOpen?'none':'block';
+  chev.style.transform=isOpen?'':'rotate(180deg)';
+  if(!isOpen) staplesInit();
 }
 
 renderAll();
