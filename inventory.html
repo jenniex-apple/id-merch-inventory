@@ -242,10 +242,10 @@
               <span style="background:#fff3cd;color:#856404;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid #ffd199;">⚠️ 2 Proofs Pending</span>
               <span style="background:#f0f0f5;color:var(--sub);font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;">Total: $28,891.40</span>
             </div>
-            <span id="staples-chevron" style="font-size:12px;color:var(--sub);transition:transform .2s;display:inline-block;">▼</span>
+            <span id="staples-chevron" style="font-size:12px;color:var(--sub);transition:transform .2s;display:inline-block;transform:rotate(180deg);">▼</span>
           </div>
         </div>
-        <div id="staples-order-body" class="card-bd" style="padding:0;display:none;">
+        <div id="staples-order-body" class="card-bd" style="padding:0;display:block;">
 
           <!-- Alert bar -->
           <div style="margin:16px 22px 0;background:#fff8e6;border:1px solid #ffe5a0;border-radius:10px;padding:12px 16px;font-size:13px;">
@@ -253,30 +253,30 @@
           </div>
 
           <!-- Summary badges -->
-          <div style="display:flex;gap:10px;flex-wrap:wrap;padding:16px 22px 0;">
-            <div style="background:var(--bg);border-radius:10px;padding:10px 16px;text-align:center;min-width:100px;">
-              <div style="font-size:20px;font-weight:700;">11</div>
-              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;margin-top:2px;">Line Items</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;padding:18px 22px 0;">
+            <div style="background:var(--bg);border-radius:var(--radius);padding:16px 18px;">
+              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;">Line Items</div>
+              <div style="font-size:28px;font-weight:700;letter-spacing:-1px;margin-top:4px;">11</div>
             </div>
-            <div style="background:var(--bg);border-radius:10px;padding:10px 16px;text-align:center;min-width:100px;">
-              <div style="font-size:20px;font-weight:700;">2,150</div>
-              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;margin-top:2px;">Total Units</div>
+            <div style="background:var(--bg);border-radius:var(--radius);padding:16px 18px;">
+              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;">Total Units</div>
+              <div style="font-size:28px;font-weight:700;letter-spacing:-1px;margin-top:4px;">2,150</div>
             </div>
-            <div style="background:var(--bg);border-radius:10px;padding:10px 16px;text-align:center;min-width:100px;">
-              <div style="font-size:20px;font-weight:700;">$26,390</div>
-              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;margin-top:2px;">Subtotal</div>
+            <div style="background:var(--bg);border-radius:var(--radius);padding:16px 18px;">
+              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;">Subtotal</div>
+              <div style="font-size:22px;font-weight:700;letter-spacing:-1px;margin-top:4px;">$26,390</div>
             </div>
-            <div style="background:var(--bg);border-radius:10px;padding:10px 16px;text-align:center;min-width:100px;">
-              <div style="font-size:20px;font-weight:700;color:var(--success);">$28,891</div>
-              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;margin-top:2px;">Total w/ Tax</div>
+            <div style="background:var(--bg);border-radius:var(--radius);padding:16px 18px;">
+              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;">Total w/ Tax</div>
+              <div style="font-size:22px;font-weight:700;letter-spacing:-1px;margin-top:4px;color:var(--success);">$28,891</div>
             </div>
-            <div style="background:var(--bg);border-radius:10px;padding:10px 16px;text-align:center;min-width:140px;">
-              <div style="font-size:14px;font-weight:700;">FedEx Priority</div>
-              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;margin-top:2px;">Ship Method</div>
+            <div style="background:var(--bg);border-radius:var(--radius);padding:16px 18px;">
+              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;">Ship Method</div>
+              <div style="font-size:15px;font-weight:700;margin-top:4px;">FedEx Priority</div>
             </div>
-            <div style="background:var(--bg);border-radius:10px;padding:10px 16px;text-align:center;min-width:120px;">
-              <div style="font-size:14px;font-weight:700;">Kim Duffy</div>
-              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.3px;margin-top:2px;">SPP Rep</div>
+            <div style="background:var(--bg);border-radius:var(--radius);padding:16px 18px;">
+              <div style="font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;">SPP Rep</div>
+              <div style="font-size:15px;font-weight:700;margin-top:4px;">Kim Duffy</div>
             </div>
           </div>
 
@@ -429,12 +429,28 @@
       <div class="page" id="page-dna">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:28px;">
           <div>
-            <div style="font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:4px;">DNA Team Order Request</div>
-            <div style="font-size:13px;color:var(--sub);">Fill out the form and submit to log and send the order to the partner team.</div>
+            <div style="font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:4px;" id="dna-form-title">Order Request</div>
+            <div style="font-size:13px;color:var(--sub);" id="dna-form-subtitle">Select a portal below, then fill out the form.</div>
           </div>
           <div style="display:flex;gap:10px;">
             <button class="btn btn-secondary btn-sm" onclick="dnaResetForm()">Reset</button>
             <button class="btn btn-secondary btn-sm" onclick="dnaCopyOrderSummary()">Copy Summary</button>
+          </div>
+        </div>
+
+        <!-- Portal selector -->
+        <div class="card">
+          <div class="card-hd"><h2>Portal Selection</h2></div>
+          <div class="card-bd">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+              <button id="portal-btn-dna" onclick="dnaSetPortal('dna')" class="btn btn-secondary" style="flex:1;min-width:160px;padding:16px;border-radius:14px;font-size:15px;font-weight:600;border:2px solid var(--border);transition:all .2s;">
+                📋 DNA Request
+              </button>
+              <button id="portal-btn-id" onclick="dnaSetPortal('id')" class="btn btn-secondary" style="flex:1;min-width:160px;padding:16px;border-radius:14px;font-size:15px;font-weight:600;border:2px solid var(--border);transition:all .2s;">
+                📦 I&amp;D Request
+              </button>
+            </div>
+            <div id="portal-selection-hint" style="margin-top:10px;font-size:12px;color:var(--sub);">Please select a portal to continue.</div>
           </div>
         </div>
         <div class="card">
@@ -1996,6 +2012,7 @@ function toggleStaplesOrder(){
   if(!isOpen) staplesInit();
 }
 
+staplesInit();
 renderAll();
 </script>
 </body>
