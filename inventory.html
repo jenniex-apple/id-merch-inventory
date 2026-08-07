@@ -285,12 +285,12 @@
             <table style="width:100%;border-collapse:collapse;font-size:13px;">
               <thead><tr>
                 <th style="text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);">Item</th>
-                <th style="text-align:center;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);width:7%;">Qty</th>
-                <th style="text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);width:12%;">Color</th>
-                <th style="text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);width:18%;">Decoration</th>
-                <th style="text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);width:14%;">Price</th>
-                <th style="text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);width:13%;">Location</th>
-                <th style="text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);">Notes</th>
+                <th style="text-align:center;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);width:6%;">Qty</th>
+                <th style="text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);width:10%;">Color</th>
+                <th style="text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);width:15%;">Decoration</th>
+                <th style="text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);width:10%;">Price</th>
+                <th style="text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);width:10%;">Location</th>
+                <th style="text-align:left;padding:9px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);width:20%;">Notes</th>
               </tr></thead>
               <tbody id="staples-tbody">
               </tbody>
@@ -1979,8 +1979,8 @@ function staplesInit(){
       <td style="padding:11px 14px;">
         <select onchange="staplesSetLoc('${item.id}',this.value)" style="width:100%;padding:5px 8px;font-size:12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);">${locOpts}</select>
       </td>
-      <td style="padding:11px 14px;">
-        <div contenteditable="true" id="staples-note-${item.id}" onblur="staplesSetNote('${item.id}',this)" style="min-height:40px;background:#fffdf5;border:1px dashed #e0d29a;border-radius:8px;padding:7px 10px;font-size:12px;color:#5a4a1f;outline:none;" data-placeholder="Add a note…">${notes[item.id]||''}</div>
+      <td style="padding:11px 14px;vertical-align:top;">
+        <div contenteditable="true" id="staples-note-${item.id}" onblur="staplesSetNote('${item.id}',this)" style="width:100%;min-height:80px;background:#fffdf5;border:1px dashed #e0d29a;border-radius:8px;padding:9px 12px;font-size:12px;line-height:1.5;color:#5a4a1f;outline:none;box-sizing:border-box;" data-placeholder="Add a note…">${notes[item.id]||''}</div>
       </td>
     </tr>`;
   }).join('');
