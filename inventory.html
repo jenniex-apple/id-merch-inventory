@@ -165,19 +165,11 @@
     <div class="sidebar-label">Order Portals</div>
 
     <button class="nav-group-btn open" onclick="showPage('page-dna-home',this);this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
-      <span class="nav-icon">📋</span> DNA Order Portal <span class="nav-chevron">▶</span>
+      <span class="nav-icon">📋</span> Order Portal <span class="nav-chevron">▶</span>
     </button>
     <div class="nav-children-wrap open">
       <button class="nav-child" onclick="showPage('page-dna',this)">📝 Order Request</button>
       <button class="nav-child" id="nav-dna-log" onclick="showPage('page-dna-log',this)">📦 Orders Placed</button>
-    </div>
-
-    <button class="nav-group-btn" onclick="showPage('page-id-home',this);this.classList.toggle('open');this.nextElementSibling.classList.toggle('open')">
-      <span class="nav-icon">📋</span> I&amp;D Order Portal <span class="nav-chevron">▶</span>
-    </button>
-    <div class="nav-children-wrap">
-      <button class="nav-child" onclick="showPage('page-id-order',this)">📝 Order Request</button>
-      <button class="nav-child" id="nav-id-log" onclick="showPage('page-id-log',this)">📦 Orders Placed</button>
     </div>
 
     <div class="nav-divider"></div>
@@ -231,10 +223,10 @@
         </div>
       </div>
 
-      <!-- ── Staples Order 032733263 ── -->
+      <!-- ── Procurement ── -->
       <div class="card" id="card-staples-order">
         <div class="card-hd" style="cursor:pointer;" onclick="toggleStaplesOrder()">
-          <h2>🍎 Staples Order #032733263</h2>
+          <h2>🍎 Procurement</h2>
           <div style="display:flex;align-items:center;gap:12px;">
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
               <span style="background:#f0f7ff;color:var(--accent);font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid #c5dff9;">08/04/2026</span>
@@ -253,28 +245,28 @@
           </div>
 
           <!-- Summary badges -->
-          <div style="display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;padding:14px 22px 0;align-items:stretch;">
-            <div style="background:var(--bg);border-radius:8px;padding:8px 14px;white-space:nowrap;flex-shrink:0;">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;padding:14px 22px 0;align-items:stretch;">
+            <div style="background:var(--bg);border-radius:8px;padding:8px 14px;flex:1;min-width:80px;">
               <div style="font-size:10px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;">Line Items</div>
               <div style="font-size:16px;font-weight:700;margin-top:2px;">11</div>
             </div>
-            <div style="background:var(--bg);border-radius:8px;padding:8px 14px;white-space:nowrap;flex-shrink:0;">
+            <div style="background:var(--bg);border-radius:8px;padding:8px 14px;flex:1;min-width:80px;">
               <div style="font-size:10px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;">Total Units</div>
               <div style="font-size:16px;font-weight:700;margin-top:2px;">2,150</div>
             </div>
-            <div style="background:var(--bg);border-radius:8px;padding:8px 14px;white-space:nowrap;flex-shrink:0;">
+            <div style="background:var(--bg);border-radius:8px;padding:8px 14px;flex:1;min-width:80px;">
               <div style="font-size:10px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;">Subtotal</div>
               <div style="font-size:16px;font-weight:700;margin-top:2px;">$26,390</div>
             </div>
-            <div style="background:var(--bg);border-radius:8px;padding:8px 14px;white-space:nowrap;flex-shrink:0;">
+            <div style="background:var(--bg);border-radius:8px;padding:8px 14px;flex:1;min-width:80px;">
               <div style="font-size:10px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;">Total w/ Tax</div>
               <div style="font-size:16px;font-weight:700;margin-top:2px;color:var(--success);">$28,891</div>
             </div>
-            <div style="background:var(--bg);border-radius:8px;padding:8px 14px;white-space:nowrap;flex-shrink:0;">
+            <div style="background:var(--bg);border-radius:8px;padding:8px 14px;flex:1;min-width:80px;">
               <div style="font-size:10px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;">Ship Method</div>
               <div style="font-size:13px;font-weight:700;margin-top:2px;">FedEx Priority</div>
             </div>
-            <div style="background:var(--bg);border-radius:8px;padding:8px 14px;white-space:nowrap;flex-shrink:0;">
+            <div style="background:var(--bg);border-radius:8px;padding:8px 14px;flex:1;min-width:80px;">
               <div style="font-size:10px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;">SPP Rep</div>
               <div style="font-size:13px;font-weight:700;margin-top:2px;">Kim Duffy</div>
             </div>
@@ -453,7 +445,7 @@
             <div id="portal-selection-hint" style="margin-top:10px;font-size:12px;color:var(--sub);">Please select a portal to continue.</div>
           </div>
         </div>
-        <div class="card">
+        <div class="card" id="dna-form-recipient" style="display:none;">
           <div class="card-hd"><h2>Recipient Information</h2></div>
           <div class="card-bd">
             <div class="form-grid">
@@ -471,7 +463,7 @@
             </div>
           </div>
         </div>
-        <div class="card">
+        <div class="card" id="dna-form-items" style="display:none;">
           <div class="card-hd"><h2>Requested Items</h2></div>
           <div class="card-bd" style="padding:0;">
             <div style="overflow-x:auto;">
@@ -492,7 +484,7 @@
             </div>
           </div>
         </div>
-        <div class="card">
+        <div class="card" id="dna-form-notes" style="display:none;">
           <div class="card-hd"><h2>Notes</h2></div>
           <div class="card-bd">
             <div class="fg full"><label>Additional Notes</label><textarea id="dna-notes" placeholder="e.g. Ship by end of week, fragile items..."></textarea></div>
@@ -541,144 +533,6 @@
           </div>
         </div>
       </div><!-- /page-dna-log -->
-
-      <!-- PAGE: I&D Order Portal Home -->
-      <div class="page" id="page-id-home">
-        <div>
-          <div style="font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:6px;">📋 I&amp;D Order Portal</div>
-          <div style="font-size:14px;color:var(--sub);">Internal I&amp;D fulfillment portal. Submit orders and track fulfillment status.</div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-          <div class="card" style="cursor:pointer;transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 28px rgba(0,0,0,.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''" onclick="showPage('page-id-order',document.querySelector('#nav-id-log').previousElementSibling)">
-            <div class="card-bd" style="display:flex;align-items:center;gap:16px;">
-              <div style="width:48px;height:48px;border-radius:12px;background:#e8f1fd;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">📝</div>
-              <div><div style="font-size:15px;font-weight:600;margin-bottom:3px;">New Order Request</div><div style="font-size:13px;color:var(--sub);">Fill out recipient info and select items to ship</div></div>
-            </div>
-          </div>
-          <div class="card" style="cursor:pointer;transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 28px rgba(0,0,0,.12)'" onmouseout="this.style.transform='';this.style.boxShadow=''" onclick="showPage('page-id-log',document.getElementById('nav-id-log'))">
-            <div class="card-bd" style="display:flex;align-items:center;gap:16px;">
-              <div style="width:48px;height:48px;border-radius:12px;background:#e8f9f0;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;">📦</div>
-              <div><div style="font-size:15px;font-weight:600;margin-bottom:3px;">View Orders Placed</div><div style="font-size:13px;color:var(--sub);">Track fulfillment status of all submitted orders</div></div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-hd"><h2>Order Summary</h2></div>
-          <div class="card-bd">
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;">
-              <div style="text-align:center;padding:16px;background:var(--bg);border-radius:12px;"><div style="font-size:28px;font-weight:700;" id="id-stat-total">0</div><div style="font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;margin-top:4px;">Total Orders</div></div>
-              <div style="text-align:center;padding:16px;background:var(--bg);border-radius:12px;"><div style="font-size:28px;font-weight:700;color:var(--warning);" id="id-stat-pending">0</div><div style="font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;margin-top:4px;">Pending</div></div>
-              <div style="text-align:center;padding:16px;background:var(--bg);border-radius:12px;"><div style="font-size:28px;font-weight:700;color:var(--accent);" id="id-stat-shipping">0</div><div style="font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;margin-top:4px;">In Progress</div></div>
-              <div style="text-align:center;padding:16px;background:var(--bg);border-radius:12px;"><div style="font-size:28px;font-weight:700;color:var(--success);" id="id-stat-completed">0</div><div style="font-size:12px;font-weight:600;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;margin-top:4px;">Completed</div></div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-hd"><h2>Recent Orders</h2><button class="btn btn-secondary btn-sm" onclick="showPage('page-id-log',document.getElementById('nav-id-log'))">View All</button></div>
-          <div class="card-bd" style="padding:0;"><div id="id-home-recent" style="padding:0 22px;"></div></div>
-        </div>
-      </div><!-- /page-id-home -->
-
-      <!-- PAGE: I&D Order Request -->
-      <div class="page" id="page-id-order">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:28px;">
-          <div>
-            <div style="font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:4px;">I&amp;D Team Order Request</div>
-            <div style="font-size:13px;color:var(--sub);">Fill out the form and submit to log the order.</div>
-          </div>
-          <div style="display:flex;gap:10px;">
-            <button class="btn btn-secondary btn-sm" onclick="idResetForm()">Reset</button>
-            <button class="btn btn-secondary btn-sm" onclick="idCopyOrderSummary()">Copy Summary</button>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-hd"><h2>Recipient Information</h2></div>
-          <div class="card-bd">
-            <div class="form-grid">
-              <div class="fg"><label>First Name <span style="color:var(--danger)">*</span></label><input type="text" id="id-firstName" placeholder="Jane"/></div>
-              <div class="fg"><label>Last Name <span style="color:var(--danger)">*</span></label><input type="text" id="id-lastName" placeholder="Doe"/></div>
-              <div class="fg full"><label>Company Name</label><input type="text" id="id-company" placeholder="Apple Inc."/></div>
-              <div class="fg"><label>Email <span style="color:var(--danger)">*</span></label><input type="email" id="id-email" placeholder="jane@apple.com"/></div>
-              <div class="fg"><label>Phone <span style="color:var(--danger)">*</span></label><input type="tel" id="id-phone" placeholder="+1 (555) 000-0000"/></div>
-              <div class="fg full"><label>Address Line 1 <span style="color:var(--danger)">*</span></label><input type="text" id="id-addr1" placeholder="123 Main Street"/></div>
-              <div class="fg full"><label>Address Line 2</label><input type="text" id="id-addr2" placeholder="Suite, Apt, Floor..."/></div>
-              <div class="fg"><label>City <span style="color:var(--danger)">*</span></label><input type="text" id="id-city" placeholder="Cupertino"/></div>
-              <div class="fg"><label>State / Province</label><input type="text" id="id-state" placeholder="CA"/></div>
-              <div class="fg"><label>Country Code <span style="color:var(--danger)">*</span></label><input type="text" id="id-country" placeholder="US" maxlength="3"/></div>
-              <div class="fg"><label>ZIP / Postal Code <span style="color:var(--danger)">*</span></label><input type="text" id="id-zip" placeholder="95014"/></div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-hd"><h2>Requested Items</h2></div>
-          <div class="card-bd" style="padding:0;">
-            <div style="overflow-x:auto;">
-              <table style="width:100%;border-collapse:collapse;font-size:13.5px;">
-                <thead><tr>
-                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:54%;">Item</th>
-                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:20%;">Category</th>
-                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:14%;">Qty</th>
-                  <th style="text-align:center;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:12%;">Del</th>
-                </tr></thead>
-                <tbody id="id-items-body">
-                  <tr id="id-empty-row"><td colspan="4" style="text-align:center;padding:24px;color:var(--sub);font-size:13px;border-bottom:none;">No items yet — click "Add Item"</td></tr>
-                </tbody>
-                <tfoot><tr><td colspan="4" style="padding:12px 14px;">
-                  <button class="btn btn-secondary btn-sm" onclick="idAddItem()" style="border:1.5px dashed var(--accent);color:var(--accent);background:transparent;">+ Add Item</button>
-                </td></tr></tfoot>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-hd"><h2>Notes</h2></div>
-          <div class="card-bd">
-            <div class="fg full"><label>Additional Notes</label><textarea id="id-notes" placeholder="e.g. Ship by end of week, fragile items..."></textarea></div>
-            <div style="display:flex;justify-content:flex-end;margin-top:16px;">
-              <button class="btn btn-primary" style="width:fit-content;" onclick="idSubmitOrder()">Submit Order</button>
-            </div>
-          </div>
-        </div>
-        <div id="id-success" style="display:none;flex-direction:column;align-items:center;text-align:center;padding:60px 32px;gap:18px;">
-          <div style="width:68px;height:68px;border-radius:50%;background:var(--success);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(52,199,89,.3);">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <div style="font-size:22px;font-weight:700;">Order Submitted</div>
-          <div style="font-size:14px;color:var(--sub);max-width:360px;line-height:1.5;">Your order has been logged and the summary copied to your clipboard.</div>
-          <div id="id-success-detail" style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 24px;text-align:left;min-width:320px;max-width:480px;width:100%;font-size:13px;"></div>
-          <button class="btn btn-primary" style="padding:0 32px;" onclick="idNewOrder()">Place Another Order</button>
-        </div>
-      </div><!-- /page-id-order -->
-
-      <!-- PAGE: I&D Orders Placed -->
-      <div class="page" id="page-id-log">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:28px;">
-          <div>
-            <div style="font-size:22px;font-weight:700;letter-spacing:-.4px;margin-bottom:4px;">Orders Placed</div>
-            <div style="font-size:13px;color:var(--sub);">All submitted I&amp;D order requests and their fulfillment status.</div>
-          </div>
-          <button id="id-delete-selected-btn" class="btn btn-danger btn-sm" onclick="idDeleteSelected()" style="display:none;">Delete Selected</button>
-        </div>
-        <div class="card">
-          <div class="card-bd" style="padding:0;">
-            <div style="overflow-x:auto;">
-              <table style="width:100%;border-collapse:collapse;font-size:13px;">
-                <thead><tr>
-                  <th style="padding:10px 14px;width:4%;border-bottom:1px solid var(--border);"><input type="checkbox" id="id-select-all" onclick="idToggleSelectAll(this)" style="cursor:pointer;width:auto;padding:0;background:none;border:1px solid var(--border);border-radius:4px;"/></th>
-                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:6%;">#</th>
-                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:13%;">Date</th>
-                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:17%;">Recipient</th>
-                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:11%;">Destination</th>
-                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);">Items</th>
-                  <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--sub);text-transform:uppercase;border-bottom:1px solid var(--border);width:17%;">Status</th>
-                  <th style="border-bottom:1px solid var(--border);width:8%;"></th>
-                </tr></thead>
-                <tbody id="id-log-body"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div><!-- /page-id-log -->
 
       <!-- PAGE: Orders Dashboard -->
       <div class="page" id="page-dashboard">
@@ -1105,9 +959,10 @@ function showPage(pageId, btn){
 
 // ── DNA Order Portal ──────────────────────────────────────────────────────────
 
-function dnaBuildSelectOptions(){
+function dnaBuildSelectOptions(portal){
+  const isDNA = portal==='dna';
   const groups={};
-  inv.filter(i=>i.qty>0).forEach(i=>{
+  inv.filter(i=>i.qty>0&&(isDNA ? i.name.toLowerCase().includes('dna') : !i.name.toLowerCase().includes('dna'))).forEach(i=>{
     if(!groups[i.category]) groups[i.category]=[];
     groups[i.category].push(i);
   });
@@ -1120,6 +975,36 @@ function dnaBuildSelectOptions(){
   return html;
 }
 
+let dnaCurrentPortal = '';
+
+function dnaSetPortal(portal){
+  dnaCurrentPortal = portal;
+  // Update button styles
+  const btnDNA = document.getElementById('portal-btn-dna');
+  const btnID  = document.getElementById('portal-btn-id');
+  const hint   = document.getElementById('portal-selection-hint');
+  if(portal==='dna'){
+    btnDNA.style.cssText='flex:1;min-width:160px;padding:16px;border-radius:14px;font-size:15px;font-weight:600;border:2.5px solid var(--accent);background:#e8f1fd;color:var(--accent);cursor:pointer;font-family:inherit;';
+    btnID.style.cssText='flex:1;min-width:160px;padding:16px;border-radius:14px;font-size:15px;font-weight:600;border:2px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;font-family:inherit;';
+    document.getElementById('dna-form-title').textContent='DNA Order Request';
+    document.getElementById('dna-form-subtitle').textContent='Fill out the form and submit to log and send the order to the DNA team.';
+    hint.textContent='Showing DNA items only.';
+  } else {
+    btnID.style.cssText='flex:1;min-width:160px;padding:16px;border-radius:14px;font-size:15px;font-weight:600;border:2.5px solid var(--accent);background:#e8f1fd;color:var(--accent);cursor:pointer;font-family:inherit;';
+    btnDNA.style.cssText='flex:1;min-width:160px;padding:16px;border-radius:14px;font-size:15px;font-weight:600;border:2px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;font-family:inherit;';
+    document.getElementById('dna-form-title').textContent='I&D Order Request';
+    document.getElementById('dna-form-subtitle').textContent='Fill out the form and submit to log the order.';
+    hint.textContent='Showing I&D items only (no DNA items).';
+  }
+  // Show form cards
+  ['dna-form-recipient','dna-form-items','dna-form-notes'].forEach(id=>{
+    document.getElementById(id).style.display='';
+  });
+  // Clear any existing item rows and reset with correct item list
+  document.getElementById('dna-items-body').innerHTML='<tr id="dna-empty-row"><td colspan="4" style="text-align:center;padding:24px;color:var(--sub);font-size:13px;border-bottom:none;">No items yet — click "Add Item"</td></tr>';
+  dnaRowCount=0;
+}
+
 let dnaRowCount=0;
 function dnaAddItem(){
   const emptyRow=document.getElementById('dna-empty-row');
@@ -1129,7 +1014,7 @@ function dnaAddItem(){
   const tr=document.createElement('tr');
   tr.id=`dna-row-${id}`;
   tr.innerHTML=`
-    <td><select id="dna-item-${id}" onchange="dnaUpdateTag(${id})" style="width:100%;">${dnaBuildSelectOptions()}</select></td>
+    <td><select id="dna-item-${id}" onchange="dnaUpdateTag(${id})" style="width:100%;">${dnaBuildSelectOptions(dnaCurrentPortal)}</select></td>
     <td><span id="dna-tag-${id}" style="font-size:11px;color:#b0b0b5;font-style:italic;">—</span></td>
     <td><input type="number" id="dna-qty-${id}" value="1" min="1" style="width:70px;text-align:center;"/></td>
     <td style="text-align:center;"><button onclick="dnaRemoveItem(${id})" style="width:26px;height:26px;border:none;border-radius:50%;background:#fff0f0;color:var(--danger);font-size:14px;cursor:pointer;">✕</button></td>`;
@@ -1273,7 +1158,7 @@ function dnaRenderLog(){
         ${e.notes?`<div style="margin-top:14px;"><div style="font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Notes</div><div style="font-size:13px;color:var(--text);">${e.notes}</div></div>`:''}`;
       return `<tr class="dna-log-row" onclick="dnaToggleDetail(${e.num},this)" style="cursor:pointer;">
         <td style="padding:12px 14px;" onclick="event.stopPropagation()"><input type="checkbox" class="dna-row-cb" data-num="${e.num}" onchange="dnaUpdateDeleteBtn()" style="cursor:pointer;width:auto;padding:0;background:none;"/></td>
-        <td style="padding:12px 14px;"><span style="font-size:11px;font-weight:700;font-family:monospace;background:#f5f5f7;color:var(--sub);border:1px solid var(--border);border-radius:6px;padding:2px 7px;">#${String(e.num).padStart(3,'0')}</span></td>
+        <td style="padding:12px 14px;"><span style="font-size:11px;font-weight:700;font-family:monospace;background:#f5f5f7;color:var(--sub);border:1px solid var(--border);border-radius:6px;padding:2px 7px;">#${String(e.num).padStart(3,'0')}</span> ${e.portal==='dna'?`<span style="font-size:10px;font-weight:600;background:#e8f1fd;color:var(--accent);border-radius:20px;padding:1px 7px;">DNA</span>`:`<span style="font-size:10px;font-weight:600;background:#ede6ff;color:var(--purple);border-radius:20px;padding:1px 7px;">I&amp;D</span>`}</td>
         <td style="padding:12px 14px;font-size:12px;color:var(--sub);">${dateStr}</td>
         <td style="padding:12px 14px;"><div style="font-weight:500;">${r.firstName} ${r.lastName}</div><div style="font-size:12px;color:var(--sub);">${r.email}</div></td>
         <td style="padding:12px 14px;font-size:13px;">${dest||'—'}</td>
@@ -1402,22 +1287,23 @@ function dnaBuildSummary(r,items,notes){
 }
 
 function dnaSubmitOrder(){
+  if(!dnaCurrentPortal){toast('⚠️ Please select a portal (DNA or I&D) first.');return;}
   if(!dnaValidate()) return;
   const r=dnaCollectRecipient();
   const items=dnaCollectItems();
   const notes=document.getElementById('dna-notes').value.trim();
   navigator.clipboard.writeText(dnaBuildSummary(r,items,notes)).catch(()=>{});
   dnaOrderCounter++;
-  dnaOrderLog.unshift({num:dnaOrderCounter,timestamp:new Date().toISOString(),recipient:r,items,notes,status:'pending',statusHistory:[{status:'pending',timestamp:new Date().toISOString()}]});
+  dnaOrderLog.unshift({num:dnaOrderCounter,timestamp:new Date().toISOString(),recipient:r,items,notes,status:'pending',portal:dnaCurrentPortal,statusHistory:[{status:'pending',timestamp:new Date().toISOString()}]});
   dnaSaveLog();dnaRenderLog();
   const dest=[r.addr1,r.addr2,r.city,r.state,r.zip,r.country].filter(Boolean).join(', ');
   const itemList=items.map(i=>`${i.name} x${i.qty}`).join(' · ');
   document.getElementById('dna-success-detail').innerHTML=`
+    <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f5f5f7;font-size:13px;"><span style="color:var(--sub);">Portal</span><span style="font-weight:500;">${dnaCurrentPortal==='dna'?'DNA':'I&D'}</span></div>
     <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f5f5f7;font-size:13px;"><span style="color:var(--sub);">Recipient</span><span style="font-weight:500;">${r.firstName} ${r.lastName}</span></div>
     <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f5f5f7;font-size:13px;"><span style="color:var(--sub);">Email</span><span style="font-weight:500;">${r.email}</span></div>
     <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f5f5f7;font-size:13px;"><span style="color:var(--sub);">Ship to</span><span style="font-weight:500;text-align:right;">${dest}</span></div>
     <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px;"><span style="color:var(--sub);">Items</span><span style="font-weight:500;text-align:right;">${itemList}</span></div>`;
-  document.getElementById('page-dna').querySelector('.card').style.display='none';
   document.querySelectorAll('#page-dna .card').forEach(c=>c.style.display='none');
   const s=document.getElementById('dna-success');
   s.style.display='flex';
@@ -1434,6 +1320,14 @@ function dnaResetForm(){
     .forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('dna-items-body').innerHTML='<tr id="dna-empty-row"><td colspan="4" style="text-align:center;padding:24px;color:var(--sub);font-size:13px;border-bottom:none;">No items yet — click "Add Item"</td></tr>';
   dnaRowCount=0;
+  // Reset portal selection
+  dnaCurrentPortal='';
+  ['dna-form-recipient','dna-form-items','dna-form-notes'].forEach(id=>{document.getElementById(id).style.display='none';});
+  document.getElementById('portal-btn-dna').style.cssText='flex:1;min-width:160px;padding:16px;border-radius:14px;font-size:15px;font-weight:600;border:2px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;font-family:inherit;';
+  document.getElementById('portal-btn-id').style.cssText='flex:1;min-width:160px;padding:16px;border-radius:14px;font-size:15px;font-weight:600;border:2px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;font-family:inherit;';
+  document.getElementById('portal-selection-hint').textContent='Please select a portal to continue.';
+  document.getElementById('dna-form-title').textContent='Order Request';
+  document.getElementById('dna-form-subtitle').textContent='Select a portal below, then fill out the form.';
   toast('Form reset');
 }
 
